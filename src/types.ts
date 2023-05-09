@@ -18,19 +18,13 @@ export enum TransportMode {
 
 export type Departures = {
   id: string;
+  name: string;
+  description?: string;
   quays?: Array<{
     id: string;
+    name: string;
+    description?: string;
     estimatedCalls: Array<EstimatedCall>;
-    situations: Array<{
-      id: string;
-      situationNumber?: string;
-      reportType?: string;
-      summary: Array<{ language?: string; value: string }>;
-      description: Array<{ language?: string; value: string }>;
-      advice: Array<{ language?: string; value: string }>;
-      infoLinks?: Array<{ uri: string; label?: string }>;
-      validityPeriod?: { startTime?: any; endTime?: any };
-    }>;
   }>;
 };
 
@@ -50,22 +44,9 @@ export type EstimatedCall = {
       publicCode?: string;
       transportMode?: TransportMode;
       transportSubmode?: string;
-      notices: Array<{ id: string; text?: string }>;
     };
     journeyPattern?: { notices: Array<{ id: string; text?: string }> };
-    notices: Array<{ id: string; text?: string }>;
   };
-  situations: Array<{
-    id: string;
-    situationNumber?: string;
-    reportType?: string;
-    summary: Array<{ language?: string; value: string }>;
-    description: Array<{ language?: string; value: string }>;
-    advice: Array<{ language?: string; value: string }>;
-    infoLinks?: Array<{ uri: string; label?: string }>;
-    validityPeriod?: { startTime?: any; endTime?: any };
-  }>;
-  notices: Array<{ id: string; text?: string }>;
 };
 
 export type StopPlace = {
@@ -81,16 +62,6 @@ export type StopPlace = {
     name: string;
     publicCode?: string;
     stopPlace?: { id: string };
-    situations: Array<{
-      id: string;
-      situationNumber?: string;
-      reportType?: string;
-      summary: Array<{ language?: string; value: string }>;
-      description: Array<{ language?: string; value: string }>;
-      advice: Array<{ language?: string; value: string }>;
-      infoLinks?: Array<{ uri: string; label?: string }>;
-      validityPeriod?: { startTime?: any; endTime?: any };
-    }>;
   }>;
 };
 
