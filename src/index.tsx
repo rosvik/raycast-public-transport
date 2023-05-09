@@ -61,7 +61,9 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
               {quay.estimatedCalls.map((ec) => {
                 const d = new Date(ec.expectedDepartureTime);
                 const time = `${padTime(d.getHours())}:${padTime(d.getMinutes())}`;
-                const lineName = `${ec.serviceJourney.line.publicCode ?? ""} ${ec.destinationDisplay?.frontText ?? ""}`;
+                const lineName = `${ec.serviceJourney.line.publicCode ?? ""} ${
+                  ec.destinationDisplay?.frontText ?? ""
+                }`;
                 return (
                   <List.Item
                     accessories={[

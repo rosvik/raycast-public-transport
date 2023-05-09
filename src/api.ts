@@ -58,11 +58,17 @@ query stopPlaceQuayDepartures(
 type StopPlaceQuayDeparturesQuery = {
   stopPlace?: Departures;
 };
-export async function fetchDepartures(stopId: string, numberOfDepartures: number): Promise<Departures | undefined> {
-  const departuresQuery = await fetchJourneyPlannerData<StopPlaceQuayDeparturesQuery>(DeparturesQueryDocument, {
-    id: stopId,
-    numberOfDepartures,
-  });
+export async function fetchDepartures(
+  stopId: string,
+  numberOfDepartures: number
+): Promise<Departures | undefined> {
+  const departuresQuery = await fetchJourneyPlannerData<StopPlaceQuayDeparturesQuery>(
+    DeparturesQueryDocument,
+    {
+      id: stopId,
+      numberOfDepartures,
+    }
+  );
   return departuresQuery.stopPlace;
 }
 

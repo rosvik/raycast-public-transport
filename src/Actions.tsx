@@ -12,7 +12,10 @@ export function Actions({ setShowDetails, ec, quayId, stopPlaceId }: ActionsProp
   return (
     <ActionPanel>
       <Action title="Toggle Details" onAction={setShowDetails} />
-      <Action.OpenInBrowser url={enturUrl(ec, quayId, stopPlaceId ?? "unknown")} title="Open In Browser" />
+      <Action.OpenInBrowser
+        url={enturUrl(ec, quayId, stopPlaceId ?? "unknown")}
+        title="Open In Browser"
+      />
     </ActionPanel>
   );
 }

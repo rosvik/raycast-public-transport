@@ -12,12 +12,21 @@ export function Detail({ ec }: DetailProps) {
       metadata={
         <List.Item.Detail.Metadata>
           <List.Item.Detail.Metadata.Label title="Code" text={ec.serviceJourney.line.publicCode} />
-          <List.Item.Detail.Metadata.Label title="Front text" text={ec.destinationDisplay?.frontText} />
+          <List.Item.Detail.Metadata.Label
+            title="Front text"
+            text={ec.destinationDisplay?.frontText}
+          />
           <List.Item.Detail.Metadata.Label
             title="Transport mode"
-            text={getModeText(ec.serviceJourney.line.transportMode, ec.serviceJourney.line.transportSubmode)}
+            text={getModeText(
+              ec.serviceJourney.line.transportMode,
+              ec.serviceJourney.line.transportSubmode
+            )}
             icon={{
-              ...getTransportIcon(ec.serviceJourney.line.transportMode, ec.serviceJourney.line.transportSubmode),
+              ...getTransportIcon(
+                ec.serviceJourney.line.transportMode,
+                ec.serviceJourney.line.transportSubmode
+              ),
               tintColor: Color.PrimaryText,
             }}
           />
