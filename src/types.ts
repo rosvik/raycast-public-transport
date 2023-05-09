@@ -46,7 +46,11 @@ export type EstimatedCall = {
       transportMode?: TransportMode;
       transportSubmode?: string;
     };
-    journeyPattern?: { notices: Array<{ id: string; text?: string }> };
+    operator?: {
+      id: string;
+      name: string;
+      url: string | null;
+    };
   };
 };
 

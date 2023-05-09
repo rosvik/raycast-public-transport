@@ -49,6 +49,16 @@ export function Detail({ ec }: DetailProps) {
             }
           />
           <List.Item.Detail.Metadata.Separator />
+          <List.Item.Detail.Metadata.Label
+            title="Operator"
+            text={ec.serviceJourney.operator?.name}
+          />
+          {ec.serviceJourney.operator?.url && (
+            <List.Item.Detail.Metadata.Label
+              title="Website"
+              text={ec.serviceJourney.operator.url}
+            />
+          )}
         </List.Item.Detail.Metadata>
       }
     />

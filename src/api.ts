@@ -5,8 +5,15 @@ type FeatureResponse = {
   features: Feature[];
 };
 export async function fetchVenue(query: string): Promise<Feature | undefined> {
+  const params = new URLSearchParams({
+    text: query,
+    size: "1",
+    lang: "no",
+    layers: "venue",
+  });
+
   const response = await fetch(
-    `https://api.entur.io/geocoder/v1/autocomplete?text=${query}&size=1&lang=no&layers=venue`
+    `https://api.entur.io/geocoder/v1/autocomplete?${params.toString()}`
   );
   const featureResponse = (await response.json()) as FeatureResponse;
   return featureResponse.features[0];
@@ -49,6 +56,11 @@ query stopPlaceQuayDepartures(
             publicCode
             transportMode
             transportSubmode
+          }
+          operator {
+            id
+            name
+            url
           }
         }
       }

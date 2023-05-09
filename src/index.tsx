@@ -52,7 +52,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
           return (
             <List.Section
               key={quay.id}
-              title={`${quay.name ?? `Quay ${i}`} ${quay.publicCode}`}
+              title={`${quay.name ?? `Quay ${i}`} ${quay.publicCode ?? ""}`}
               subtitle={quay.description}
             >
               {quay.estimatedCalls.map((ec) => {
