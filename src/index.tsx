@@ -1,7 +1,14 @@
 import { Action, ActionPanel, Color, Icon, Image, LaunchProps, List } from "@raycast/api";
 import fetch from "cross-fetch";
 import { useEffect, useState } from "react";
-import { FeatureResponse, StopPlace, StopPlaceQuayDeparturesQuery, StopsDetailsQuery, TransportMode } from "./types";
+import {
+  EstimatedCall,
+  FeatureResponse,
+  StopPlace,
+  StopPlaceQuayDeparturesQuery,
+  StopsDetailsQuery,
+  TransportMode,
+} from "./types";
 
 interface CommandArguments {
   query: string;
@@ -44,7 +51,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
             <List.Dropdown.Item title="5" value="5"></List.Dropdown.Item>
             <List.Dropdown.Item title="10" value="10"></List.Dropdown.Item>
             <List.Dropdown.Item title="50" value="50"></List.Dropdown.Item>
-          </List.Dropdown.Section>{" "}
+          </List.Dropdown.Section>
         </List.Dropdown>
       }
     >
@@ -78,6 +85,10 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                     actions={
                       <ActionPanel>
                         <Action title="Toggle Details" onAction={() => setShowDetails(!showDetails)} />
+                        <Action.OpenInBrowser
+                          url={enturUrl(ec, quay.id, stopPlace?.id ?? "unknown")}
+                          title="Open In Browser"
+                        />
                       </ActionPanel>
                     }
                     key={ec.serviceJourney.id}
@@ -98,12 +109,13 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                                 ec.serviceJourney.line.transportMode,
                                 ec.serviceJourney.line.transportSubmode
                               )}
-                              icon={
-                                getTransportIcon(
+                              icon={{
+                                ...getTransportIcon(
                                   ec.serviceJourney.line.transportMode,
                                   ec.serviceJourney.line.transportSubmode
-                                ) as Image.ImageLike
-                              }
+                                ),
+                                tintColor: Color.PrimaryText,
+                              }}
                             />
                             <List.Item.Detail.Metadata.Separator />
                             <List.Item.Detail.Metadata.Label
@@ -124,7 +136,6 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                               }
                             />
                             <List.Item.Detail.Metadata.Separator />
-                            <List.EmptyView></List.EmptyView>
                           </List.Item.Detail.Metadata>
                         }
                       />
@@ -153,32 +164,25 @@ function padTime(number: number) {
   return number.toString().padStart(2, "0");
 }
 
-type IconType =
-  | Image.ImageLike
-  | {
-      value: Image.ImageLike | undefined | null;
-      tooltip: string;
-    };
-function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): IconType {
-  const tooltip = getModeText(transportMode, transportSubmode);
+function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): Image {
   switch (transportMode) {
     case TransportMode.Rail:
-      return { source: "transport-modes/Train.svg", tintColor: Color.Red, tooltip };
+      return { source: "transport-modes/Train.svg", tintColor: Color.Red };
     case TransportMode.Bus:
       if (transportSubmode === "localBus") {
-        return { source: "transport-modes/Bus.svg", tintColor: Color.Green, tooltip };
+        return { source: "transport-modes/Bus.svg", tintColor: Color.Green };
       }
-      return { source: "transport-modes/Bus.svg", tintColor: Color.Blue, tooltip };
+      return { source: "transport-modes/Bus.svg", tintColor: Color.Blue };
     case TransportMode.Air:
-      return { source: "transport-modes/Plane.svg", tintColor: Color.Orange, tooltip };
+      return { source: "transport-modes/Plane.svg", tintColor: Color.Orange };
     case TransportMode.Water:
-      return { source: "transport-modes/Ferry.svg", tintColor: Color.Blue, tooltip };
+      return { source: "transport-modes/Ferry.svg", tintColor: Color.Blue };
     case TransportMode.Tram:
-      return { source: "transport-modes/Tram.svg", tintColor: Color.Yellow, tooltip };
+      return { source: "transport-modes/Tram.svg", tintColor: Color.Yellow };
     case TransportMode.Metro:
-      return { source: "transport-modes/Subway.svg", tintColor: Color.Magenta, tooltip };
+      return { source: "transport-modes/Subway.svg", tintColor: Color.Magenta };
     default:
-      return Icon.QuestionMark;
+      return { source: Icon.QuestionMark };
   }
 }
 
@@ -207,4 +211,9 @@ async function fetchStopDetails(stopId: string): Promise<StopPlace> {
   const response = await fetch(`https://atb-staging.api.mittatb.no/bff/v2/departures/stops-details?ids=${stopId}`);
   const result = (await response.json()) as StopsDetailsQuery;
   return result.stopPlaces[0];
+}
+
+function enturUrl(ec: EstimatedCall, quayId: string, stopId: string) {
+  const url = `https://entur.no/kart/linje?id=${stopId}&fromQuay%5Bid%5D=${quayId}&mode=${ec.serviceJourney.line.transportMode}&subMode=${ec.serviceJourney.line.transportSubmode}&publicCode=${ec.serviceJourney.line.publicCode}&tripHeadsign=${ec.destinationDisplay?.frontText}&serviceJourneyId=${ec.serviceJourney.id}&currentStopTime=${ec.aimedDepartureTime}`;
+  return encodeURI(url);
 }
