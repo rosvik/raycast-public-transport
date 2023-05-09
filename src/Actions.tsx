@@ -21,6 +21,16 @@ export function Actions({ setShowDetails, ec, quayId, stopPlaceId }: ActionsProp
 }
 
 function enturUrl(ec: EstimatedCall, quayId: string, stopId: string) {
-  const url = `https://entur.no/kart/linje?id=${stopId}&fromQuay%5Bid%5D=${quayId}&mode=${ec.serviceJourney.line.transportMode}&subMode=${ec.serviceJourney.line.transportSubmode}&publicCode=${ec.serviceJourney.line.publicCode}&tripHeadsign=${ec.destinationDisplay?.frontText}&serviceJourneyId=${ec.serviceJourney.id}&currentStopTime=${ec.aimedDepartureTime}`;
+  const params = new URLSearchParams({
+    id: stopId,
+    "fromQuay[id]": quayId,
+    mode: ec.serviceJourney.line.transportMode ?? "",
+    subMode: ec.serviceJourney.line.transportSubmode ?? "",
+    publicCode: ec.serviceJourney.line.publicCode ?? "",
+    tripHeadsign: ec.destinationDisplay?.frontText ?? "",
+    serviceJourneyId: ec.serviceJourney.id,
+    currentStopTime: ec.aimedDepartureTime,
+  });
+  const url = `https://entur.no/kart/linje?${params.toString()}`;
   return encodeURI(url);
 }
