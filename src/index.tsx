@@ -1,14 +1,9 @@
-import { Action, ActionPanel, Color, Icon, Image, LaunchProps, List } from "@raycast/api";
+import { Action, ActionPanel, LaunchProps, List } from "@raycast/api";
 import fetch from "cross-fetch";
 import { useEffect, useState } from "react";
-import {
-  EstimatedCall,
-  FeatureResponse,
-  StopPlace,
-  StopPlaceQuayDeparturesQuery,
-  StopsDetailsQuery,
-  TransportMode,
-} from "./types";
+import { Detail } from "./Detail";
+import { EstimatedCall, FeatureResponse, StopPlace, StopPlaceQuayDeparturesQuery, StopsDetailsQuery } from "./types";
+import { getTransportIcon } from "./utils";
 
 interface CommandArguments {
   query: string;
@@ -94,52 +89,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                     key={ec.serviceJourney.id}
                     title={lineName}
                     subtitle={showDetails ? undefined : time}
-                    detail={
-                      <List.Item.Detail
-                        metadata={
-                          <List.Item.Detail.Metadata>
-                            <List.Item.Detail.Metadata.Label title="Code" text={ec.serviceJourney.line.publicCode} />
-                            <List.Item.Detail.Metadata.Label
-                              title="Front text"
-                              text={ec.destinationDisplay?.frontText}
-                            />
-                            <List.Item.Detail.Metadata.Label
-                              title="Transport mode"
-                              text={getModeText(
-                                ec.serviceJourney.line.transportMode,
-                                ec.serviceJourney.line.transportSubmode
-                              )}
-                              icon={{
-                                ...getTransportIcon(
-                                  ec.serviceJourney.line.transportMode,
-                                  ec.serviceJourney.line.transportSubmode
-                                ),
-                                tintColor: Color.PrimaryText,
-                              }}
-                            />
-                            <List.Item.Detail.Metadata.Separator />
-                            <List.Item.Detail.Metadata.Label
-                              title="Date"
-                              text={new Date(ec.aimedDepartureTime).toLocaleDateString("no-no")}
-                            />
-                            <List.Item.Detail.Metadata.Label
-                              title="Scheduled departure"
-                              text={new Date(ec.aimedDepartureTime).toLocaleTimeString("no-no")}
-                            />
-                            <List.Item.Detail.Metadata.Label
-                              title={`Estimated departure (${ec.realtime ? "real time" : "inaccurate"})`}
-                              text={new Date(ec.expectedDepartureTime).toLocaleTimeString("no-no")}
-                              icon={
-                                ec.realtime
-                                  ? { source: Icon.CircleProgress100, tintColor: Color.Green }
-                                  : { source: Icon.Signal1, tintColor: Color.SecondaryText }
-                              }
-                            />
-                            <List.Item.Detail.Metadata.Separator />
-                          </List.Item.Detail.Metadata>
-                        }
-                      />
-                    }
+                    detail={<Detail ec={ec} />}
                     keywords={[
                       ec.destinationDisplay?.frontText ?? "",
                       ec.serviceJourney.line.description ?? "",
@@ -162,32 +112,6 @@ function getQuay(quayId: string, stopPlace?: StopPlace) {
 
 function padTime(number: number) {
   return number.toString().padStart(2, "0");
-}
-
-function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): Image {
-  switch (transportMode) {
-    case TransportMode.Rail:
-      return { source: "transport-modes/Train.svg", tintColor: Color.Red };
-    case TransportMode.Bus:
-      if (transportSubmode === "localBus") {
-        return { source: "transport-modes/Bus.svg", tintColor: Color.Green };
-      }
-      return { source: "transport-modes/Bus.svg", tintColor: Color.Blue };
-    case TransportMode.Air:
-      return { source: "transport-modes/Plane.svg", tintColor: Color.Orange };
-    case TransportMode.Water:
-      return { source: "transport-modes/Ferry.svg", tintColor: Color.Blue };
-    case TransportMode.Tram:
-      return { source: "transport-modes/Tram.svg", tintColor: Color.Yellow };
-    case TransportMode.Metro:
-      return { source: "transport-modes/Subway.svg", tintColor: Color.Magenta };
-    default:
-      return { source: Icon.QuestionMark };
-  }
-}
-
-function getModeText(transportMode?: TransportMode, transportSubmode?: string) {
-  return transportSubmode === "unknown" ? transportMode : `${transportMode} / ${transportSubmode}`;
 }
 
 async function fetchDepartures(stopId: string, numberOfDepartures: number) {
