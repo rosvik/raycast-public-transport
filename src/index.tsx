@@ -1,9 +1,9 @@
 import { LaunchProps, List } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
-import { fetchDepartures, fetchStopDetails, fetchVenue } from "./api";
+import { fetchDepartures, fetchVenue } from "./api";
 import { Detail } from "./Detail";
-import { Departures, StopPlace } from "./types";
+import { Departures } from "./types";
 import { getTransportIcon } from "./utils";
 
 interface CommandArguments {
@@ -14,7 +14,6 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
   const [isLoading, setIsLoading] = useState(true);
   const [items, setItems] = useState<Departures>();
   const [numberOfDepartures, setNumberOfDepartures] = useState(5);
-  const [stopPlace, setStopPlace] = useState<StopPlace>();
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
@@ -22,7 +21,6 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
     fetchVenue(props.arguments.query).then((feature) => {
       const stopId = feature?.properties.id;
       if (!stopId) return;
-      fetchStopDetails(stopId).then(setStopPlace);
       fetchDepartures(stopId, numberOfDepartures).then((departures) => {
         setItems(departures);
         setIsLoading(false);
@@ -51,12 +49,11 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
     >
       {!isLoading &&
         items?.quays?.map((quay, i) => {
-          const quayDetails = stopPlace?.quays?.find((q) => q.id === quay.id);
           return (
             <List.Section
               key={quay.id}
-              title={`${quayDetails?.name ?? `Quay ${i}`} ${quayDetails?.publicCode}`}
-              subtitle={quayDetails?.description}
+              title={`${quay.name ?? `Quay ${i}`} ${quay.publicCode}`}
+              subtitle={quay.description}
             >
               {quay.estimatedCalls.map((ec) => {
                 const d = new Date(ec.expectedDepartureTime);
@@ -82,7 +79,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                       <Actions
                         ec={ec}
                         quayId={quay.id}
-                        stopPlaceId={stopPlace?.id}
+                        stopPlaceId={items.id}
                         setShowDetails={() => setShowDetails(!showDetails)}
                       />
                     }

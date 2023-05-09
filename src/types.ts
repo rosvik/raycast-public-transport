@@ -24,6 +24,7 @@ export type Departures = {
     id: string;
     name: string;
     description?: string;
+    publicCode?: string;
     estimatedCalls: Array<EstimatedCall>;
   }>;
 };

@@ -1,5 +1,5 @@
 import fetch from "cross-fetch";
-import { Departures, Feature, StopPlace } from "./types";
+import { Departures, Feature } from "./types";
 
 type FeatureResponse = {
   features: Feature[];
@@ -25,6 +25,7 @@ query stopPlaceQuayDepartures(
       id
       name
       description
+      publicCode
       estimatedCalls(
         numberOfDepartures: $numberOfDepartures
         timeRange: 86400
@@ -70,37 +71,6 @@ export async function fetchDepartures(
     }
   );
   return departuresQuery.stopPlace;
-}
-
-const StopsDetailsDocument = `
-query stopsDetails($id: String!) {
-  stopPlace(id: $id) {
-    name
-    quays(filterByInUse: true) {
-      id
-      description
-      name
-      publicCode
-      stopPlace {
-        id
-      }
-    }
-    transportMode
-    description
-    id
-    latitude
-    longitude
-  }
-}
-`;
-type StopsDetailsQuery = {
-  stopPlace: StopPlace;
-};
-export async function fetchStopDetails(stopId: string): Promise<StopPlace | undefined> {
-  const response = await fetchJourneyPlannerData<StopsDetailsQuery>(StopsDetailsDocument, {
-    id: stopId,
-  });
-  return response.stopPlace;
 }
 
 async function fetchJourneyPlannerData<T>(document: string, variables: object): Promise<T> {
