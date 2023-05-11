@@ -37,7 +37,11 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
   return (
     <List
       navigationTitle="Search"
-      searchBarPlaceholder="Filter Departures"
+      searchBarPlaceholder={
+        isLoading
+          ? "Laster..."
+          : `${items?.name}${items?.description ? " " + items?.description : ""}`
+      }
       filtering={{ keepSectionOrder: true }}
       isShowingDetail={showDetails}
       searchBarAccessory={
@@ -54,6 +58,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
       }
     >
       {!isLoading &&
+        items &&
         departuresWithSortedQuays?.map((quay, i) => {
           return (
             <List.Section

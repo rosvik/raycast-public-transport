@@ -13,12 +13,13 @@
     {
       "name": "index",
       "title": "Departures",
-      "description": "Find departures from a given stop place",
+      "subtitle": "View Public Transport Departures",
+      "description": "Find departures from any stop place",
       "mode": "view",
       "arguments": [
         {
           "name": "query",
-          "placeholder": "E.g. 'Oslo S'",
+          "placeholder": "Find Stop Place",
           "type": "text",
           "required": true
         }
