@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "raycast-departures",
-  "title": "Find departures",
+  "title": "Departures",
   "description": "A raycast plugin to find travel information",
   "icon": "command-icon.png",
   "author": "rosvik",
@@ -12,7 +12,7 @@
   "commands": [
     {
       "name": "index",
-      "title": "Find Departures",
+      "title": "Departures",
       "description": "Find departures from a given stop place",
       "mode": "view",
       "arguments": [
