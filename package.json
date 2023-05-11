@@ -5,7 +5,9 @@
   "description": "A raycast plugin to find travel information",
   "icon": "command-icon.png",
   "author": "rosvik",
+  "owner": "variant-as",
   "categories": [
+    "Web",
     "Data"
   ],
   "license": "MIT",
