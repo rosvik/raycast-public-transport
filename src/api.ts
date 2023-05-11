@@ -1,6 +1,8 @@
 import fetch from "cross-fetch";
 import { Departures, Feature } from "./types";
 
+const CLIENT_NAME = "rosvik-raycast-departures";
+
 type FeatureResponse = {
   features: Feature[];
 };
@@ -13,7 +15,12 @@ export async function fetchVenue(query: string): Promise<Feature | undefined> {
   });
 
   const response = await fetch(
-    `https://api.entur.io/geocoder/v1/autocomplete?${params.toString()}`
+    `https://api.entur.io/geocoder/v1/autocomplete?${params.toString()}`,
+    {
+      headers: {
+        "ET-Client-Name": CLIENT_NAME,
+      },
+    }
   );
   const featureResponse = (await response.json()) as FeatureResponse;
   return featureResponse.features[0];
@@ -92,6 +99,7 @@ async function fetchJourneyPlannerData<T>(document: string, variables: object): 
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "ET-Client-Name": CLIENT_NAME,
     },
     body: JSON.stringify({
       query: document,
