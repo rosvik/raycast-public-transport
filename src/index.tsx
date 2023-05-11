@@ -1,4 +1,4 @@
-import { LaunchProps, List } from "@raycast/api";
+import { Color, LaunchProps, List } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { fetchDepartures, fetchVenue } from "./api";
@@ -40,9 +40,9 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
           onChange={(newValue) => setNumberOfDepartures(parseInt(newValue))}
         >
           <List.Dropdown.Section title="Number of departures pr. platform">
-            <List.Dropdown.Item title="5" value="5"></List.Dropdown.Item>
-            <List.Dropdown.Item title="10" value="10"></List.Dropdown.Item>
-            <List.Dropdown.Item title="50" value="50"></List.Dropdown.Item>
+            <List.Dropdown.Item title="5" value="5" />
+            <List.Dropdown.Item title="10" value="10" />
+            <List.Dropdown.Item title="50" value="50" />
           </List.Dropdown.Section>
         </List.Dropdown>
       }
@@ -67,7 +67,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                       {
                         tag: {
                           value: new Date(ec.expectedDepartureTime),
-                          color: ec.realtime ? "raycast-green" : "raycast-secondary-text",
+                          color: ec.realtime ? Color.Green : Color.SecondaryText,
                         },
                       },
                     ]}
