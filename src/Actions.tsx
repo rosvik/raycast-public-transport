@@ -1,33 +1,30 @@
 import { Action, ActionPanel } from "@raycast/api";
-import { EstimatedCall } from "./types";
+import { getFavicon } from "@raycast/utils";
+import { Departures, EstimatedCall } from "./types";
 
 type ActionsProps = {
-  ec: EstimatedCall;
-  stopPlaceId: string;
+  departures: Departures;
   quayId: string;
+  ec: EstimatedCall;
   setShowDetails: () => void;
 };
 
-export function Actions({ setShowDetails, ec, quayId, stopPlaceId }: ActionsProps) {
+export function Actions({ setShowDetails, departures }: ActionsProps) {
   return (
     <ActionPanel>
       <Action title="Toggle Details" onAction={setShowDetails} />
-      <Action.OpenInBrowser url={enturUrl(ec, quayId, stopPlaceId)} title="Open In Browser" />
+      <Action.OpenInBrowser
+        url={getSkjermenUrl(departures)}
+        title="Open in skjer.men"
+        icon={getFavicon("https://skjer.men")}
+      />
     </ActionPanel>
   );
 }
 
-function enturUrl(ec: EstimatedCall, quayId: string, stopPlaceId: string) {
-  const params = new URLSearchParams({
-    id: stopPlaceId,
-    "fromQuay[id]": quayId,
-    mode: ec.serviceJourney.line.transportMode ?? "",
-    subMode: ec.serviceJourney.line.transportSubmode ?? "",
-    publicCode: ec.serviceJourney.line.publicCode ?? "",
-    tripHeadsign: ec.destinationDisplay?.frontText ?? "",
-    serviceJourneyId: ec.serviceJourney.id,
-    currentStopTime: ec.aimedDepartureTime,
-  });
-  const url = `https://entur.no/kart/linje?${params}`;
+function getSkjermenUrl(departures: Departures) {
+  const url = `https://skjer.men/https://www.google.com/maps/@${departures.latitude.toFixed(
+    7
+  )},${departures.longitude.toFixed(7)}`;
   return encodeURI(url);
 }

@@ -35,6 +35,8 @@ query stopPlaceQuayDepartures(
     id
     name
     description
+    latitude
+    longitude
     quays(filterByInUse: true) {
       id
       name

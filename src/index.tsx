@@ -90,7 +90,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                       <Actions
                         ec={ec}
                         quayId={quay.id}
-                        stopPlaceId={items.id}
+                        departures={items}
                         setShowDetails={() => setShowDetails(!showDetails)}
                       />
                     }

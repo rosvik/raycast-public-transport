@@ -20,6 +20,8 @@ export type Departures = {
   id: string;
   name: string;
   description?: string;
+  latitude: number;
+  longitude: number;
   quays?: Array<{
     id: string;
     name: string;
