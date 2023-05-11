@@ -83,7 +83,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                         setShowDetails={() => setShowDetails(!showDetails)}
                       />
                     }
-                    key={ec.serviceJourney.id}
+                    key={ec.serviceJourney.id + ec.aimedDepartureTime}
                     title={lineName}
                     subtitle={showDetails ? undefined : time}
                     detail={<Detail ec={ec} />}
