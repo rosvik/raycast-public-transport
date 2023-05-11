@@ -28,6 +28,12 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
     });
   }, [props.arguments.query, numberOfDepartures]);
 
+  const departuresWithSortedQuays = items?.quays?.sort((a, b) => {
+    if (a.name + a.publicCode < b.name + b.publicCode) return -1;
+    if (a.name + a.publicCode > b.name + b.publicCode) return 1;
+    return 0;
+  });
+
   return (
     <List
       navigationTitle="Search"
@@ -48,7 +54,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
       }
     >
       {!isLoading &&
-        items?.quays?.map((quay, i) => {
+        departuresWithSortedQuays?.map((quay, i) => {
           return (
             <List.Section
               key={quay.id}
