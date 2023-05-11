@@ -53,12 +53,6 @@ export function Detail({ ec }: DetailProps) {
             title="Operator"
             text={ec.serviceJourney.operator?.name}
           />
-          {ec.serviceJourney.operator?.url && (
-            <List.Item.Detail.Metadata.Label
-              title="Website"
-              text={ec.serviceJourney.operator.url}
-            />
-          )}
         </List.Item.Detail.Metadata>
       }
     />
