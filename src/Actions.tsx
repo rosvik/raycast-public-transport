@@ -23,8 +23,6 @@ export function Actions({ setShowDetails, departures }: ActionsProps) {
 }
 
 function getSkjermenUrl(departures: Departures) {
-  const url = `https://skjer.men/https://www.google.com/maps/@${departures.latitude.toFixed(
-    7
-  )},${departures.longitude.toFixed(7)}`;
+  const url = `https://skjer.men/${departures.latitude}/${departures.longitude}`;
   return encodeURI(url);
 }
