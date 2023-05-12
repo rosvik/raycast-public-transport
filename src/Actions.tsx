@@ -9,7 +9,9 @@ type ActionsProps = {
   setShowDetails: () => void;
 };
 
-export function Actions({ setShowDetails, departures }: ActionsProps) {
+export function Actions({ setShowDetails, departures, ec }: ActionsProps) {
+  const urlString = ec.serviceJourney.line.authority?.url;
+  const url = urlString ? new URL(urlString) : null;
   return (
     <ActionPanel>
       <Action title="Toggle Details" onAction={setShowDetails} />
@@ -18,6 +20,14 @@ export function Actions({ setShowDetails, departures }: ActionsProps) {
         title="Open in skjer.men"
         icon={getFavicon("https://skjer.men")}
       />
+      {url && (
+        <Action.OpenInBrowser
+          url={url.href}
+          // eslint-disable-next-line @raycast/prefer-title-case
+          title={`Open ${url.host}`}
+          icon={getFavicon(url.origin)}
+        />
+      )}
     </ActionPanel>
   );
 }

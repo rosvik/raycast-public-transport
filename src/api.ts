@@ -65,11 +65,11 @@ query stopPlaceQuayDepartures(
             publicCode
             transportMode
             transportSubmode
-          }
-          operator {
-            id
-            name
-            url
+            authority {
+              id
+              name
+              url
+            }
           }
         }
       }

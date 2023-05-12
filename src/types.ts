@@ -47,11 +47,11 @@ export type EstimatedCall = {
       publicCode?: string;
       transportMode?: TransportMode;
       transportSubmode?: string;
-    };
-    operator?: {
-      id: string;
-      name: string;
-      url: string | null;
+      authority?: {
+        id: string;
+        name: string;
+        url?: string;
+      };
     };
   };
 };

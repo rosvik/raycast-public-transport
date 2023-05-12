@@ -1,4 +1,5 @@
 import { Color, Icon, List } from "@raycast/api";
+import { getFavicon } from "@raycast/utils";
 import { EstimatedCall, TransportMode } from "./types";
 import { getTransportIcon } from "./utils";
 
@@ -50,8 +51,13 @@ export function Detail({ ec }: DetailProps) {
           />
           <List.Item.Detail.Metadata.Separator />
           <List.Item.Detail.Metadata.Label
-            title="Operator"
-            text={ec.serviceJourney.operator?.name}
+            title="Authority"
+            text={ec.serviceJourney.line.authority?.name}
+            icon={
+              ec.serviceJourney.line.authority?.url
+                ? getFavicon(ec.serviceJourney.line.authority?.url)
+                : undefined
+            }
           />
         </List.Item.Detail.Metadata>
       }
