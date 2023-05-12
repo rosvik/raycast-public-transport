@@ -4,7 +4,7 @@ import { Actions } from "./Actions";
 import { fetchDepartures, fetchVenue } from "./api";
 import { Detail } from "./Detail";
 import { Departures } from "./types";
-import { getTransportIcon } from "./utils";
+import { formatAsClock, formatAsClockWithSeconds, getTransportIcon } from "./utils";
 
 interface CommandArguments {
   query: string;
@@ -15,6 +15,9 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
   const [items, setItems] = useState<Departures>();
   const [numberOfDepartures, setNumberOfDepartures] = useState(5);
   const [showDetails, setShowDetails] = useState(false);
+
+  const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
+  setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
   useEffect(() => {
     setIsLoading(true);
@@ -36,7 +39,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
 
   return (
     <List
-      navigationTitle="Search"
+      navigationTitle={clock}
       searchBarPlaceholder={
         isLoading
           ? "Laster..."
@@ -67,8 +70,6 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
               subtitle={quay.description}
             >
               {quay.estimatedCalls.map((ec) => {
-                const d = new Date(ec.expectedDepartureTime);
-                const time = `${padTime(d.getHours())}:${padTime(d.getMinutes())}`;
                 const lineName = `${ec.serviceJourney.line.publicCode ?? ""} ${
                   ec.destinationDisplay?.frontText ?? ""
                 }`;
@@ -96,7 +97,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                     }
                     key={ec.serviceJourney.id + ec.aimedDepartureTime}
                     title={lineName}
-                    subtitle={showDetails ? undefined : time}
+                    subtitle={showDetails ? undefined : formatAsClock(ec.expectedDepartureTime)}
                     detail={<Detail ec={ec} />}
                     keywords={[
                       ec.destinationDisplay?.frontText ?? "",
@@ -112,8 +113,4 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
         })}
     </List>
   );
-}
-
-function padTime(number: number) {
-  return number.toString().padStart(2, "0");
 }

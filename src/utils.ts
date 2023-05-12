@@ -24,3 +24,15 @@ export function getTransportIcon(transportMode?: TransportMode, transportSubmode
       return { source: Icon.QuestionMark };
   }
 }
+
+export function formatAsClock(isoString: string) {
+  const d = new Date(isoString);
+  const padTime = (n: number) => n.toString().padStart(2, "0");
+  return `${padTime(d.getHours())}:${padTime(d.getMinutes())}`;
+}
+
+export function formatAsClockWithSeconds(isoString: string) {
+  const d = new Date(isoString);
+  const padTime = (n: number) => n.toString().padStart(2, "0");
+  return `${padTime(d.getHours())}:${padTime(d.getMinutes())}:${padTime(d.getSeconds())}`;
+}
