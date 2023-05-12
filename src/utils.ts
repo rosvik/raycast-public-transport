@@ -10,6 +10,8 @@ export function getTransportIcon(transportMode?: TransportMode, transportSubmode
         return { source: "transport-modes/Bus.svg", tintColor: Color.Green };
       }
       return { source: "transport-modes/Bus.svg", tintColor: Color.Blue };
+    case TransportMode.Coach:
+      return { source: "transport-modes/Bus.svg", tintColor: Color.Purple };
     case TransportMode.Air:
       return { source: "transport-modes/Plane.svg", tintColor: Color.Orange };
     case TransportMode.Water:
