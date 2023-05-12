@@ -32,9 +32,9 @@ export type Departures = {
 };
 
 export type EstimatedCall = {
-  date: any;
-  expectedDepartureTime: any;
-  aimedDepartureTime: any;
+  date: string;
+  expectedDepartureTime: string | null;
+  aimedDepartureTime: string;
   realtime: boolean;
   predictionInaccurate: boolean;
   cancellation: boolean;
@@ -54,14 +54,18 @@ export type EstimatedCall = {
         url?: string;
       };
     };
-    estimatedCalls: Array<{
-      quay: {
-        id: string;
-        name: string;
-      };
-      expectedDepartureTime: string;
-    }>;
+    estimatedCalls: Array<SjEstimatedCall>;
   };
+};
+
+export type SjEstimatedCall = {
+  quay: {
+    id: string;
+    name: string;
+    publicCode?: string;
+  };
+  aimedDepartureTime: string;
+  expectedDepartureTime: string | null;
 };
 
 export type StopPlace = {

@@ -1,6 +1,6 @@
 import { Color, Icon, List } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { EstimatedCall, TransportMode } from "./types";
+import { EstimatedCall, SjEstimatedCall, TransportMode } from "./types";
 import { formatAsClock, getTransportIcon } from "./utils";
 
 type DetailProps = {
@@ -53,7 +53,7 @@ export function Detail({ ec }: DetailProps) {
               new Date(ec.aimedDepartureTime).toLocaleTimeString("no-no")
             }
           />
-          {ec.realtime && (
+          {ec.realtime && ec.expectedDepartureTime && (
             <List.Item.Detail.Metadata.Label
               title={`Estimated departure (${
                 ec.predictionInaccurate ? "inaccurate" : "real time"
@@ -71,19 +71,38 @@ export function Detail({ ec }: DetailProps) {
           )}
         </List.Item.Detail.Metadata>
       }
-      markdown={ec.serviceJourney.estimatedCalls
-        .map((e) => {
-          return e.quay.id === ec.quay.id
-            ? `\n\n---\n\n**\`${formatAsClock(e.expectedDepartureTime)}\` ${
-                e.quay.name
-              }**\n\n---\n\n`
-            : `\`${formatAsClock(e.expectedDepartureTime)}\` ${e.quay.name}`;
-        })
-        .join("\n\n")}
+      markdown={getEstimatedCallsMarkdown(ec.serviceJourney.estimatedCalls, ec.quay.id)}
     />
   );
 }
 
+function getEstimatedCallsMarkdown(ec: Array<SjEstimatedCall>, quayId: string) {
+  const currentIndex = ec.findIndex((a) => a.quay.id === quayId);
+  if (!ec.length || currentIndex < 0) return;
+
+  const upcomingEstimatedCalls = ec.slice(currentIndex);
+  const numberOfTruncatedStops = currentIndex - 1;
+
+  const lines: Array<string | false> = [
+    currentIndex > 0 && `${estimatedCallText(ec[0])}`,
+    numberOfTruncatedStops === 1 && `${estimatedCallText(ec[1])}`,
+    numberOfTruncatedStops > 1 && `••• ${numberOfTruncatedStops} intermediate stops •••`,
+    ...upcomingEstimatedCalls.map((e) => {
+      return e.quay.id === quayId
+        ? `---\n\n## ${estimatedCallText(e)}\n\n---`
+        : estimatedCallText(e);
+    }),
+  ].filter(Boolean);
+
+  return lines.join("\n\n");
+}
+
 function getModeText(transportMode?: TransportMode, transportSubmode?: string) {
   return transportSubmode === "unknown" ? transportMode : `${transportMode} / ${transportSubmode}`;
+}
+
+function estimatedCallText(e: SjEstimatedCall) {
+  return `\`${formatAsClock(e.expectedDepartureTime || e.aimedDepartureTime)}\` ${e.quay.name} ${
+    e.quay.publicCode ?? ""
+  }`;
 }

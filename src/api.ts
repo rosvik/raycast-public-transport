@@ -76,7 +76,9 @@ query stopPlaceQuayDepartures(
             quay {
               id
               name
+              publicCode
             }
+            aimedDepartureTime
             expectedDepartureTime
           }
         }

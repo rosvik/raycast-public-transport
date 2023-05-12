@@ -78,7 +78,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                     accessories={[
                       {
                         tag: {
-                          value: new Date(ec.expectedDepartureTime),
+                          value: new Date(ec.expectedDepartureTime ?? ec.aimedDepartureTime),
                           color: ec.realtime
                             ? ec.predictionInaccurate
                               ? Color.Yellow
@@ -101,7 +101,11 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                     }
                     key={ec.serviceJourney.id + ec.aimedDepartureTime}
                     title={lineName}
-                    subtitle={showDetails ? undefined : formatAsClock(ec.expectedDepartureTime)}
+                    subtitle={
+                      showDetails
+                        ? undefined
+                        : formatAsClock(ec.expectedDepartureTime ?? ec.aimedDepartureTime)
+                    }
                     detail={<Detail ec={ec} />}
                     keywords={[
                       ec.destinationDisplay?.frontText ?? "",
