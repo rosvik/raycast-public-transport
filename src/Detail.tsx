@@ -12,44 +12,6 @@ export function Detail({ ec }: DetailProps) {
     <List.Item.Detail
       metadata={
         <List.Item.Detail.Metadata>
-          <List.Item.Detail.Metadata.Label title="Code" text={ec.serviceJourney.line.publicCode} />
-          <List.Item.Detail.Metadata.Label
-            title="Front text"
-            text={ec.destinationDisplay?.frontText}
-          />
-          <List.Item.Detail.Metadata.Label
-            title="Transport mode"
-            text={getModeText(
-              ec.serviceJourney.line.transportMode,
-              ec.serviceJourney.line.transportSubmode
-            )}
-            icon={{
-              ...getTransportIcon(
-                ec.serviceJourney.line.transportMode,
-                ec.serviceJourney.line.transportSubmode
-              ),
-              tintColor: Color.PrimaryText,
-            }}
-          />
-          <List.Item.Detail.Metadata.Separator />
-          <List.Item.Detail.Metadata.Label
-            title="Date"
-            text={new Date(ec.aimedDepartureTime).toLocaleDateString("no-no")}
-          />
-          <List.Item.Detail.Metadata.Label
-            title="Scheduled departure"
-            text={new Date(ec.aimedDepartureTime).toLocaleTimeString("no-no")}
-          />
-          <List.Item.Detail.Metadata.Label
-            title={`Estimated departure (${ec.realtime ? "real time" : "inaccurate"})`}
-            text={new Date(ec.expectedDepartureTime).toLocaleTimeString("no-no")}
-            icon={
-              ec.realtime
-                ? { source: Icon.CircleProgress100, tintColor: Color.Green }
-                : { source: Icon.Signal1, tintColor: Color.SecondaryText }
-            }
-          />
-          <List.Item.Detail.Metadata.Separator />
           <List.Item.Detail.Metadata.Label
             title="Authority"
             text={ec.serviceJourney.line.authority?.name}
@@ -59,12 +21,60 @@ export function Detail({ ec }: DetailProps) {
                 : undefined
             }
           />
+          <List.Item.Detail.Metadata.Label
+            title="Line"
+            text={`${ec.serviceJourney.line.publicCode ?? ""} ${
+              ec.destinationDisplay?.frontText ?? ""
+            }`}
+            icon={{
+              ...getTransportIcon(
+                ec.serviceJourney.line.transportMode,
+                ec.serviceJourney.line.transportSubmode
+              ),
+              tintColor: Color.SecondaryText,
+            }}
+          />
+
+          {ec.serviceJourney.line.transportSubmode !== "unknown" && (
+            <List.Item.Detail.Metadata.Label
+              title="Transport mode"
+              text={getModeText(
+                ec.serviceJourney.line.transportMode,
+                ec.serviceJourney.line.transportSubmode
+              )}
+            />
+          )}
+          <List.Item.Detail.Metadata.Separator />
+          <List.Item.Detail.Metadata.Label
+            title="Scheduled departure"
+            text={
+              new Date(ec.aimedDepartureTime).toLocaleDateString("no-no") +
+              " " +
+              new Date(ec.aimedDepartureTime).toLocaleTimeString("no-no")
+            }
+          />
+          {ec.realtime && (
+            <List.Item.Detail.Metadata.Label
+              title={`Estimated departure (${
+                ec.predictionInaccurate ? "inaccurate" : "real time"
+              })`}
+              text={new Date(ec.expectedDepartureTime).toLocaleTimeString("no-no")}
+              icon={
+                ec.realtime
+                  ? {
+                      source: Icon.CircleProgress100,
+                      tintColor: ec.predictionInaccurate ? Color.Yellow : Color.Green,
+                    }
+                  : { source: Icon.Signal1, tintColor: Color.SecondaryText }
+              }
+            />
+          )}
         </List.Item.Detail.Metadata>
       }
       markdown={ec.serviceJourney.estimatedCalls
         .map((e) => {
           return e.quay.id === ec.quay.id
-            ? `\n\n---\n\n\`${formatAsClock(e.expectedDepartureTime)}\` **${
+            ? `\n\n---\n\n**\`${formatAsClock(e.expectedDepartureTime)}\` ${
                 e.quay.name
               }**\n\n---\n\n`
             : `\`${formatAsClock(e.expectedDepartureTime)}\` ${e.quay.name}`;

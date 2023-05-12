@@ -44,12 +44,13 @@ query stopPlaceQuayDepartures(
       publicCode
       estimatedCalls(
         numberOfDepartures: $numberOfDepartures
-        timeRange: 86400
+        timeRange: 604800
       ) {
         date
         expectedDepartureTime
         aimedDepartureTime
         realtime
+        predictionInaccurate
         cancellation
         quay {
           id

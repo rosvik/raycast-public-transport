@@ -79,7 +79,11 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                       {
                         tag: {
                           value: new Date(ec.expectedDepartureTime),
-                          color: ec.realtime ? Color.Green : Color.SecondaryText,
+                          color: ec.realtime
+                            ? ec.predictionInaccurate
+                              ? Color.Yellow
+                              : Color.Green
+                            : Color.SecondaryText,
                         },
                       },
                     ]}

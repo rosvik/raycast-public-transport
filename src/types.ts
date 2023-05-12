@@ -36,6 +36,7 @@ export type EstimatedCall = {
   expectedDepartureTime: any;
   aimedDepartureTime: any;
   realtime: boolean;
+  predictionInaccurate: boolean;
   cancellation: boolean;
   quay: { id: string };
   destinationDisplay?: { frontText?: string };
