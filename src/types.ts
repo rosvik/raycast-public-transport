@@ -53,6 +53,13 @@ export type EstimatedCall = {
         url?: string;
       };
     };
+    estimatedCalls: Array<{
+      quay: {
+        id: string;
+        name: string;
+      };
+      expectedDepartureTime: string;
+    }>;
   };
 };
 

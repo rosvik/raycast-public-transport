@@ -1,7 +1,7 @@
 import { Color, Icon, List } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { EstimatedCall, TransportMode } from "./types";
-import { getTransportIcon } from "./utils";
+import { formatAsClock, getTransportIcon } from "./utils";
 
 type DetailProps = {
   ec: EstimatedCall;
@@ -61,6 +61,15 @@ export function Detail({ ec }: DetailProps) {
           />
         </List.Item.Detail.Metadata>
       }
+      markdown={ec.serviceJourney.estimatedCalls
+        .map((e) => {
+          return e.quay.id === ec.quay.id
+            ? `\n\n---\n\n\`${formatAsClock(e.expectedDepartureTime)}\` **${
+                e.quay.name
+              }**\n\n---\n\n`
+            : `\`${formatAsClock(e.expectedDepartureTime)}\` ${e.quay.name}`;
+        })
+        .join("\n\n")}
     />
   );
 }

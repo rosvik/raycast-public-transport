@@ -71,6 +71,13 @@ query stopPlaceQuayDepartures(
               url
             }
           }
+          estimatedCalls {
+            quay {
+              id
+              name
+            }
+            expectedDepartureTime
+          }
         }
       }
     }
