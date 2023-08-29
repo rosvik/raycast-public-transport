@@ -1,5 +1,7 @@
 import { Action, ActionPanel } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
+import { useEffect, useState } from "react";
+import { fetchVehicleId } from "./api";
 import { Departures, EstimatedCall } from "./types";
 
 type ActionsProps = {
@@ -12,6 +14,12 @@ type ActionsProps = {
 export function Actions({ setShowDetails, departures, ec }: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
+
+  const [vehicleId, setVehicleId] = useState<string | undefined>();
+  useEffect(() => {
+    fetchVehicleId(ec.serviceJourney.id).then((id) => setVehicleId(id));
+  }, [ec.serviceJourney.id]);
+
   return (
     <ActionPanel>
       <Action title="Toggle Details" onAction={setShowDetails} />
@@ -26,6 +34,13 @@ export function Actions({ setShowDetails, departures, ec }: ActionsProps) {
           // eslint-disable-next-line @raycast/prefer-title-case
           title={`Open ${url.host}`}
           icon={getFavicon(url.origin)}
+        />
+      )}
+      {vehicleId && (
+        <Action.OpenInBrowser
+          url={`https://vehicle-map.entur.org/?vehicleRef=${vehicleId}`}
+          title="Show Position in Map"
+          icon={getFavicon("https://entur.no")}
         />
       )}
     </ActionPanel>
