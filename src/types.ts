@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+export type DirectionType = "unknown" | "outbound" | "inbound" | "clockwise" | "anticlockwise";
 
 export enum TransportMode {
   Air = "air",
@@ -42,6 +42,7 @@ export type EstimatedCall = {
   destinationDisplay?: { frontText?: string };
   serviceJourney: {
     id: string;
+    directionType: DirectionType;
     line: {
       id: string;
       description?: string;

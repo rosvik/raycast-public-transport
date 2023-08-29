@@ -60,6 +60,7 @@ query stopPlaceQuayDepartures(
         }
         serviceJourney {
           id
+          directionType
           line {
             id
             description

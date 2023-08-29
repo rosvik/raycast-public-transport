@@ -3,8 +3,13 @@ import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { fetchDepartures, fetchVenue } from "./api";
 import { Detail } from "./Detail";
-import { Departures } from "./types";
-import { formatAsClock, formatAsClockWithSeconds, getTransportIcon } from "./utils";
+import { Departures, DirectionType } from "./types";
+import {
+  formatAsClock,
+  formatAsClockWithSeconds,
+  formatDirection,
+  getTransportIcon,
+} from "./utils";
 
 interface CommandArguments {
   query: string;
@@ -66,8 +71,15 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
           return (
             <List.Section
               key={quay.id}
-              title={`${quay.name ?? `Quay ${i}`} ${quay.publicCode ?? ""}`}
-              subtitle={quay.description}
+              title={getQuayTitle({
+                index: i,
+                quayName: quay.name,
+                quayPublicCode: quay.publicCode,
+              })}
+              subtitle={getQuayDescription({
+                directionTypes: quay.estimatedCalls.map((ec) => ec.serviceJourney.directionType),
+                description: quay.description,
+              })}
             >
               {quay.estimatedCalls.map((ec) => {
                 const lineName = `${ec.serviceJourney.line.publicCode ?? ""} ${
@@ -121,4 +133,36 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
         })}
     </List>
   );
+}
+
+function getQuayTitle({
+  index,
+  quayName,
+  quayPublicCode,
+}: {
+  index: number;
+  quayName?: string;
+  quayPublicCode?: string;
+}): string {
+  const name = quayName ?? `Quay ${index + 1}`;
+  const publicCode = quayPublicCode ? ` ${quayPublicCode}` : "";
+
+  return `${name}${publicCode}`;
+}
+
+function getQuayDescription({
+  description,
+  directionTypes,
+}: {
+  description?: string;
+  directionTypes: DirectionType[];
+}): string {
+  const directions = new Set<DirectionType>(directionTypes);
+  const commonDirection = directions.size === 1 ? Array.from(directions)[0] : undefined;
+  const directionString =
+    commonDirection && commonDirection !== "unknown" ? `(${formatDirection(commonDirection)})` : "";
+
+  const descriptionString = description ? `${description} ` : "";
+
+  return `${descriptionString}${directionString}`;
 }
