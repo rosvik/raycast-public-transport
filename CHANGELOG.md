@@ -1,5 +1,11 @@
 # Raycast Departures Changelog
 
+## [Added vehicle map and quay direction] - 2023-08-29
+
+- Added link to view the live location of a departure
+- Added direction to quays (Inbound/Outbound)
+- Added keyboard shortcuts for actions (⌘S for skjer.men, and ⌘M from live location)
+
 ## [Updated details] - 2023-05-13
 
 - Updated departure details to show upcoming stops
