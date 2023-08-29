@@ -23,11 +23,6 @@ export function Actions({ setShowDetails, departures, ec }: ActionsProps) {
   return (
     <ActionPanel>
       <Action title="Toggle Details" onAction={setShowDetails} />
-      <Action.OpenInBrowser
-        url={getSkjermenUrl(departures)}
-        title="Open in skjer.men"
-        icon={getFavicon("https://skjer.men")}
-      />
       {url && (
         <Action.OpenInBrowser
           url={url.href}
@@ -41,8 +36,15 @@ export function Actions({ setShowDetails, departures, ec }: ActionsProps) {
           url={`https://vehicle-map.entur.org/?vehicleRef=${vehicleId}`}
           title="Show Position in Map"
           icon={getFavicon("https://entur.no")}
+          shortcut={{ modifiers: ["cmd"], key: "m" }}
         />
       )}
+      <Action.OpenInBrowser
+        url={getSkjermenUrl(departures)}
+        title="Open in skjer.men"
+        icon={getFavicon("https://skjer.men")}
+        shortcut={{ modifiers: ["cmd"], key: "s" }}
+      />
     </ActionPanel>
   );
 }
