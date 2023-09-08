@@ -6,10 +6,10 @@ const CLIENT_NAME = "rosvik-raycast-departures";
 type FeatureResponse = {
   features: Feature[];
 };
-export async function fetchVenue(query: string): Promise<Feature | undefined> {
+export async function fetchVenue(query: string): Promise<Feature[] | undefined> {
   const params = new URLSearchParams({
     text: query,
-    size: "1",
+    size: "5",
     lang: "no",
     layers: "venue",
   });
@@ -23,7 +23,7 @@ export async function fetchVenue(query: string): Promise<Feature | undefined> {
     }
   );
   const featureResponse = (await response.json()) as FeatureResponse;
-  return featureResponse.features[0];
+  return featureResponse.features;
 }
 
 const DeparturesQueryDocument = `
