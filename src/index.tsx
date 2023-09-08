@@ -1,9 +1,9 @@
-import { Color, LaunchProps, List } from "@raycast/api";
+import { Color, LaunchProps, List, Icon } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { fetchDepartures, fetchVenue } from "./api";
 import { Detail } from "./Detail";
-import { Departures, DirectionType } from "./types";
+import { Departures, DirectionType, Feature } from "./types";
 import {
   formatAsClock,
   formatAsClockWithSeconds,
@@ -24,17 +24,27 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
   const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
   setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
+  const [venueResults, setVenueResults] = useState<Feature[]>([]);
+  const [currentVenue, setCurrentVenue] = useState<Feature>();
+
   useEffect(() => {
     setIsLoading(true);
-    fetchVenue(props.arguments.query).then((feature) => {
-      const stopId = feature?.properties.id;
-      if (!stopId) return;
-      fetchDepartures(stopId, numberOfDepartures).then((departures) => {
-        setItems(departures);
-        setIsLoading(false);
-      });
+    fetchVenue(props.arguments.query).then((features) => {
+      if (!features || features.length === 0) return;
+      setVenueResults(features);
+      setCurrentVenue(features[0]);
+      setIsLoading(false);
     });
-  }, [props.arguments.query, numberOfDepartures]);
+  }, [props.arguments.query]);
+
+  useEffect(() => {
+    if (!currentVenue?.properties.id) return;
+    setIsLoading(true);
+    fetchDepartures(currentVenue.properties.id, numberOfDepartures).then((departures) => {
+      setItems(departures);
+      setIsLoading(false);
+    });
+  }, [currentVenue?.properties.id, props.arguments.query, numberOfDepartures]);
 
   const departuresWithSortedQuays = items?.quays?.sort((a, b) => {
     if (a.name + a.publicCode < b.name + b.publicCode) return -1;
@@ -55,12 +65,30 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
       searchBarAccessory={
         <List.Dropdown
           tooltip="Select number of departures to show"
-          onChange={(newValue) => setNumberOfDepartures(parseInt(newValue))}
+          onChange={(newValue) => {
+            const [key, value] = newValue.split("$");
+            console.log(key, value);
+            if (key === "N") {
+              setNumberOfDepartures(parseInt(value));
+            } else if (key === "V") {
+              setCurrentVenue(venueResults.find((v) => v.properties.id === value));
+            }
+          }}
         >
           <List.Dropdown.Section title="Number of departures pr. platform">
-            <List.Dropdown.Item title="5" value="5" />
-            <List.Dropdown.Item title="10" value="10" />
-            <List.Dropdown.Item title="50" value="50" />
+            <List.Dropdown.Item title="5" value="N$5" />
+            <List.Dropdown.Item title="10" value="N$10" />
+            <List.Dropdown.Item title="50" value="N$50" />
+          </List.Dropdown.Section>
+          <List.Dropdown.Section title="Other search results.">
+            {venueResults.map((venue) => (
+              <List.Dropdown.Item
+                key={venue.properties.id}
+                value={`V$${venue.properties.id}`}
+                icon={venue.properties.id === currentVenue?.properties.id ? Icon.Check : undefined}
+                title={`${venue.properties.label} (${venue.properties.county})`}
+              />
+            ))}
           </List.Dropdown.Section>
         </List.Dropdown>
       }
