@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { fetchDepartures, fetchVenue } from "./api";
 import { Detail } from "./Detail";
+import { loadPreferrededVenue, storePreferredVenue } from "./storage";
 import { Departures, DirectionType, Feature } from "./types";
 import {
   formatAsClock,
@@ -29,11 +30,18 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
 
   useEffect(() => {
     setIsLoading(true);
-    fetchVenue(props.arguments.query).then((features) => {
-      if (!features || features.length === 0) return;
-      setVenueResults(features);
-      setCurrentVenue(features[0]);
-      setIsLoading(false);
+    loadPreferrededVenue().then((preferredVenues) => {
+      fetchVenue(props.arguments.query).then((features) => {
+        if (!features || features.length === 0) return;
+        setVenueResults(features);
+        const venueId = preferredVenues?.find((id) => features.some((f) => f.properties.id === id));
+        const venue = features.find((f) => f.properties.id === venueId);
+        if (venue) {
+          setCurrentVenue(venue);
+        } else {
+          setCurrentVenue(features[0]);
+        }
+      });
     });
   }, [props.arguments.query]);
 
@@ -67,11 +75,13 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
           tooltip="Select number of departures to show"
           onChange={(newValue) => {
             const [key, value] = newValue.split("$");
-            console.log(key, value);
             if (key === "N") {
               setNumberOfDepartures(parseInt(value));
             } else if (key === "V") {
-              setCurrentVenue(venueResults.find((v) => v.properties.id === value));
+              const selectedVenue = venueResults.find((v) => v.properties.id === value);
+              if (!selectedVenue) return;
+              setCurrentVenue(selectedVenue);
+              storePreferredVenue(selectedVenue.properties.id);
             }
           }}
         >
@@ -85,7 +95,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
               <List.Dropdown.Item
                 key={venue.properties.id}
                 value={`V$${venue.properties.id}`}
-                icon={venue.properties.id === currentVenue?.properties.id ? Icon.Check : undefined}
+                icon={venue.properties.id === currentVenue?.properties.id ? Icon.Pin : undefined}
                 title={`${venue.properties.label} (${venue.properties.county})`}
               />
             ))}
