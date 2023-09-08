@@ -1,4 +1,4 @@
-import { Action, ActionPanel } from "@raycast/api";
+import { Action, ActionPanel, Icon } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { useEffect, useState } from "react";
 import { fetchVehicleId } from "./api";
@@ -9,9 +9,10 @@ type ActionsProps = {
   quayId: string;
   ec: EstimatedCall;
   setShowDetails: () => void;
+  loadMore: () => void;
 };
 
-export function Actions({ setShowDetails, departures, ec }: ActionsProps) {
+export function Actions({ setShowDetails, departures, ec, loadMore }: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
 
@@ -22,7 +23,13 @@ export function Actions({ setShowDetails, departures, ec }: ActionsProps) {
 
   return (
     <ActionPanel>
-      <Action title="Toggle Details" onAction={setShowDetails} />
+      <Action title="Toggle Details" icon={Icon.AppWindowSidebarLeft} onAction={setShowDetails} />
+      <Action
+        title="Load More Departures"
+        icon={Icon.Plus}
+        shortcut={{ modifiers: ["cmd"], key: "+" }}
+        onAction={loadMore}
+      />
       {url && (
         <Action.OpenInBrowser
           url={url.href}

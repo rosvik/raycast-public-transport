@@ -33,12 +33,13 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
     loadPreferrededVenue().then((preferredVenues) => {
       fetchVenue(props.arguments.query).then((features) => {
         if (!features || features.length === 0) return;
-        setVenueResults(features);
         const venueId = preferredVenues?.find((id) => features.some((f) => f.properties.id === id));
         const venue = features.find((f) => f.properties.id === venueId);
         if (venue) {
+          setVenueResults([venue, ...features.filter((f) => f.properties.id !== venueId)]);
           setCurrentVenue(venue);
         } else {
+          setVenueResults(features);
           setCurrentVenue(features[0]);
         }
       });
@@ -73,28 +74,18 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
       searchBarAccessory={
         <List.Dropdown
           tooltip="Select number of departures to show"
-          onChange={(newValue) => {
-            const [key, value] = newValue.split("$");
-            if (key === "N") {
-              setNumberOfDepartures(parseInt(value));
-            } else if (key === "V") {
-              const selectedVenue = venueResults.find((v) => v.properties.id === value);
-              if (!selectedVenue) return;
-              setCurrentVenue(selectedVenue);
-              storePreferredVenue(selectedVenue.properties.id);
-            }
+          onChange={(venueId) => {
+            const selectedVenue = venueResults.find((v) => v.properties.id === venueId);
+            if (!selectedVenue) return;
+            setCurrentVenue(selectedVenue);
+            storePreferredVenue(selectedVenue.properties.id);
           }}
         >
-          <List.Dropdown.Section title="Number of departures pr. platform">
-            <List.Dropdown.Item title="5" value="N$5" />
-            <List.Dropdown.Item title="10" value="N$10" />
-            <List.Dropdown.Item title="50" value="N$50" />
-          </List.Dropdown.Section>
           <List.Dropdown.Section title="Other search results.">
             {venueResults.map((venue) => (
               <List.Dropdown.Item
                 key={venue.properties.id}
-                value={`V$${venue.properties.id}`}
+                value={`${venue.properties.id}`}
                 icon={venue.properties.id === currentVenue?.properties.id ? Icon.Pin : undefined}
                 title={`${venue.properties.label} (${venue.properties.county})`}
               />
@@ -147,6 +138,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                         quayId={quay.id}
                         departures={items}
                         setShowDetails={() => setShowDetails(!showDetails)}
+                        loadMore={() => setNumberOfDepartures(numberOfDepartures + 5)}
                       />
                     }
                     key={ec.serviceJourney.id + ec.aimedDepartureTime}
