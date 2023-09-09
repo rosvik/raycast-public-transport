@@ -1,4 +1,4 @@
-import { Color, Icon, List } from "@raycast/api";
+import { Color, Icon, Image, List } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { EstimatedCall, SjEstimatedCall, TransportMode } from "./types";
 import { formatAsClock, getTransportIcon } from "./utils";
@@ -17,7 +17,9 @@ export function Detail({ ec }: DetailProps) {
             text={ec.serviceJourney.line.authority?.name}
             icon={
               ec.serviceJourney.line.authority?.url
-                ? getFavicon(ec.serviceJourney.line.authority?.url)
+                ? getFavicon(ec.serviceJourney.line.authority?.url, {
+                    mask: Image.Mask.RoundedRectangle,
+                  })
                 : undefined
             }
           />

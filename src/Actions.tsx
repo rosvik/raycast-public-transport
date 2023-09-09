@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon } from "@raycast/api";
+import { Action, ActionPanel, Icon, Image } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { useEffect, useState } from "react";
 import { fetchVehicleId } from "./api";
@@ -35,21 +35,27 @@ export function Actions({ setShowDetails, departures, ec, loadMore }: ActionsPro
           url={url.href}
           // eslint-disable-next-line @raycast/prefer-title-case
           title={`Open ${url.host}`}
-          icon={getFavicon(url.origin)}
+          icon={getFavicon(url.origin, {
+            mask: Image.Mask.RoundedRectangle,
+          })}
         />
       )}
       {vehicleId && (
         <Action.OpenInBrowser
           url={`https://vehicle-map.entur.org/?vehicleRef=${vehicleId}`}
           title="Show Position in Map"
-          icon={getFavicon("https://entur.no")}
+          icon={getFavicon("https://entur.no", {
+            mask: Image.Mask.RoundedRectangle,
+          })}
           shortcut={{ modifiers: ["cmd"], key: "m" }}
         />
       )}
       <Action.OpenInBrowser
         url={getSkjermenUrl(departures)}
         title="Open in skjer.men"
-        icon={getFavicon("https://skjer.men")}
+        icon={getFavicon("https://skjer.men", {
+          mask: Image.Mask.RoundedRectangle,
+        })}
         shortcut={{ modifiers: ["cmd"], key: "s" }}
       />
     </ActionPanel>
