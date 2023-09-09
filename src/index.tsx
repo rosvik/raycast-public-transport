@@ -26,11 +26,13 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
   setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
   const [venueResults, setVenueResults] = useState<Feature[]>([]);
+  const [preferredVenueIds, setPreferredVenueIds] = useState<string[]>([]);
   const [currentVenue, setCurrentVenue] = useState<Feature>();
 
   useEffect(() => {
     setIsLoading(true);
     loadPreferrededVenue().then((preferredVenues) => {
+      setPreferredVenueIds(preferredVenues ?? []);
       fetchVenue(props.arguments.query).then((features) => {
         if (!features || features.length === 0) return;
         const venueId = preferredVenues?.find((id) => features.some((f) => f.properties.id === id));
@@ -73,20 +75,29 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
       isShowingDetail={showDetails}
       searchBarAccessory={
         <List.Dropdown
-          tooltip="Select number of departures to show"
+          tooltip="Select which stop you want to see departures from. The selection will be remembered, and preferred next time it comes up."
           onChange={(venueId) => {
-            const selectedVenue = venueResults.find((v) => v.properties.id === venueId);
-            if (!selectedVenue) return;
-            setCurrentVenue(selectedVenue);
-            storePreferredVenue(selectedVenue.properties.id);
+            const venue = venueResults.find((v) => v.properties.id === venueId);
+            if (venueResults.map((v) => v.properties.id).indexOf(venueId) === 0) return;
+            if (!venue) return;
+            setCurrentVenue(venue);
+            setVenueResults([venue, ...venueResults.filter((f) => f.properties.id !== venueId)]);
+            storePreferredVenue(venueId).then((pf) => {
+              setPreferredVenueIds(pf ?? []);
+            });
           }}
         >
-          <List.Dropdown.Section title="Other search results.">
+          <List.Dropdown.Section title="Related results">
             {venueResults.map((venue) => (
               <List.Dropdown.Item
                 key={venue.properties.id}
                 value={`${venue.properties.id}`}
-                icon={venue.properties.id === currentVenue?.properties.id ? Icon.Pin : undefined}
+                icon={{
+                  source: Icon.Pin,
+                  tintColor: preferredVenueIds.includes(venue.properties.id)
+                    ? Color.Yellow
+                    : Color.SecondaryText,
+                }}
                 title={`${venue.properties.label} (${venue.properties.county})`}
               />
             ))}
