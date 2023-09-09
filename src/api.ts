@@ -9,7 +9,7 @@ type FeatureResponse = {
 export async function fetchVenue(query: string): Promise<Feature[] | undefined> {
   const params = new URLSearchParams({
     text: query,
-    size: "5",
+    size: "7",
     lang: "no",
     layers: "venue",
   });
