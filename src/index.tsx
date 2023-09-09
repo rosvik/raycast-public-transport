@@ -1,9 +1,9 @@
-import { Color, LaunchProps, List, Icon } from "@raycast/api";
+import { Color, LaunchProps, List, Icon, Alert, confirmAlert } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { fetchDepartures, fetchVenue } from "./api";
 import { Detail } from "./Detail";
-import { loadPreferrededVenue, storePreferredVenue } from "./storage";
+import { wipeStorage, loadPreferrededVenue, storePreferredVenue } from "./storage";
 import { Departures, DirectionType, Feature } from "./types";
 import {
   formatAsClock,
@@ -30,6 +30,17 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
   const [currentVenue, setCurrentVenue] = useState<Feature>();
 
   useEffect(() => {
+    if (props.arguments.query === "DEBUG_WIPE_STORAGE") {
+      confirmAlert({
+        title: "Wipe Storage",
+        message: "Are you sure you want to wipe storage?",
+        primaryAction: {
+          title: "Yes",
+          style: Alert.ActionStyle.Destructive,
+          onAction: wipeStorage,
+        },
+      });
+    }
     setIsLoading(true);
     loadPreferrededVenue().then((preferredVenues) => {
       setPreferredVenueIds(preferredVenues ?? []);
