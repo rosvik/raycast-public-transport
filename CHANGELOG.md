@@ -1,5 +1,14 @@
 # Raycast Departures Changelog
 
+## [Added stop selection after search] - 2023-09-09
+
+This update makes it easier to get to stop places that doesn't always show up as the first result. If the first choice isn't right, you can pick a different one from up to 7 similar options in the right side drop down. Once you choose a different location, it will be remembered, and preselected the next time it appears in the list of results.
+
+- Added option to pick related venues from dropdown
+- Moved the selection of departure count to the action panel. It can now be increased by 5 by pressing the ⌘+ keybinding.
+- Added a super secret `DEBUG_WIPE_STORAGE` command
+- Rounded some rectangles
+
 ## [Added vehicle map and quay direction] - 2023-08-29
 
 - Added link to view the live location of a departure
