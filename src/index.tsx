@@ -106,10 +106,11 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                 icon={{
                   source: Icon.Pin,
                   tintColor: preferredVenueIds.includes(venue.properties.id)
-                    ? Color.Yellow
+                    ? Color.PrimaryText
                     : Color.SecondaryText,
                 }}
-                title={`${venue.properties.label} (${venue.properties.county})`}
+                title={venue.properties.label}
+                keywords={[venue.properties.label, venue.properties.county, venue.properties.name]}
               />
             ))}
           </List.Dropdown.Section>
