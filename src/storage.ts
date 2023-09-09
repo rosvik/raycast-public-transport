@@ -16,3 +16,9 @@ export async function loadPreferrededVenue(): Promise<string[] | undefined> {
   if (!item) return undefined;
   return JSON.parse(item) as string[];
 }
+
+export async function wipeStorage() {
+  Object.values(StorageKeys).forEach(async (key) => {
+    await LocalStorage.removeItem(key);
+  });
+}
