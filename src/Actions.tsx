@@ -3,6 +3,7 @@ import { getFavicon } from "@raycast/utils";
 import { useEffect, useState } from "react";
 import { fetchVehicleId } from "./api";
 import { Departures, EstimatedCall } from "./types";
+import { getDomainName } from "./utils";
 
 type ActionsProps = {
   departures: Departures;
@@ -34,7 +35,7 @@ export function Actions({ setShowDetails, departures, ec, loadMore }: ActionsPro
         <Action.OpenInBrowser
           url={url.href}
           // eslint-disable-next-line @raycast/prefer-title-case
-          title={`Open ${url.host}`}
+          title={`Open ${getDomainName(url.href)}`}
           icon={getFavicon(url.origin, {
             mask: Image.Mask.RoundedRectangle,
           })}
@@ -43,7 +44,7 @@ export function Actions({ setShowDetails, departures, ec, loadMore }: ActionsPro
       {vehicleId && (
         <Action.OpenInBrowser
           url={`https://vehicle-map.entur.org/?vehicleRef=${vehicleId}`}
-          title="Show Position in Map"
+          title="Open in Vehicle Map"
           icon={getFavicon("https://entur.no", {
             mask: Image.Mask.RoundedRectangle,
           })}
