@@ -32,14 +32,6 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
         shortcut={{ modifiers: ["cmd"], key: "+" }}
         onAction={loadMore}
       />
-      {stopPlaceId && (
-        <Action.OpenInBrowser
-          url={`https://atb-staging.planner-web.mittatb.no/departures/${stopPlaceId}`}
-          title="Open in AtB Travel Planner"
-          icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
-          shortcut={{ modifiers: ["cmd"], key: "a" }}
-        />
-      )}
       {url && (
         <Action.OpenInBrowser
           url={url.href}
@@ -48,6 +40,14 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
           icon={getFavicon(url.origin, {
             mask: Image.Mask.RoundedRectangle,
           })}
+        />
+      )}
+      {stopPlaceId && (
+        <Action.OpenInBrowser
+          url={`https://atb-staging.planner-web.mittatb.no/departures/${stopPlaceId}`}
+          title="Open in AtB Travel Planner"
+          icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
+          shortcut={{ modifiers: ["cmd"], key: "a" }}
         />
       )}
       {vehicleId && (
