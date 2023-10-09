@@ -159,6 +159,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                       <Actions
                         ec={ec}
                         quayId={quay.id}
+                        stopPlaceId={currentVenue?.properties.id}
                         departures={items}
                         setShowDetails={() => setShowDetails(!showDetails)}
                         loadMore={() => setNumberOfDepartures(numberOfDepartures + 5)}
