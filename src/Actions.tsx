@@ -8,12 +8,13 @@ import { getDomainName } from "./utils";
 type ActionsProps = {
   departures: Departures;
   quayId: string;
+  stopPlaceId?: string;
   ec: EstimatedCall;
   setShowDetails: () => void;
   loadMore: () => void;
 };
 
-export function Actions({ setShowDetails, departures, ec, loadMore }: ActionsProps) {
+export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId }: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
 
@@ -31,6 +32,14 @@ export function Actions({ setShowDetails, departures, ec, loadMore }: ActionsPro
         shortcut={{ modifiers: ["cmd"], key: "+" }}
         onAction={loadMore}
       />
+      {stopPlaceId && (
+        <Action.OpenInBrowser
+          url={`https://atb-staging.planner-web.mittatb.no/departures/${stopPlaceId}`}
+          title="Open in AtB Travel Planner"
+          icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
+          shortcut={{ modifiers: ["cmd"], key: "a" }}
+        />
+      )}
       {url && (
         <Action.OpenInBrowser
           url={url.href}
