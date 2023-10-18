@@ -8,6 +8,7 @@ import { Departures, DirectionType, Feature } from "./types";
 import {
   formatAsClock,
   formatAsClockWithSeconds,
+  formatDestinationDisplay,
   formatDirection,
   getTransportIcon,
 } from "./utils";
@@ -134,9 +135,9 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
               })}
             >
               {quay.estimatedCalls.map((ec) => {
-                const lineName = `${ec.serviceJourney.line.publicCode ?? ""} ${
-                  ec.destinationDisplay?.frontText ?? ""
-                }`;
+                const lineName = `${
+                  ec.serviceJourney.line.publicCode ?? ""
+                } ${formatDestinationDisplay(ec.destinationDisplay)}`;
                 return (
                   <List.Item
                     accessories={[
@@ -174,7 +175,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                     }
                     detail={<Detail ec={ec} />}
                     keywords={[
-                      ec.destinationDisplay?.frontText ?? "",
+                      formatDestinationDisplay(ec.destinationDisplay) ?? "",
                       ec.serviceJourney.line.description ?? "",
                       ec.serviceJourney.line.publicCode ?? "",
                       ec.serviceJourney.line.transportMode ?? "",

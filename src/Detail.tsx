@@ -1,7 +1,7 @@
 import { Color, Icon, Image, List } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { EstimatedCall, SjEstimatedCall, TransportMode } from "./types";
-import { formatAsClock, getTransportIcon } from "./utils";
+import { formatAsClock, formatDestinationDisplay, getTransportIcon } from "./utils";
 
 type DetailProps = {
   ec: EstimatedCall;
@@ -25,9 +25,9 @@ export function Detail({ ec }: DetailProps) {
           />
           <List.Item.Detail.Metadata.Label
             title="Line"
-            text={`${ec.serviceJourney.line.publicCode ?? ""} ${
-              ec.destinationDisplay?.frontText ?? ""
-            }`}
+            text={`${ec.serviceJourney.line.publicCode ?? ""} ${formatDestinationDisplay(
+              ec.destinationDisplay
+            )}`}
             icon={{
               ...getTransportIcon(
                 ec.serviceJourney.line.transportMode,

@@ -1,5 +1,5 @@
 import { Color, Icon, Image } from "@raycast/api";
-import { DirectionType, TransportMode } from "./types";
+import { DestinationDisplay, DirectionType, TransportMode } from "./types";
 
 export function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): Image {
   switch (transportMode) {
@@ -55,4 +55,19 @@ export function formatDirection(direction: DirectionType) {
 export function getDomainName(url: string) {
   const domain = new URL(url).hostname;
   return domain.startsWith("www.") ? domain.slice(4) : domain;
+}
+
+export function formatDestinationDisplay(dd?: DestinationDisplay) {
+  if (!dd) return "";
+  if (!dd.via || dd.via.length === 0) return dd.frontText ?? "";
+
+  const count = dd.via.length;
+  const viaString = dd.via
+    .map((v, i) => {
+      if (count === 1) return v;
+      if (i === count - 1) return `and ${v}`;
+      return `${v}, `;
+    })
+    .join("");
+  return `${dd.frontText ?? "Unknown"} via ${viaString}`;
 }

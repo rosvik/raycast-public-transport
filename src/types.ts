@@ -39,7 +39,7 @@ export type EstimatedCall = {
   predictionInaccurate: boolean;
   cancellation: boolean;
   quay: { id: string };
-  destinationDisplay?: { frontText?: string };
+  destinationDisplay?: DestinationDisplay;
   serviceJourney: {
     id: string;
     directionType: DirectionType;
@@ -57,6 +57,11 @@ export type EstimatedCall = {
     };
     estimatedCalls: Array<SjEstimatedCall>;
   };
+};
+
+export type DestinationDisplay = {
+  frontText?: string;
+  via?: string[];
 };
 
 export type SjEstimatedCall = {

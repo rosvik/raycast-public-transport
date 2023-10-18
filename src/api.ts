@@ -57,6 +57,7 @@ query stopPlaceQuayDepartures(
         }
         destinationDisplay {
           frontText
+          via
         }
         serviceJourney {
           id
