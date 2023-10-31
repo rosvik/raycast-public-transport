@@ -179,6 +179,7 @@ export default function Command(props: LaunchProps<{ arguments: CommandArguments
                       ec.serviceJourney.line.description ?? "",
                       ec.serviceJourney.line.publicCode ?? "",
                       ec.serviceJourney.line.transportMode ?? "",
+                      ec.serviceJourney.line.authority?.name ?? "",
                     ]}
                   />
                 );
