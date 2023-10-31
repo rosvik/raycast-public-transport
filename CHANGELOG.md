@@ -1,5 +1,11 @@
 # Raycast Departures Changelog
 
+## [Various improvements] - 2023-31-10
+
+- Shows "via" information in line names
+- Added filtering by authority
+- Add action to open in AtB web planner (which is still in very early development)
+
 ## [Added stop selection after search] - 2023-09-09
 
 This update makes it easier to get to stop places that doesn't always show up as the first result. If the first choice isn't right, you can pick a different one from up to 7 similar options in the right side drop down. Once you choose a different location, it will be remembered, and preselected the next time it appears in the list of results.
