@@ -91,7 +91,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                         stopPlaceId={venue?.properties.id}
                         departures={items}
                         setShowDetails={() => setShowDetails(!showDetails)}
-                        loadMore={() => setNumberOfDepartures(numberOfDepartures + 5)}
+                        loadMore={() => setNumberOfDepartures((n) => n + 5)}
                       />
                     }
                     key={ec.serviceJourney.id + ec.aimedDepartureTime}

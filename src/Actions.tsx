@@ -1,7 +1,5 @@
 import { Action, ActionPanel, Icon, Image } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { useEffect, useState } from "react";
-import { fetchVehicleId } from "./api";
 import { Departures, EstimatedCall } from "./types";
 import { getDomainName } from "./utils";
 
@@ -17,11 +15,6 @@ type ActionsProps = {
 export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId }: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
-
-  const [vehicleId, setVehicleId] = useState<string | undefined>();
-  useEffect(() => {
-    fetchVehicleId(ec.serviceJourney.id).then((id) => setVehicleId(id));
-  }, [ec.serviceJourney.id]);
 
   return (
     <ActionPanel>
@@ -48,16 +41,6 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
           title="Open in AtB Travel Planner"
           icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
-        />
-      )}
-      {vehicleId && (
-        <Action.OpenInBrowser
-          url={`https://vehicle-map.entur.org/?vehicleRef=${vehicleId}`}
-          title="Open in Vehicle Map"
-          icon={getFavicon("https://entur.no", {
-            mask: Image.Mask.RoundedRectangle,
-          })}
-          shortcut={{ modifiers: ["cmd"], key: "m" }}
         />
       )}
       <Action.OpenInBrowser
