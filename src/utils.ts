@@ -1,5 +1,15 @@
 import { Color, Icon, Image } from "@raycast/api";
 import { DestinationDisplay, DirectionType, TransportMode } from "./types";
+import { useEffect, useState } from "react";
+
+export function useDebounce<T>(value: T, delay = 500): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debouncedValue;
+}
 
 export function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): Image {
   switch (transportMode) {
