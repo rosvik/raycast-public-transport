@@ -47,7 +47,7 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
           url={`https://atb-staging.planner-web.mittatb.no/departures/${stopPlaceId}`}
           title="Open in AtB Travel Planner"
           icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
-          shortcut={{ modifiers: ["cmd"], key: "a" }}
+          shortcut={{ modifiers: ["cmd"], key: "o" }}
         />
       )}
       {vehicleId && (
