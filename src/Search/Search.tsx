@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { fetchVenues } from "../api";
 import { loadPreferrededVenue, wipeStorage } from "../storage";
 import { Feature } from "../types";
-import { formatAsClockWithSeconds } from "../utils";
+import { formatAsClockWithSeconds, useDebounce } from "../utils";
 
 export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) => void }) {
   const [query, setQuery] = useState<string>();
@@ -14,8 +14,9 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
   const [isLoadingPreferredVenues, setIsLoadingPreferredVenues] = useState(true);
   const [venueResults, setVenueResults] = useState<Feature[]>([]);
 
+  const debouncedQuery = useDebounce(query, 250);
   useEffect(() => {
-    if (query === "DEBUG_WIPE_STORAGE") {
+    if (debouncedQuery === "DEBUG_WIPE_STORAGE") {
       confirmAlert({
         title: "Wipe Storage",
         message: "Are you sure you want to wipe storage?",
@@ -28,11 +29,11 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
     }
     setIsLoadingPreferredVenues(true);
     loadPreferrededVenue().then((preferredVenuesIds) => {
-      if (query === undefined) {
+      if (debouncedQuery === undefined) {
         setIsLoadingPreferredVenues(false);
         return;
       }
-      fetchVenues(query)
+      fetchVenues(debouncedQuery)
         .then((features) => {
           if (!features || features.length === 0) return;
           const venueId = preferredVenuesIds?.find((id) =>
@@ -47,7 +48,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
         })
         .finally(() => setIsLoadingPreferredVenues(false));
     });
-  }, [query]);
+  }, [debouncedQuery]);
 
   return (
     <List
