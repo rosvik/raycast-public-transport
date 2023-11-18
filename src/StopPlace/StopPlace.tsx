@@ -23,10 +23,8 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
 
   useEffect(() => {
     if (!venue?.properties.id) return;
-    console.log("fetchDepartures", venue?.properties.id, numberOfDepartures);
     setIsLoading(true);
     fetchDepartures(venue.properties.id, numberOfDepartures).then((departures) => {
-      console.log("fetchDepartures", departures);
       setItems(departures);
       setIsLoading(false);
     });

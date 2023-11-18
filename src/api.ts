@@ -14,14 +14,13 @@ export async function fetchVenues(query: string): Promise<Feature[] | undefined>
     layers: "venue",
   });
 
-  const response = await fetch(
-    `https://api.entur.io/geocoder/v1/autocomplete?${params.toString()}`,
-    {
-      headers: {
-        "ET-Client-Name": CLIENT_NAME,
-      },
-    }
-  );
+  const url = `https://api.entur.io/geocoder/v1/autocomplete?${params.toString()}`;
+  console.debug(url);
+  const response = await fetch(url, {
+    headers: {
+      "ET-Client-Name": CLIENT_NAME,
+    },
+  });
   const featureResponse = (await response.json()) as FeatureResponse;
   return featureResponse.features;
 }
@@ -107,9 +106,9 @@ export async function fetchDepartures(
 }
 
 async function fetchJourneyPlannerData<T>(document: string, variables: object): Promise<T> {
-  const journeyPlannerUrl = "https://api.entur.io/journey-planner/v3/graphql";
-
-  const response = await fetch(journeyPlannerUrl, {
+  const url = "https://api.entur.io/journey-planner/v3/graphql";
+  console.debug(url, JSON.stringify(variables));
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -144,9 +143,9 @@ export async function fetchVehicleId(serviceJourneyId: string): Promise<string |
 }
 
 async function fetchVehiclesData<T>(document: string, variables: object): Promise<T> {
-  const journeyPlannerUrl = "https://api.entur.io/realtime/v1/vehicles/graphql";
-
-  const response = await fetch(journeyPlannerUrl, {
+  const url = "https://api.entur.io/realtime/v1/vehicles/graphql";
+  console.debug(url, JSON.stringify(variables));
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
