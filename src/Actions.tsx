@@ -44,7 +44,7 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
       )}
       {stopPlaceId && (
         <Action.OpenInBrowser
-          url={`https://atb-staging.planner-web.mittatb.no/departures/${stopPlaceId}`}
+          url={getTravelPlannerUrl(ec)}
           title="Open in AtB Travel Planner"
           icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
@@ -75,4 +75,12 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
 function getSkjermenUrl(departures: Departures) {
   const url = `https://skjer.men/${departures.latitude}/${departures.longitude}`;
   return encodeURI(url);
+}
+
+function getTravelPlannerUrl(ec: EstimatedCall) {
+  const base = "https://atb-staging.planner-web.mittatb.no/departures/details";
+  const date = new Date(ec.date);
+  const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+  return `${base}/${ec.serviceJourney.id}?date=${dateString}&fromQuayId=${ec.quay.id}`;
 }
