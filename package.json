@@ -19,14 +19,7 @@
       "subtitle": "View Public Transport Departures",
       "description": "Find departures from any stop place",
       "mode": "view",
-      "arguments": [
-        {
-          "name": "query",
-          "placeholder": "Find Stop Place",
-          "type": "text",
-          "required": true
-        }
-      ]
+      "arguments": []
     }
   ],
   "dependencies": {
