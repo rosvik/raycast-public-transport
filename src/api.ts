@@ -6,7 +6,7 @@ const CLIENT_NAME = "rosvik-raycast-departures";
 type FeatureResponse = {
   features: Feature[];
 };
-export async function fetchVenue(query: string): Promise<Feature[] | undefined> {
+export async function fetchVenues(query: string): Promise<Feature[] | undefined> {
   const params = new URLSearchParams({
     text: query,
     size: "7",
