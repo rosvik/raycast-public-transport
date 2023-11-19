@@ -54,14 +54,6 @@ export function Actions({
           shortcut={{ modifiers: ["cmd"], key: "o" }}
         />
       )}
-      <Action.OpenInBrowser
-        url={getSkjermenUrl(departures)}
-        title="Open Stop in skjer.men"
-        icon={getFavicon("https://skjer.men", {
-          mask: Image.Mask.RoundedRectangle,
-        })}
-        shortcut={{ modifiers: ["cmd"], key: "m" }}
-      />
       {url && (
         <Action.OpenInBrowser
           url={url.href}
@@ -74,11 +66,6 @@ export function Actions({
       )}
     </ActionPanel>
   );
-}
-
-function getSkjermenUrl(departures: Departures) {
-  const url = `https://skjer.men/${departures.latitude}/${departures.longitude}`;
-  return encodeURI(url);
 }
 
 function getTravelPlannerUrl(ec: EstimatedCall) {
