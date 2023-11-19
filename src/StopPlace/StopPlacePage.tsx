@@ -1,7 +1,7 @@
 import { Color, List } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { Actions } from "../Actions";
-import { Detail } from "../Detail";
+import { Actions } from "./Actions";
+import { Detail } from "./Detail";
 import { fetchDepartures } from "../api";
 import { Departures, DirectionType, Feature } from "../types";
 import {
@@ -11,6 +11,7 @@ import {
   formatDirection,
   getTransportIcon,
 } from "../utils";
+import { loadPreferrededVenue } from "../storage";
 
 export default function StopPlacePage({ venue }: { venue: Feature }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +36,13 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
     if (a.name + a.publicCode > b.name + b.publicCode) return 1;
     return 0;
   });
+
+  const [savedVenues, setPreferredVenues] = useState<Feature[]>([]);
+  useEffect(() => {
+    loadPreferrededVenue().then((preferredVenues) => {
+      if (preferredVenues) setPreferredVenues(preferredVenues);
+    });
+  }, []);
 
   return (
     <List
@@ -91,6 +99,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                         departures={items}
                         setShowDetails={() => setShowDetails(!showDetails)}
                         loadMore={() => setNumberOfDepartures((n) => n + 5)}
+                        isSaved={savedVenues.some((v) => v.properties.id === venue.properties.id)}
                       />
                     }
                     key={ec.serviceJourney.id + ec.aimedDepartureTime}

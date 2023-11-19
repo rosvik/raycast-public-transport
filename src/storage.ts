@@ -17,6 +17,13 @@ export async function storePreferredVenue(feature: Feature): Promise<Feature[]> 
   await LocalStorage.setItem(StorageKeys.savedFeatures, JSON.stringify(newFeatures));
   return newFeatures;
 }
+export async function deletePreferredVenue(feature: Feature): Promise<Feature[]> {
+  const features = await loadPreferrededVenue();
+  if (!features) return [];
+  const newFeatures = features.filter((f) => f.properties.id !== feature.properties.id);
+  await LocalStorage.setItem(StorageKeys.savedFeatures, JSON.stringify(newFeatures));
+  return newFeatures;
+}
 export async function loadPreferrededVenue(): Promise<Feature[] | undefined> {
   const item = await LocalStorage.getItem<string>(StorageKeys.savedFeatures);
   if (!item) return undefined;

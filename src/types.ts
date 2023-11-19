@@ -102,6 +102,9 @@ export type Feature = {
     locality: string;
     category: VenueCategory[];
   };
+  geometry: {
+    coordinates: [number, number];
+  };
 };
 
 export type VenueCategory =

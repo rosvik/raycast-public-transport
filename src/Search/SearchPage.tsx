@@ -1,9 +1,15 @@
-import { Action, ActionPanel, Alert, Icon, List, clearSearchBar, confirmAlert } from "@raycast/api";
+import { Alert, List, clearSearchBar, confirmAlert } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { fetchVenues } from "../api";
-import { loadPreferrededVenue, wipeStorage } from "../storage";
+import {
+  deletePreferredVenue,
+  loadPreferrededVenue,
+  storePreferredVenue,
+  wipeStorage,
+} from "../storage";
 import { Feature } from "../types";
 import { formatAsClockWithSeconds, getVenueCategoryIcon, useDebounce } from "../utils";
+import { Actions } from "./Actions";
 
 export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) => void }) {
   const [query, setQuery] = useState<string>();
@@ -37,10 +43,10 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
       .finally(() => setIsLoading(false));
   }, [debouncedQuery]);
 
-  const [savedVenues, setPreferredVenues] = useState<Feature[]>([]);
+  const [savedVenues, setSavedVenues] = useState<Feature[]>([]);
   useEffect(() => {
     loadPreferrededVenue().then((preferredVenues) => {
-      if (preferredVenues) setPreferredVenues(preferredVenues);
+      if (preferredVenues) setSavedVenues(preferredVenues);
     });
   }, []);
 
@@ -60,23 +66,36 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
                 key={venue.properties.id}
                 onAction={() => {
                   clearSearchBar();
+                  // Re-add venue to saved venues to move it to the top of the list
+                  storePreferredVenue(venue);
                   setVenue(venue);
                 }}
                 venue={venue}
+                onSave={() => deletePreferredVenue(venue).then(setSavedVenues)}
+                isSaved={true}
               />
             );
           })}
       </List.Section>
       <List.Section title="Search Results">
         {venueResults.map((venue) => {
+          const isSaved = savedVenues.some((v) => v.properties.id === venue.properties.id);
           return (
             <VenueListItem
               key={venue.properties.id}
               onAction={() => {
                 clearSearchBar();
+                // Re-add venue to saved venues to move it to the top of the list
+                if (isSaved) storePreferredVenue(venue);
                 setVenue(venue);
               }}
               venue={venue}
+              onSave={() =>
+                isSaved
+                  ? deletePreferredVenue(venue).then(setSavedVenues)
+                  : storePreferredVenue(venue).then(setSavedVenues)
+              }
+              isSaved={isSaved}
             />
           );
         })}
@@ -85,25 +104,23 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
   );
 }
 
-const VenueListItem = ({ venue, onAction }: { venue: Feature; onAction: () => void }) => {
+const VenueListItem = ({
+  venue,
+  isSaved,
+  onAction,
+  onSave,
+}: {
+  venue: Feature;
+  isSaved: boolean;
+  onAction: () => void;
+  onSave: () => void;
+}) => {
   return (
     <List.Item
       title={venue.properties.name}
-      subtitle={
-        venue.properties.locality +
-        ", " +
-        venue.properties.county +
-        ", " +
-        venue.properties.category.join(", ")
-      }
-      icon={{
-        ...getVenueCategoryIcon(venue.properties.category),
-      }}
-      actions={
-        <ActionPanel>
-          <Action title="Open Departures" icon={Icon.ArrowRight} onAction={onAction} />
-        </ActionPanel>
-      }
+      subtitle={`${venue.properties.locality}, ${venue.properties.county}`}
+      icon={getVenueCategoryIcon(venue.properties.category)}
+      actions={<Actions venue={venue} onAction={onAction} isSaved={isSaved} onSave={onSave} />}
     />
   );
 };
