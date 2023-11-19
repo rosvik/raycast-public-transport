@@ -11,7 +11,7 @@ import {
   formatDirection,
   getTransportIcon,
 } from "../utils";
-import { loadPreferrededVenue } from "../storage";
+import { loadFavorites } from "../storage";
 
 export default function StopPlacePage({ venue }: { venue: Feature }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -37,10 +37,10 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
     return 0;
   });
 
-  const [savedVenues, setPreferredVenues] = useState<Feature[]>([]);
+  const [favorites, setFavorites] = useState<Feature[]>([]);
   useEffect(() => {
-    loadPreferrededVenue().then((preferredVenues) => {
-      if (preferredVenues) setPreferredVenues(preferredVenues);
+    loadFavorites().then((favorite) => {
+      setFavorites(favorite ?? []);
     });
   }, []);
 
@@ -49,7 +49,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
       navigationTitle={clock}
       searchBarPlaceholder={
         isLoading
-          ? "Laster..."
+          ? "Loading..."
           : `${items?.name}${items?.description ? " " + items?.description : ""}`
       }
       filtering={{ keepSectionOrder: true }}
@@ -99,7 +99,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                         departures={items}
                         setShowDetails={() => setShowDetails(!showDetails)}
                         loadMore={() => setNumberOfDepartures((n) => n + 5)}
-                        isSaved={savedVenues.some((v) => v.properties.id === venue.properties.id)}
+                        isFavorite={favorites.some((f) => f.properties.id === venue.properties.id)}
                       />
                     }
                     key={ec.serviceJourney.id + ec.aimedDepartureTime}

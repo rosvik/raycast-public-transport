@@ -2,13 +2,13 @@ import { Action, ActionPanel, Icon, Image } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { Departures, EstimatedCall, Feature } from "../types";
 import { getDomainName } from "../utils";
-import { deletePreferredVenue, storePreferredVenue } from "../storage";
+import { removeFavorite, addFavorite } from "../storage";
 
 type ActionsProps = {
   departures: Departures;
   ec: EstimatedCall;
   venue: Feature;
-  isSaved: boolean;
+  isFavorite: boolean;
   setShowDetails: () => void;
   loadMore: () => void;
 };
@@ -17,7 +17,7 @@ export function Actions({
   departures,
   ec,
   venue,
-  isSaved,
+  isFavorite,
   setShowDetails,
   loadMore,
 }: ActionsProps) {
@@ -35,10 +35,16 @@ export function Actions({
       />
       <Action
         // eslint-disable-next-line @raycast/prefer-title-case
-        title={isSaved ? `Remove ${venue.properties.name}` : `Save ${venue.properties.name}`}
-        icon={isSaved ? Icon.StarDisabled : Icon.Star}
-        shortcut={{ modifiers: ["cmd"], key: "s" }}
-        onAction={() => (isSaved ? deletePreferredVenue(venue) : storePreferredVenue(venue))}
+        title={
+          isFavorite
+            ? `Remove Favorite ${venue.properties.name}`
+            : `Favorite ${venue.properties.name}`
+        }
+        icon={isFavorite ? Icon.StarDisabled : Icon.Star}
+        shortcut={
+          isFavorite ? { modifiers: ["cmd", "shift"], key: "s" } : { modifiers: ["cmd"], key: "s" }
+        }
+        onAction={() => (isFavorite ? removeFavorite(venue) : addFavorite(venue))}
       />
       {venue.properties.id && (
         <Action.OpenInBrowser
@@ -50,7 +56,7 @@ export function Actions({
       )}
       <Action.OpenInBrowser
         url={getSkjermenUrl(departures)}
-        title="Open Location in skjer.men"
+        title="Open Stop in skjer.men"
         icon={getFavicon("https://skjer.men", {
           mask: Image.Mask.RoundedRectangle,
         })}
