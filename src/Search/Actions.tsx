@@ -14,7 +14,6 @@ export function Actions({ venue, isFavorite, onAction, onSave }: ActionsProps) {
     <ActionPanel>
       <Action title="View Departures" icon={Icon.ArrowRight} onAction={onAction} />
       <Action
-        // eslint-disable-next-line @raycast/prefer-title-case
         title={
           isFavorite
             ? `Remove Favorite ${venue.properties.name}`

@@ -26,7 +26,6 @@ export function Actions({ ec, venue, isFavorite, setShowDetails, loadMore }: Act
         onAction={loadMore}
       />
       <Action
-        // eslint-disable-next-line @raycast/prefer-title-case
         title={
           isFavorite
             ? `Remove Favorite ${venue.properties.name}`

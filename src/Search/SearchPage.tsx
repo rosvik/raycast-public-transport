@@ -1,42 +1,18 @@
-import { Alert, List, clearSearchBar, confirmAlert } from "@raycast/api";
+import { List, Toast, clearSearchBar } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { fetchVenues } from "../api";
-import { removeFavorite, loadFavorites, addFavorite, wipeStorage } from "../storage";
+import { addFavorite, loadFavorites, removeFavorite } from "../storage";
 import { Feature } from "../types";
-import { formatAsClockWithSeconds, getVenueCategoryIcon, useDebounce } from "../utils";
+import { formatAsClockWithSeconds, getVenueCategoryIcon } from "../utils";
 import { Actions } from "./Actions";
+import { useDebouncedVenues } from "./use-debounced-venues";
 
 export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) => void }) {
-  const [query, setQuery] = useState<string>("");
-
   const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
   setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [venueResults, setVenueResults] = useState<Feature[]>([]);
-
-  const debouncedQuery = useDebounce(query, 250);
-  useEffect(() => {
-    if (debouncedQuery === undefined || debouncedQuery === "") return;
-    if (debouncedQuery === "DEBUG_WIPE_STORAGE") {
-      confirmAlert({
-        title: "Wipe Storage",
-        message: "Are you sure you want to wipe storage?",
-        primaryAction: {
-          title: "Yes",
-          style: Alert.ActionStyle.Destructive,
-          onAction: wipeStorage,
-        },
-      });
-    }
-    setIsLoading(true);
-    fetchVenues(debouncedQuery)
-      .then((features) => {
-        if (!features || features.length === 0) return;
-        setVenueResults(features);
-      })
-      .finally(() => setIsLoading(false));
-  }, [debouncedQuery]);
+  const [query, setQuery] = useState<string>("");
+  const [toast, setToast] = useState<Promise<Toast>>();
+  const { venueResults } = useDebouncedVenues(query, toast, setToast);
 
   const [favorites, setFavorites] = useState<Feature[]>([]);
   useEffect(() => {
@@ -48,7 +24,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
   return (
     <List
       navigationTitle={clock}
-      searchBarPlaceholder={isLoading ? "Loading..." : `Search for a stop`}
+      searchBarPlaceholder="Search for a stop"
       searchText={query}
       onSearchTextChange={setQuery}
     >
@@ -61,7 +37,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
                 key={venue.properties.id}
                 onAction={() => {
                   clearSearchBar();
-                  // Re-add favorite to move it to the top of the list
+                  // Re-add favorite to bump it to the top of the list
                   addFavorite(venue);
                   setVenue(venue);
                 }}
@@ -80,7 +56,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
               key={venue.properties.id}
               onAction={() => {
                 clearSearchBar();
-                // Re-add favorite to move it to the top of the list
+                // Re-add favorite to bump it to the top of the list
                 if (isSaved) addFavorite(venue);
                 setVenue(venue);
               }}

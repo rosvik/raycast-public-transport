@@ -94,12 +94,9 @@ export type Feature = {
   properties: {
     id: string;
     name: string;
-    // Navn, kommune
-    label: string;
-    // Fylke
-    county?: string;
-    // Kommune
-    locality?: string;
+    label: string; // name, locality
+    locality?: string; // kommune
+    county?: string; // fylke
     category: VenueCategory[];
   };
   geometry: {
