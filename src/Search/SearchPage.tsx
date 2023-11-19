@@ -12,7 +12,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
   const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
   setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [venueResults, setVenueResults] = useState<Feature[]>([]);
 
   const debouncedQuery = useDebounce(query, 250);
@@ -48,7 +48,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
   return (
     <List
       navigationTitle={clock}
-      searchBarPlaceholder={isLoading ? "Loading..." : `Enter stop name`}
+      searchBarPlaceholder={isLoading ? "Loading..." : `Enter Stop Name`}
       searchText={query}
       onSearchTextChange={setQuery}
     >
