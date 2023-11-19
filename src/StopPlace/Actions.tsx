@@ -1,18 +1,26 @@
 import { Action, ActionPanel, Icon, Image } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { Departures, EstimatedCall, Feature } from "./types";
-import { getDomainName } from "./utils";
-import { storePreferredVenue } from "./storage";
+import { Departures, EstimatedCall, Feature } from "../types";
+import { getDomainName } from "../utils";
+import { deletePreferredVenue, storePreferredVenue } from "../storage";
 
 type ActionsProps = {
   departures: Departures;
   ec: EstimatedCall;
   venue: Feature;
+  isSaved: boolean;
   setShowDetails: () => void;
   loadMore: () => void;
 };
 
-export function Actions({ departures, ec, venue, setShowDetails, loadMore }: ActionsProps) {
+export function Actions({
+  departures,
+  ec,
+  venue,
+  isSaved,
+  setShowDetails,
+  loadMore,
+}: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
 
@@ -26,10 +34,27 @@ export function Actions({ departures, ec, venue, setShowDetails, loadMore }: Act
         onAction={loadMore}
       />
       <Action
-        title="Save Stop Place"
-        icon={Icon.Star}
+        // eslint-disable-next-line @raycast/prefer-title-case
+        title={isSaved ? `Remove ${venue.properties.name}` : `Save ${venue.properties.name}`}
+        icon={isSaved ? Icon.StarDisabled : Icon.Star}
         shortcut={{ modifiers: ["cmd"], key: "s" }}
-        onAction={() => storePreferredVenue(venue)}
+        onAction={() => (isSaved ? deletePreferredVenue(venue) : storePreferredVenue(venue))}
+      />
+      {venue.properties.id && (
+        <Action.OpenInBrowser
+          url={getTravelPlannerUrl(ec)}
+          title="Open Trip in AtB Travel Planner"
+          icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
+          shortcut={{ modifiers: ["cmd"], key: "o" }}
+        />
+      )}
+      <Action.OpenInBrowser
+        url={getSkjermenUrl(departures)}
+        title="Open Location in skjer.men"
+        icon={getFavicon("https://skjer.men", {
+          mask: Image.Mask.RoundedRectangle,
+        })}
+        shortcut={{ modifiers: ["cmd"], key: "m" }}
       />
       {url && (
         <Action.OpenInBrowser
@@ -41,22 +66,6 @@ export function Actions({ departures, ec, venue, setShowDetails, loadMore }: Act
           })}
         />
       )}
-      {venue.properties.id && (
-        <Action.OpenInBrowser
-          url={getTravelPlannerUrl(ec)}
-          title="Open in AtB Travel Planner"
-          icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
-          shortcut={{ modifiers: ["cmd"], key: "o" }}
-        />
-      )}
-      <Action.OpenInBrowser
-        url={getSkjermenUrl(departures)}
-        title="Open in skjer.men"
-        icon={getFavicon("https://skjer.men", {
-          mask: Image.Mask.RoundedRectangle,
-        })}
-        shortcut={{ modifiers: ["cmd"], key: "m" }}
-      />
     </ActionPanel>
   );
 }

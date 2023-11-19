@@ -1,7 +1,7 @@
 import { Color, Icon, Image, List } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { EstimatedCall, SjEstimatedCall, TransportMode } from "./types";
-import { formatAsClock, formatDestinationDisplay, getTransportIcon } from "./utils";
+import { EstimatedCall, SjEstimatedCall, TransportMode } from "../types";
+import { formatAsClock, formatDestinationDisplay, getTransportIcon } from "../utils";
 
 type DetailProps = {
   ec: EstimatedCall;
