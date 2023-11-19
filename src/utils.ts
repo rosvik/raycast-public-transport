@@ -1,5 +1,5 @@
 import { Color, Icon, Image } from "@raycast/api";
-import { DestinationDisplay, DirectionType, TransportMode } from "./types";
+import { DestinationDisplay, DirectionType, TransportMode, VenueCategory } from "./types";
 import { useEffect, useState } from "react";
 
 export function useDebounce<T>(value: T, delay = 500): T {
@@ -11,27 +11,84 @@ export function useDebounce<T>(value: T, delay = 500): T {
   return debouncedValue;
 }
 
+const TrainIcon: Image = { source: "transport-modes/Train.svg", tintColor: Color.Red };
+const RegionalBusIcon: Image = { source: "transport-modes/Bus.svg", tintColor: Color.Blue };
+const LocalBusIcon: Image = { source: "transport-modes/Bus.svg", tintColor: Color.Green };
+const CoachIcon: Image = { source: "transport-modes/Bus.svg", tintColor: Color.Purple };
+const AirIcon: Image = { source: "transport-modes/Plane.svg", tintColor: Color.Orange };
+const WaterIcon: Image = { source: "transport-modes/Ferry.svg", tintColor: Color.Blue };
+const TramIcon: Image = { source: "transport-modes/Tram.svg", tintColor: Color.Yellow };
+const MetroIcon: Image = { source: "transport-modes/Subway.svg", tintColor: Color.Magenta };
+const UnknownIcon: Image = { source: Icon.PlusSquare, tintColor: Color.Blue };
+
 export function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): Image {
   switch (transportMode) {
     case TransportMode.Rail:
-      return { source: "transport-modes/Train.svg", tintColor: Color.Red };
+      return TrainIcon;
     case TransportMode.Bus:
       if (transportSubmode === "localBus") {
-        return { source: "transport-modes/Bus.svg", tintColor: Color.Green };
+        return LocalBusIcon;
       }
-      return { source: "transport-modes/Bus.svg", tintColor: Color.Blue };
+      return RegionalBusIcon;
     case TransportMode.Coach:
-      return { source: "transport-modes/Bus.svg", tintColor: Color.Purple };
+      return CoachIcon;
     case TransportMode.Air:
-      return { source: "transport-modes/Plane.svg", tintColor: Color.Orange };
+      return AirIcon;
     case TransportMode.Water:
-      return { source: "transport-modes/Ferry.svg", tintColor: Color.Blue };
+      return WaterIcon;
     case TransportMode.Tram:
-      return { source: "transport-modes/Tram.svg", tintColor: Color.Yellow };
+      return TramIcon;
     case TransportMode.Metro:
-      return { source: "transport-modes/Subway.svg", tintColor: Color.Magenta };
+      return MetroIcon;
     default:
-      return { source: Icon.QuestionMark };
+      return UnknownIcon;
+  }
+}
+
+export function getVenueCategoryIcon(categories: VenueCategory[]): Image {
+  if (categories.length === 0) return UnknownIcon;
+  if (categories.length > 1) {
+    if (categories.includes("airport")) {
+      return AirIcon;
+    }
+    if (categories.includes("railStation")) {
+      return TrainIcon;
+    }
+    if (categories.includes("metroStation")) {
+      return MetroIcon;
+    }
+    if (
+      categories.includes("ferryPort") ||
+      categories.includes("ferryStop") ||
+      categories.includes("harbourPort")
+    ) {
+      return WaterIcon;
+    }
+    return UnknownIcon;
+  }
+
+  const category = categories[0];
+  switch (category) {
+    case "railStation":
+    case "vehicleRailInterchange":
+      return TrainIcon;
+    case "busStation":
+    case "onstreetBus":
+    case "coachStation":
+      return LocalBusIcon;
+    case "airport":
+      return AirIcon;
+    case "ferryPort":
+    case "ferryStop":
+    case "harbourPort":
+      return WaterIcon;
+    case "tramStation":
+    case "onstreetTram":
+      return TramIcon;
+    case "metroStation":
+      return MetroIcon;
+    default:
+      return UnknownIcon;
   }
 }
 

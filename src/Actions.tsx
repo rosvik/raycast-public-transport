@@ -1,18 +1,18 @@
 import { Action, ActionPanel, Icon, Image } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { Departures, EstimatedCall } from "./types";
+import { Departures, EstimatedCall, Feature } from "./types";
 import { getDomainName } from "./utils";
+import { storePreferredVenue } from "./storage";
 
 type ActionsProps = {
   departures: Departures;
-  quayId: string;
-  stopPlaceId?: string;
   ec: EstimatedCall;
+  venue: Feature;
   setShowDetails: () => void;
   loadMore: () => void;
 };
 
-export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId }: ActionsProps) {
+export function Actions({ departures, ec, venue, setShowDetails, loadMore }: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
 
@@ -25,6 +25,12 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
         shortcut={{ modifiers: ["cmd"], key: "+" }}
         onAction={loadMore}
       />
+      <Action
+        title="Save Stop Place"
+        icon={Icon.Star}
+        shortcut={{ modifiers: ["cmd"], key: "s" }}
+        onAction={() => storePreferredVenue(venue)}
+      />
       {url && (
         <Action.OpenInBrowser
           url={url.href}
@@ -35,7 +41,7 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
           })}
         />
       )}
-      {stopPlaceId && (
+      {venue.properties.id && (
         <Action.OpenInBrowser
           url={getTravelPlannerUrl(ec)}
           title="Open in AtB Travel Planner"
@@ -49,7 +55,7 @@ export function Actions({ setShowDetails, departures, ec, loadMore, stopPlaceId 
         icon={getFavicon("https://skjer.men", {
           mask: Image.Mask.RoundedRectangle,
         })}
-        shortcut={{ modifiers: ["cmd"], key: "s" }}
+        shortcut={{ modifiers: ["cmd"], key: "m" }}
       />
     </ActionPanel>
   );
