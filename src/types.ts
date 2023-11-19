@@ -97,9 +97,9 @@ export type Feature = {
     // Navn, kommune
     label: string;
     // Fylke
-    county: string;
+    county?: string;
     // Kommune
-    locality: string;
+    locality?: string;
     category: VenueCategory[];
   };
   geometry: {

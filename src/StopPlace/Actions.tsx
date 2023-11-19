@@ -1,11 +1,10 @@
 import { Action, ActionPanel, Icon, Image } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { Departures, EstimatedCall, Feature } from "../types";
+import { addFavorite, removeFavorite } from "../storage";
+import { EstimatedCall, Feature } from "../types";
 import { getDomainName } from "../utils";
-import { removeFavorite, addFavorite } from "../storage";
 
 type ActionsProps = {
-  departures: Departures;
   ec: EstimatedCall;
   venue: Feature;
   isFavorite: boolean;
@@ -13,14 +12,7 @@ type ActionsProps = {
   loadMore: () => void;
 };
 
-export function Actions({
-  departures,
-  ec,
-  venue,
-  isFavorite,
-  setShowDetails,
-  loadMore,
-}: ActionsProps) {
+export function Actions({ ec, venue, isFavorite, setShowDetails, loadMore }: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
 

@@ -113,7 +113,10 @@ const VenueListItem = ({
   return (
     <List.Item
       title={venue.properties.name}
-      subtitle={`${venue.properties.locality}, ${venue.properties.county}`}
+      subtitle={{
+        value: venue.properties.locality,
+        tooltip: venue.properties.county,
+      }}
       icon={getVenueCategoryIcon(venue.properties.category)}
       actions={
         <Actions venue={venue} onAction={onAction} isFavorite={isFavorite} onSave={onSave} />

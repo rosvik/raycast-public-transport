@@ -96,7 +96,6 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                       <Actions
                         ec={ec}
                         venue={venue}
-                        departures={items}
                         setShowDetails={() => setShowDetails(!showDetails)}
                         loadMore={() => setNumberOfDepartures((n) => n + 5)}
                         isFavorite={favorites.some((f) => f.properties.id === venue.properties.id)}
