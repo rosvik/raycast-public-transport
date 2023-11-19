@@ -1,9 +1,9 @@
-import { Action, ActionPanel, Alert, Icon, List, confirmAlert } from "@raycast/api";
+import { Action, ActionPanel, Alert, Icon, List, clearSearchBar, confirmAlert } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { fetchVenues } from "../api";
 import { loadPreferrededVenue, wipeStorage } from "../storage";
 import { Feature } from "../types";
-import { formatAsClockWithSeconds, useDebounce } from "../utils";
+import { formatAsClockWithSeconds, getVenueCategoryIcon, useDebounce } from "../utils";
 
 export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) => void }) {
   const [query, setQuery] = useState<string>();
@@ -11,11 +11,12 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
   const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
   setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
-  const [isLoadingPreferredVenues, setIsLoadingPreferredVenues] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [venueResults, setVenueResults] = useState<Feature[]>([]);
 
   const debouncedQuery = useDebounce(query, 250);
   useEffect(() => {
+    if (debouncedQuery === undefined || debouncedQuery === "") return;
     if (debouncedQuery === "DEBUG_WIPE_STORAGE") {
       confirmAlert({
         title: "Wipe Storage",
@@ -27,58 +28,82 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
         },
       });
     }
-    setIsLoadingPreferredVenues(true);
-    loadPreferrededVenue().then((preferredVenuesIds) => {
-      if (debouncedQuery === undefined) {
-        setIsLoadingPreferredVenues(false);
-        return;
-      }
-      fetchVenues(debouncedQuery)
-        .then((features) => {
-          if (!features || features.length === 0) return;
-          const venueId = preferredVenuesIds?.find((id) =>
-            features.some((f) => f.properties.id === id)
-          );
-          const venue = features.find((f) => f.properties.id === venueId);
-          if (venue) {
-            setVenueResults([venue, ...features.filter((f) => f.properties.id !== venueId)]);
-          } else {
-            setVenueResults(features);
-          }
-        })
-        .finally(() => setIsLoadingPreferredVenues(false));
-    });
+    setIsLoading(true);
+    fetchVenues(debouncedQuery)
+      .then((features) => {
+        if (!features || features.length === 0) return;
+        setVenueResults(features);
+      })
+      .finally(() => setIsLoading(false));
   }, [debouncedQuery]);
+
+  const [savedVenues, setPreferredVenues] = useState<Feature[]>([]);
+  useEffect(() => {
+    loadPreferrededVenue().then((preferredVenues) => {
+      if (preferredVenues) setPreferredVenues(preferredVenues);
+    });
+  }, []);
 
   return (
     <List
       navigationTitle={clock}
-      searchBarPlaceholder={isLoadingPreferredVenues ? "Loading..." : `Enter stop name`}
-      filtering={{ keepSectionOrder: true }}
+      searchBarPlaceholder={isLoading ? "Loading..." : `Enter stop name`}
+      searchText={query}
       onSearchTextChange={setQuery}
     >
-      {!isLoadingPreferredVenues && (
-        <List.Section title={"Saved stops"}>
-          {venueResults.map((venue) => {
+      <List.Section title="Saved Stops">
+        {savedVenues
+          .filter((v) => v.properties.name.toUpperCase().indexOf(query?.toUpperCase() ?? "") >= 0)
+          .map((venue) => {
             return (
-              <List.Item
+              <VenueListItem
                 key={venue.properties.id}
-                title={venue.properties.label}
-                subtitle={venue.properties.label + ", " + venue.properties.county}
-                actions={
-                  <ActionPanel>
-                    <Action
-                      title="Open Departures"
-                      icon={Icon.ArrowRight}
-                      onAction={() => setVenue(venue)}
-                    />
-                  </ActionPanel>
-                }
+                onAction={() => {
+                  clearSearchBar();
+                  setVenue(venue);
+                }}
+                venue={venue}
               />
             );
           })}
-        </List.Section>
-      )}
+      </List.Section>
+      <List.Section title="Search Results">
+        {venueResults.map((venue) => {
+          return (
+            <VenueListItem
+              key={venue.properties.id}
+              onAction={() => {
+                clearSearchBar();
+                setVenue(venue);
+              }}
+              venue={venue}
+            />
+          );
+        })}
+      </List.Section>
     </List>
   );
 }
+
+const VenueListItem = ({ venue, onAction }: { venue: Feature; onAction: () => void }) => {
+  return (
+    <List.Item
+      title={venue.properties.name}
+      subtitle={
+        venue.properties.locality +
+        ", " +
+        venue.properties.county +
+        ", " +
+        venue.properties.category.join(", ")
+      }
+      icon={{
+        ...getVenueCategoryIcon(venue.properties.category),
+      }}
+      actions={
+        <ActionPanel>
+          <Action title="Open Departures" icon={Icon.ArrowRight} onAction={onAction} />
+        </ActionPanel>
+      }
+    />
+  );
+};

@@ -94,7 +94,27 @@ export type Feature = {
   properties: {
     id: string;
     name: string;
+    // Navn, kommune
     label: string;
+    // Fylke
     county: string;
+    // Kommune
+    locality: string;
+    category: VenueCategory[];
   };
 };
+
+export type VenueCategory =
+  | "onstreetBus"
+  | "onstreetTram"
+  | "airport"
+  | "railStation"
+  | "metroStation"
+  | "busStation"
+  | "coachStation"
+  | "tramStation"
+  | "harbourPort"
+  | "ferryPort"
+  | "ferryStop"
+  | "liftStation"
+  | "vehicleRailInterchange";

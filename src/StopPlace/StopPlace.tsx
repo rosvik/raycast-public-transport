@@ -87,8 +87,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                     actions={
                       <Actions
                         ec={ec}
-                        quayId={quay.id}
-                        stopPlaceId={venue?.properties.id}
+                        venue={venue}
                         departures={items}
                         setShowDetails={() => setShowDetails(!showDetails)}
                         loadMore={() => setNumberOfDepartures((n) => n + 5)}
