@@ -7,6 +7,7 @@ import { Departures, DirectionType, Feature } from "../types";
 import {
   formatAsClock,
   formatAsClockWithSeconds,
+  formatAsTimestamp,
   formatDestinationDisplay,
   formatDirection,
   getTransportIcon,
@@ -106,7 +107,12 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                     subtitle={
                       showDetails
                         ? undefined
-                        : formatAsClock(ec.expectedDepartureTime ?? ec.aimedDepartureTime)
+                        : {
+                            value: formatAsClock(ec.expectedDepartureTime ?? ec.aimedDepartureTime),
+                            tooltip: formatAsTimestamp(
+                              ec.expectedDepartureTime ?? ec.aimedDepartureTime
+                            ),
+                          }
                     }
                     detail={<Detail ec={ec} />}
                     keywords={[
