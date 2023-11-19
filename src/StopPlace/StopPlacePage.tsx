@@ -1,4 +1,4 @@
-import { Color, List } from "@raycast/api";
+import { Color, List, Toast, showToast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { Detail } from "./Detail";
@@ -15,7 +15,6 @@ import {
 import { loadFavorites } from "../storage";
 
 export default function StopPlacePage({ venue }: { venue: Feature }) {
-  const [isLoading, setIsLoading] = useState(true);
   const [items, setItems] = useState<Departures>();
   const [numberOfDepartures, setNumberOfDepartures] = useState(5);
   const [showDetails, setShowDetails] = useState(false);
@@ -25,10 +24,13 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
 
   useEffect(() => {
     if (!venue?.properties.id) return;
-    setIsLoading(true);
+    const toast = showToast({
+      title: "Loading departures...",
+      style: Toast.Style.Animated,
+    });
     fetchDepartures(venue.properties.id, numberOfDepartures).then((departures) => {
       setItems(departures);
-      setIsLoading(false);
+      toast.then((t) => t.hide());
     });
   }, [venue?.properties.id, numberOfDepartures]);
 
@@ -49,9 +51,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
     <List
       navigationTitle={clock}
       searchBarPlaceholder={
-        isLoading
-          ? "Loading..."
-          : `${items?.name}${items?.description ? " " + items?.description : ""}`
+        items ? `${items.name}${items.description ? " " + items.description : ""}` : ""
       }
       filtering={{ keepSectionOrder: true }}
       isShowingDetail={showDetails}
