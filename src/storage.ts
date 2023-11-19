@@ -10,24 +10,24 @@ enum StorageKeys {
   preferredFeatures = "@departures/PreferredFeatures/v1",
 }
 
-export async function storePreferredVenue(feature: Feature): Promise<Feature[]> {
-  const features = await loadPreferrededVenue();
-  const deDupedFeatures = features?.filter((f) => f.properties.id !== feature.properties.id);
-  const newFeatures = deDupedFeatures ? [feature, ...deDupedFeatures] : [feature];
-  await LocalStorage.setItem(StorageKeys.savedFeatures, JSON.stringify(newFeatures));
-  return newFeatures;
+export async function addFavorite(venue: Feature): Promise<Feature[]> {
+  const favorites = await loadFavorites();
+  const deDupedFavorites = favorites?.filter((f) => f.properties.id !== venue.properties.id);
+  const newFavorites = deDupedFavorites ? [venue, ...deDupedFavorites] : [venue];
+  await LocalStorage.setItem(StorageKeys.savedFeatures, JSON.stringify(newFavorites));
+  return newFavorites;
 }
-export async function deletePreferredVenue(feature: Feature): Promise<Feature[]> {
-  const features = await loadPreferrededVenue();
-  if (!features) return [];
-  const newFeatures = features.filter((f) => f.properties.id !== feature.properties.id);
-  await LocalStorage.setItem(StorageKeys.savedFeatures, JSON.stringify(newFeatures));
-  return newFeatures;
+export async function removeFavorite(venue: Feature): Promise<Feature[]> {
+  const favorites = await loadFavorites();
+  if (!favorites) return [];
+  const newFavorites = favorites.filter((f) => f.properties.id !== venue.properties.id);
+  await LocalStorage.setItem(StorageKeys.savedFeatures, JSON.stringify(newFavorites));
+  return newFavorites;
 }
-export async function loadPreferrededVenue(): Promise<Feature[] | undefined> {
-  const item = await LocalStorage.getItem<string>(StorageKeys.savedFeatures);
-  if (!item) return undefined;
-  return JSON.parse(item) as Feature[];
+export async function loadFavorites(): Promise<Feature[] | undefined> {
+  const favorites = await LocalStorage.getItem<string>(StorageKeys.savedFeatures);
+  if (!favorites) return undefined;
+  return JSON.parse(favorites) as Feature[];
 }
 
 export async function wipeStorage() {

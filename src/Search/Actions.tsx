@@ -4,20 +4,26 @@ import { Feature } from "../types";
 
 type ActionsProps = {
   venue: Feature;
-  isSaved: boolean;
+  isFavorite: boolean;
   onAction: () => void;
   onSave: () => void;
 };
 
-export function Actions({ venue, isSaved, onAction, onSave }: ActionsProps) {
+export function Actions({ venue, isFavorite, onAction, onSave }: ActionsProps) {
   return (
     <ActionPanel>
       <Action title="Open Departures" icon={Icon.ArrowRight} onAction={onAction} />
       <Action
         // eslint-disable-next-line @raycast/prefer-title-case
-        title={isSaved ? `Remove ${venue.properties.name}` : `Save ${venue.properties.name}`}
-        icon={isSaved ? Icon.StarDisabled : Icon.Star}
-        shortcut={{ modifiers: ["cmd"], key: "s" }}
+        title={
+          isFavorite
+            ? `Remove Favorite ${venue.properties.name}`
+            : `Favorite ${venue.properties.name}`
+        }
+        icon={isFavorite ? Icon.StarDisabled : Icon.Star}
+        shortcut={
+          isFavorite ? { modifiers: ["cmd", "shift"], key: "s" } : { modifiers: ["cmd"], key: "s" }
+        }
         onAction={onSave}
       />
       {venue.properties.id && (
@@ -30,7 +36,7 @@ export function Actions({ venue, isSaved, onAction, onSave }: ActionsProps) {
       )}
       <Action.OpenInBrowser
         url={getSkjermenUrl(venue)}
-        title="Open Location in skjer.men"
+        title="Open Stop in skjer.men"
         icon={getFavicon("https://skjer.men", {
           mask: Image.Mask.RoundedRectangle,
         })}
