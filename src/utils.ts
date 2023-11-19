@@ -47,20 +47,25 @@ export function getTransportIcon(transportMode?: TransportMode, transportSubmode
 
 export function getVenueCategoryIcon(categories: VenueCategory[]): Image {
   if (categories.length === 0) return UnknownIcon;
-  if (categories.length > 1) {
-    if (categories.includes("airport")) {
+
+  // TODO: Make this work for all categories
+  const deDupedCategories = [
+    ...new Set(categories.map((c) => (c === "busStation" ? "onstreetBus" : c))),
+  ];
+  if (deDupedCategories.length > 1) {
+    if (deDupedCategories.includes("airport")) {
       return AirIcon;
     }
-    if (categories.includes("railStation")) {
+    if (deDupedCategories.includes("railStation")) {
       return TrainIcon;
     }
-    if (categories.includes("metroStation")) {
+    if (deDupedCategories.includes("metroStation")) {
       return MetroIcon;
     }
     if (
-      categories.includes("ferryPort") ||
-      categories.includes("ferryStop") ||
-      categories.includes("harbourPort")
+      deDupedCategories.includes("ferryPort") ||
+      deDupedCategories.includes("ferryStop") ||
+      deDupedCategories.includes("harbourPort")
     ) {
       return WaterIcon;
     }
