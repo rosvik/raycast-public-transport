@@ -1,4 +1,4 @@
-import fetch from "cross-fetch";
+import fetch from "node-fetch";
 import { Departures, Feature } from "./types";
 
 const CLIENT_NAME = "rosvik-raycast-departures";
