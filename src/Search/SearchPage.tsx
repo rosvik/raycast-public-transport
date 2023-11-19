@@ -48,7 +48,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
   return (
     <List
       navigationTitle={clock}
-      searchBarPlaceholder={isLoading ? "Loading..." : `Enter Stop Name`}
+      searchBarPlaceholder={isLoading ? "Loading..." : `Search for a stop`}
       searchText={query}
       onSearchTextChange={setQuery}
     >
