@@ -109,6 +109,11 @@ export function formatAsClockWithSeconds(isoString: string) {
   return `${padTime(d.getHours())}:${padTime(d.getMinutes())}:${padTime(d.getSeconds())}`;
 }
 
+export function formatAsTimestamp(isoString: string) {
+  const d = new Date(isoString);
+  return `${d.toDateString()}, ${formatAsClockWithSeconds(isoString)}`;
+}
+
 export function formatDirection(direction: DirectionType) {
   switch (direction) {
     case "anticlockwise":
