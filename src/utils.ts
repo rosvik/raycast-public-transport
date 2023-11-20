@@ -69,6 +69,9 @@ export function getVenueCategoryIcon(categories: VenueCategory[]): Image {
     ) {
       return WaterIcon;
     }
+    if (deDupedCategories.includes("tramStation" || "onstreetTram")) {
+      return TramIcon;
+    }
     return UnknownIcon;
   }
 
