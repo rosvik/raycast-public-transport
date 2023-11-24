@@ -1,9 +1,9 @@
-import { Color, List, Toast, showToast } from "@raycast/api";
+import { Color, Icon, List, Toast, showToast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { Detail } from "./Detail";
 import { fetchDepartures } from "../api";
-import { DirectionType, Feature, StopPlaceQuayDeparturesQuery } from "../types";
+import { DirectionType, EstimatedCall, Feature, StopPlaceQuayDeparturesQuery } from "../types";
 import {
   formatAsClock,
   formatAsClockWithSeconds,
@@ -52,6 +52,30 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
       filtering={{ keepSectionOrder: true }}
       isShowingDetail={showDetails}
     >
+      {favorites && favorites.length > 0 && (
+        <List.Section title="Favorites">
+          {favorites
+            .flatMap((favorite) => favorite.estimatedCalls)
+            .sort(
+              (a, b) =>
+                new Date(a.expectedDepartureTime ?? a.aimedDepartureTime).valueOf() -
+                new Date(b.expectedDepartureTime ?? b.aimedDepartureTime).valueOf()
+            )
+            .slice(0, numberOfDepartures)
+            .map((ec) => {
+              return (
+                <EstimatedCallItem
+                  ec={ec}
+                  loadMore={() => setNumberOfDepartures((n) => n + 5)}
+                  setShowDetails={() => setShowDetails(!showDetails)}
+                  isShowingDetails={showDetails}
+                  venue={venue}
+                  isFavorite={true}
+                />
+              );
+            })}
+        </List.Section>
+      )}
       {departures &&
         departuresWithSortedQuays?.map((quay, i) => {
           return (
@@ -67,63 +91,89 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                 description: quay.description,
               })}
             >
-              {quay.estimatedCalls.map((ec) => {
-                const lineName = `${
-                  ec.serviceJourney.line.publicCode ?? ""
-                } ${formatDestinationDisplay(ec.destinationDisplay)}`;
-                return (
-                  <List.Item
-                    accessories={[
-                      {
-                        tag: {
-                          value: new Date(ec.expectedDepartureTime ?? ec.aimedDepartureTime),
-                          color: ec.realtime
-                            ? ec.predictionInaccurate
-                              ? Color.Yellow
-                              : Color.Green
-                            : Color.SecondaryText,
-                        },
-                      },
-                    ]}
-                    icon={getTransportIcon(
-                      ec.serviceJourney.line.transportMode,
-                      ec.serviceJourney.line.transportSubmode
-                    )}
-                    actions={
-                      <Actions
-                        ec={ec}
-                        venue={venue}
-                        setShowDetails={() => setShowDetails(!showDetails)}
-                        loadMore={() => setNumberOfDepartures((n) => n + 5)}
-                      />
-                    }
-                    key={ec.serviceJourney.id + ec.aimedDepartureTime}
-                    title={lineName}
-                    subtitle={
-                      showDetails
-                        ? undefined
-                        : {
-                            value: formatAsClock(ec.expectedDepartureTime ?? ec.aimedDepartureTime),
-                            tooltip: formatAsTimestamp(
-                              ec.expectedDepartureTime ?? ec.aimedDepartureTime
-                            ),
-                          }
-                    }
-                    detail={<Detail ec={ec} />}
-                    keywords={[
-                      formatDestinationDisplay(ec.destinationDisplay) ?? "",
-                      ec.serviceJourney.line.description ?? "",
-                      ec.serviceJourney.line.publicCode ?? "",
-                      ec.serviceJourney.line.transportMode ?? "",
-                      ec.serviceJourney.line.authority?.name ?? "",
-                    ]}
-                  />
-                );
-              })}
+              {quay.estimatedCalls.map((ec) => (
+                <EstimatedCallItem
+                  ec={ec}
+                  loadMore={() => setNumberOfDepartures((n) => n + 5)}
+                  setShowDetails={() => setShowDetails(!showDetails)}
+                  isShowingDetails={showDetails}
+                  venue={venue}
+                />
+              ))}
             </List.Section>
           );
         })}
     </List>
+  );
+}
+
+function EstimatedCallItem({
+  ec,
+  loadMore,
+  setShowDetails,
+  venue,
+  isShowingDetails,
+  isFavorite = false,
+}: {
+  ec: EstimatedCall;
+  venue: Feature;
+  setShowDetails: () => void;
+  loadMore: () => void;
+  isShowingDetails?: boolean;
+  isFavorite?: boolean;
+}) {
+  const lineName = `${ec.serviceJourney.line.publicCode ?? ""} ${formatDestinationDisplay(
+    ec.destinationDisplay
+  )}`;
+
+  return (
+    <List.Item
+      accessories={[
+        {
+          tag: {
+            value: new Date(ec.expectedDepartureTime ?? ec.aimedDepartureTime),
+            color: ec.realtime
+              ? ec.predictionInaccurate
+                ? Color.Yellow
+                : Color.Green
+              : Color.SecondaryText,
+          },
+        },
+        isFavorite
+          ? {
+              icon: {
+                source: Icon.Star,
+                tintColor: Color.Yellow,
+              },
+            }
+          : {},
+      ]}
+      icon={getTransportIcon(
+        ec.serviceJourney.line.transportMode,
+        ec.serviceJourney.line.transportSubmode
+      )}
+      actions={
+        <Actions ec={ec} venue={venue} setShowDetails={setShowDetails} loadMore={loadMore} />
+      }
+      key={ec.serviceJourney.id + ec.aimedDepartureTime}
+      title={lineName}
+      subtitle={
+        isShowingDetails
+          ? undefined
+          : {
+              value: formatAsClock(ec.expectedDepartureTime ?? ec.aimedDepartureTime),
+              tooltip: formatAsTimestamp(ec.expectedDepartureTime ?? ec.aimedDepartureTime),
+            }
+      }
+      detail={<Detail ec={ec} />}
+      keywords={[
+        formatDestinationDisplay(ec.destinationDisplay) ?? "",
+        ec.serviceJourney.line.description ?? "",
+        ec.serviceJourney.line.publicCode ?? "",
+        ec.serviceJourney.line.transportMode ?? "",
+        ec.serviceJourney.line.authority?.name ?? "",
+      ]}
+    />
   );
 }
 
