@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { Detail } from "./Detail";
 import { fetchDepartures } from "../api";
-import { Departures, DirectionType, Feature } from "../types";
+import { DirectionType, Feature, StopPlaceQuayDeparturesQuery } from "../types";
 import {
   formatAsClock,
   formatAsClockWithSeconds,
@@ -12,12 +12,13 @@ import {
   formatDirection,
   getTransportIcon,
 } from "../utils";
-import { loadFavorites } from "../storage";
 
 export default function StopPlacePage({ venue }: { venue: Feature }) {
-  const [items, setItems] = useState<Departures>();
+  const [items, setItems] = useState<StopPlaceQuayDeparturesQuery>();
   const [numberOfDepartures, setNumberOfDepartures] = useState(5);
   const [showDetails, setShowDetails] = useState(false);
+  const departures = items?.stopPlace;
+  const favorites = items?.favorites;
 
   const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
   setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
@@ -34,29 +35,24 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
     });
   }, [venue?.properties.id, numberOfDepartures]);
 
-  const departuresWithSortedQuays = items?.quays?.sort((a, b) => {
+  const departuresWithSortedQuays = departures?.quays?.sort((a, b) => {
     if (a.name + a.publicCode < b.name + b.publicCode) return -1;
     if (a.name + a.publicCode > b.name + b.publicCode) return 1;
     return 0;
   });
 
-  const [favorites, setFavorites] = useState<Feature[]>([]);
-  useEffect(() => {
-    loadFavorites().then((favorite) => {
-      setFavorites(favorite ?? []);
-    });
-  }, []);
-
   return (
     <List
       navigationTitle={clock}
       searchBarPlaceholder={
-        items ? `${items.name}${items.description ? " " + items.description : ""}` : ""
+        departures
+          ? `${departures.name}${departures.description ? " " + departures.description : ""}`
+          : ""
       }
       filtering={{ keepSectionOrder: true }}
       isShowingDetail={showDetails}
     >
-      {items &&
+      {departures &&
         departuresWithSortedQuays?.map((quay, i) => {
           return (
             <List.Section
@@ -99,7 +95,6 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                         venue={venue}
                         setShowDetails={() => setShowDetails(!showDetails)}
                         loadMore={() => setNumberOfDepartures((n) => n + 5)}
-                        isFavorite={favorites.some((f) => f.properties.id === venue.properties.id)}
                       />
                     }
                     key={ec.serviceJourney.id + ec.aimedDepartureTime}

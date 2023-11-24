@@ -1,5 +1,12 @@
 import fetch from "node-fetch";
-import { Departures, Feature } from "./types";
+import {
+  Departures,
+  Feature,
+  QuayDepartures,
+  QuayLineFavorites,
+  StopPlaceQuayDeparturesQuery,
+} from "./types";
+import { getDepartureQuery } from "./departureQuery";
 
 const CLIENT_NAME = "rosvik-raycast-departures";
 
@@ -25,84 +32,31 @@ export async function fetchVenues(query: string): Promise<Feature[] | undefined>
   return featureResponse.features;
 }
 
-const DeparturesQueryDocument = `
-query stopPlaceQuayDepartures(
-  $id: String!,
-  $numberOfDepartures: Int,
-) {
-  stopPlace(id: $id) {
-    id
-    name
-    description
-    latitude
-    longitude
-    quays(filterByInUse: true) {
-      id
-      name
-      description
-      publicCode
-      estimatedCalls(
-        numberOfDepartures: $numberOfDepartures
-        timeRange: 604800
-      ) {
-        date
-        expectedDepartureTime
-        aimedDepartureTime
-        realtime
-        predictionInaccurate
-        cancellation
-        quay {
-          id
-        }
-        destinationDisplay {
-          frontText
-          via
-        }
-        serviceJourney {
-          id
-          directionType
-          line {
-            id
-            description
-            publicCode
-            transportMode
-            transportSubmode
-            authority {
-              id
-              name
-              url
-            }
-          }
-          estimatedCalls {
-            quay {
-              id
-              name
-              publicCode
-            }
-            aimedDepartureTime
-            expectedDepartureTime
-          }
-        }
-      }
-    }
-  }
-}
-`;
-type StopPlaceQuayDeparturesQuery = {
-  stopPlace?: Departures;
-};
 export async function fetchDepartures(
   stopId: string,
   numberOfDepartures: number
-): Promise<Departures | undefined> {
-  const departuresQuery = await fetchJourneyPlannerData<StopPlaceQuayDeparturesQuery>(
-    DeparturesQueryDocument,
+): Promise<StopPlaceQuayDeparturesQuery | undefined> {
+  const favorites: QuayLineFavorites[] = [
     {
-      id: stopId,
-      numberOfDepartures,
-    }
-  );
-  return departuresQuery.stopPlace;
+      quayId: "NSR:Quay:71418",
+      lineIds: ["ATB:Line:2_2"],
+    },
+    {
+      quayId: "NSR:Quay:71184",
+      lineIds: ["ATB:Line:2_23"],
+    },
+  ];
+  const departuresQuery = await fetchJourneyPlannerData(getDepartureQuery(favorites), {
+    id: stopId,
+    numberOfDepartures,
+  });
+
+  console.log("departuresQuery", departuresQuery);
+
+  const departures = mapDepartureQueryKeys(departuresQuery, favorites);
+
+  console.log("departures.favorites", JSON.stringify(departures.favorites));
+  return departures;
 }
 
 async function fetchJourneyPlannerData<T>(document: string, variables: object): Promise<T> {
@@ -119,7 +73,13 @@ async function fetchJourneyPlannerData<T>(document: string, variables: object): 
       variables,
     }),
   });
+  if (response.status !== 200) {
+    console.error(response);
+    throw new Error("Failed to fetch data");
+  }
   const result = (await response.json()) as { data: T };
+  console.log("result", JSON.stringify(result));
+  console.log("document", document);
   return result.data;
 }
 
@@ -158,4 +118,24 @@ async function fetchVehiclesData<T>(document: string, variables: object): Promis
   });
   const result = (await response.json()) as { data: T };
   return result.data;
+}
+
+function mapDepartureQueryKeys(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any,
+  favorites: QuayLineFavorites[]
+): StopPlaceQuayDeparturesQuery {
+  const favoriteQuayIds = favorites.map((fav) => fav.quayId);
+  const quayDepartures = favoriteQuayIds
+    .map((favoriteQuayId) => {
+      const key = favoriteQuayId.replaceAll(":", "_");
+      if (!Object.keys(data).includes(key)) return;
+      return data[key] as QuayDepartures;
+    })
+    .filter(Boolean) as QuayDepartures[];
+  const quaysWithDepartures = quayDepartures.filter((quay) => quay.estimatedCalls.length > 0);
+  return {
+    stopPlace: data.stopPlace,
+    favorites: quaysWithDepartures,
+  };
 }
