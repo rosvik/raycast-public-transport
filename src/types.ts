@@ -1,3 +1,13 @@
+export type QuayLineFavorites = {
+  quayId: string;
+  lineIds: string[];
+};
+
+export type StopPlaceQuayDeparturesQuery = {
+  stopPlace?: Departures;
+  favorites: QuayDepartures[];
+};
+
 export type DirectionType = "unknown" | "outbound" | "inbound" | "clockwise" | "anticlockwise";
 
 export enum TransportMode {
@@ -22,13 +32,15 @@ export type Departures = {
   description?: string;
   latitude: number;
   longitude: number;
-  quays?: Array<{
-    id: string;
-    name: string;
-    description?: string;
-    publicCode?: string;
-    estimatedCalls: Array<EstimatedCall>;
-  }>;
+  quays?: Array<QuayDepartures>;
+};
+
+export type QuayDepartures = {
+  id: string;
+  name: string;
+  description?: string;
+  publicCode?: string;
+  estimatedCalls: Array<EstimatedCall>;
 };
 
 export type EstimatedCall = {

@@ -1,18 +1,16 @@
 import { Action, ActionPanel, Icon, Image } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { addFavorite, removeFavorite } from "../storage";
 import { EstimatedCall, Feature } from "../types";
 import { getDomainName } from "../utils";
 
 type ActionsProps = {
   ec: EstimatedCall;
   venue: Feature;
-  isFavorite: boolean;
   setShowDetails: () => void;
   loadMore: () => void;
 };
 
-export function Actions({ ec, venue, isFavorite, setShowDetails, loadMore }: ActionsProps) {
+export function Actions({ ec, venue, setShowDetails, loadMore }: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
 
@@ -25,7 +23,7 @@ export function Actions({ ec, venue, isFavorite, setShowDetails, loadMore }: Act
         shortcut={{ modifiers: ["cmd"], key: "+" }}
         onAction={loadMore}
       />
-      <Action
+      {/* <Action
         title={
           isFavorite
             ? `Remove Favorite ${venue.properties.name}`
@@ -36,7 +34,7 @@ export function Actions({ ec, venue, isFavorite, setShowDetails, loadMore }: Act
           isFavorite ? { modifiers: ["cmd", "shift"], key: "s" } : { modifiers: ["cmd"], key: "s" }
         }
         onAction={() => (isFavorite ? removeFavorite(venue) : addFavorite(venue))}
-      />
+      /> */}
       {venue.properties.id && (
         <Action.OpenInBrowser
           url={getTravelPlannerUrl(ec)}
