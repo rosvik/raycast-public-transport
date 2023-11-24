@@ -1,6 +1,6 @@
 import { List, Toast, clearSearchBar } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { addFavorite, loadFavorites, removeFavorite } from "../storage";
+import { addFavoriteStop, loadFavoriteStops, removeFavoriteStop } from "../storage";
 import { Feature } from "../types";
 import { formatAsClockWithSeconds, getVenueCategoryIcon } from "../utils";
 import { Actions } from "./Actions";
@@ -16,7 +16,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
 
   const [favorites, setFavorites] = useState<Feature[]>([]);
   useEffect(() => {
-    loadFavorites().then((preferredVenues) => {
+    loadFavoriteStops().then((preferredVenues) => {
       if (preferredVenues) setFavorites(preferredVenues);
     });
   }, []);
@@ -38,11 +38,11 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
                 onAction={() => {
                   clearSearchBar();
                   // Re-add favorite to bump it to the top of the list
-                  addFavorite(venue);
+                  addFavoriteStop(venue);
                   setVenue(venue);
                 }}
                 venue={venue}
-                onSave={() => removeFavorite(venue).then(setFavorites)}
+                onSave={() => removeFavoriteStop(venue).then(setFavorites)}
                 isFavorite={true}
               />
             );
@@ -57,14 +57,14 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
               onAction={() => {
                 clearSearchBar();
                 // Re-add favorite to bump it to the top of the list
-                if (isSaved) addFavorite(venue);
+                if (isSaved) addFavoriteStop(venue);
                 setVenue(venue);
               }}
               venue={venue}
               onSave={() =>
                 isSaved
-                  ? removeFavorite(venue).then(setFavorites)
-                  : addFavorite(venue).then(setFavorites)
+                  ? removeFavoriteStop(venue).then(setFavorites)
+                  : addFavoriteStop(venue).then(setFavorites)
               }
               isFavorite={isSaved}
             />
