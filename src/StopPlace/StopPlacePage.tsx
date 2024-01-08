@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import { Actions } from "./Actions";
 import { Detail } from "./Detail";
 import { fetchDepartures } from "../api";
-import { DirectionType, EstimatedCall, Feature, StopPlaceQuayDeparturesQuery } from "../types";
+import {
+  DirectionType,
+  EstimatedCall,
+  Feature,
+  QuayLineFavorites,
+  StopPlaceQuayDeparturesQuery,
+} from "../types";
 import {
   formatAsClock,
   formatAsClockWithSeconds,
@@ -11,29 +17,47 @@ import {
   formatDestinationDisplay,
   formatDirection,
   getTransportIcon,
+  isFavoriteLine,
 } from "../utils";
+import { loadFavoriteLines } from "../storage";
 
 export default function StopPlacePage({ venue }: { venue: Feature }) {
   const [items, setItems] = useState<StopPlaceQuayDeparturesQuery>();
   const [numberOfDepartures, setNumberOfDepartures] = useState(5);
   const [showDetails, setShowDetails] = useState(false);
   const departures = items?.stopPlace;
-  const favorites = items?.favorites;
+  const favoriteDepartures = items?.favorites;
+
+  const [favoriteLines, setFavoriteLines] = useState<QuayLineFavorites[]>();
+  useEffect(() => {
+    loadFavoriteLines().then((lines) => {
+      setFavoriteLines(lines ?? []);
+    });
+  }, []);
 
   const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
   setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
   useEffect(() => {
+    console.log(
+      "Fetching departures",
+      favoriteLines?.flatMap((f) => [...f.lineIds])
+    );
     if (!venue?.properties.id) return;
+    if (favoriteLines === undefined) return;
     const toast = showToast({
       title: "Loading departures...",
       style: Toast.Style.Animated,
     });
-    fetchDepartures(venue.properties.id, numberOfDepartures).then((departures) => {
+    fetchDepartures(venue.properties.id, numberOfDepartures, favoriteLines).then((departures) => {
       setItems(departures);
       toast.then((t) => t.hide());
     });
-  }, [venue?.properties.id, numberOfDepartures]);
+  }, [
+    venue?.properties.id,
+    numberOfDepartures,
+    favoriteLines?.flatMap((f) => [...f.lineIds]).length,
+  ]);
 
   const departuresWithSortedQuays = departures?.quays?.sort((a, b) => {
     if (a.name + a.publicCode < b.name + b.publicCode) return -1;
@@ -52,9 +76,9 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
       filtering={{ keepSectionOrder: true }}
       isShowingDetail={showDetails}
     >
-      {favorites && favorites.length > 0 && (
+      {favoriteDepartures && favoriteDepartures.length > 0 && (
         <List.Section title="Favorites">
-          {favorites
+          {favoriteDepartures
             .flatMap((favorite) => favorite.estimatedCalls)
             .sort(
               (a, b) =>
@@ -65,12 +89,18 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
             .map((ec) => {
               return (
                 <EstimatedCallItem
+                  key={ec.serviceJourney.id + ec.aimedDepartureTime}
                   ec={ec}
                   loadMore={() => setNumberOfDepartures((n) => n + 5)}
                   setShowDetails={() => setShowDetails(!showDetails)}
                   isShowingDetails={showDetails}
                   venue={venue}
-                  isFavorite={true}
+                  isFavorite={isFavoriteLine(
+                    favoriteLines ?? [],
+                    ec.serviceJourney.line.id,
+                    ec.quay.id
+                  )}
+                  setFavorites={setFavoriteLines}
                 />
               );
             })}
@@ -93,11 +123,18 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
             >
               {quay.estimatedCalls.map((ec) => (
                 <EstimatedCallItem
+                  key={ec.serviceJourney.id + ec.aimedDepartureTime}
                   ec={ec}
                   loadMore={() => setNumberOfDepartures((n) => n + 5)}
                   setShowDetails={() => setShowDetails(!showDetails)}
                   isShowingDetails={showDetails}
                   venue={venue}
+                  isFavorite={isFavoriteLine(
+                    favoriteLines ?? [],
+                    ec.serviceJourney.line.id,
+                    ec.quay.id
+                  )}
+                  setFavorites={setFavoriteLines}
                 />
               ))}
             </List.Section>
@@ -114,12 +151,14 @@ function EstimatedCallItem({
   venue,
   isShowingDetails,
   isFavorite = false,
+  setFavorites,
 }: {
   ec: EstimatedCall;
   venue: Feature;
   setShowDetails: () => void;
   loadMore: () => void;
   isShowingDetails?: boolean;
+  setFavorites: (favorites: QuayLineFavorites[]) => void;
   isFavorite?: boolean;
 }) {
   const lineName = `${ec.serviceJourney.line.publicCode ?? ""} ${formatDestinationDisplay(
@@ -153,7 +192,14 @@ function EstimatedCallItem({
         ec.serviceJourney.line.transportSubmode
       )}
       actions={
-        <Actions ec={ec} venue={venue} setShowDetails={setShowDetails} loadMore={loadMore} />
+        <Actions
+          ec={ec}
+          venue={venue}
+          setShowDetails={setShowDetails}
+          loadMore={loadMore}
+          isFavorite={isFavorite}
+          setFavorites={setFavorites}
+        />
       }
       key={ec.serviceJourney.id + ec.aimedDepartureTime}
       title={lineName}

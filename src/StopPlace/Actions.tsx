@@ -1,16 +1,26 @@
 import { Action, ActionPanel, Icon, Image } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { EstimatedCall, Feature } from "../types";
+import { EstimatedCall, Feature, QuayLineFavorites } from "../types";
 import { getDomainName } from "../utils";
+import { addFavoriteLines, removeFavoriteLine } from "../storage";
 
 type ActionsProps = {
   ec: EstimatedCall;
   venue: Feature;
+  isFavorite: boolean;
   setShowDetails: () => void;
   loadMore: () => void;
+  setFavorites: (favorites: QuayLineFavorites[]) => void;
 };
 
-export function Actions({ ec, venue, setShowDetails, loadMore }: ActionsProps) {
+export function Actions({
+  ec,
+  venue,
+  isFavorite,
+  setShowDetails,
+  loadMore,
+  setFavorites,
+}: ActionsProps) {
   const urlString = ec.serviceJourney.line.authority?.url;
   const url = urlString ? new URL(urlString) : null;
 
@@ -23,18 +33,28 @@ export function Actions({ ec, venue, setShowDetails, loadMore }: ActionsProps) {
         shortcut={{ modifiers: ["cmd"], key: "+" }}
         onAction={loadMore}
       />
-      {/* <Action
+      <Action
         title={
           isFavorite
-            ? `Remove Favorite ${venue.properties.name}`
-            : `Favorite ${venue.properties.name}`
+            ? `Remove Favorite ${
+                ec.serviceJourney.line.description ?? ec.destinationDisplay?.frontText
+              }`
+            : `Favorite ${
+                ec.serviceJourney.line.description ??
+                ec.destinationDisplay?.frontText ??
+                "This Line"
+              }`
         }
         icon={isFavorite ? Icon.StarDisabled : Icon.Star}
         shortcut={
           isFavorite ? { modifiers: ["cmd", "shift"], key: "s" } : { modifiers: ["cmd"], key: "s" }
         }
-        onAction={() => (isFavorite ? removeFavorite(venue) : addFavorite(venue))}
-      /> */}
+        onAction={() =>
+          isFavorite
+            ? removeFavoriteLine(ec.serviceJourney.line.id, ec.quay.id).then((f) => setFavorites(f))
+            : addFavoriteLines(ec.serviceJourney.line.id, ec.quay.id).then((f) => setFavorites(f))
+        }
+      />
       {venue.properties.id && (
         <Action.OpenInBrowser
           url={getTravelPlannerUrl(ec)}

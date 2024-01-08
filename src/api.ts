@@ -1,12 +1,6 @@
 import fetch from "node-fetch";
-import {
-  Departures,
-  Feature,
-  QuayDepartures,
-  QuayLineFavorites,
-  StopPlaceQuayDeparturesQuery,
-} from "./types";
 import { getDepartureQuery } from "./departureQuery";
+import { Feature, QuayDepartures, QuayLineFavorites, StopPlaceQuayDeparturesQuery } from "./types";
 
 const CLIENT_NAME = "rosvik-raycast-departures";
 
@@ -34,28 +28,15 @@ export async function fetchVenues(query: string): Promise<Feature[] | undefined>
 
 export async function fetchDepartures(
   stopId: string,
-  numberOfDepartures: number
+  numberOfDepartures: number,
+  favorites: QuayLineFavorites[]
 ): Promise<StopPlaceQuayDeparturesQuery | undefined> {
-  const favorites: QuayLineFavorites[] = [
-    {
-      quayId: "NSR:Quay:71418",
-      lineIds: ["ATB:Line:2_2"],
-    },
-    {
-      quayId: "NSR:Quay:71184",
-      lineIds: ["ATB:Line:2_23"],
-    },
-  ];
   const departuresQuery = await fetchJourneyPlannerData(getDepartureQuery(favorites), {
     id: stopId,
     numberOfDepartures,
   });
 
-  console.log("departuresQuery", departuresQuery);
-
   const departures = mapDepartureQueryKeys(departuresQuery, favorites);
-
-  console.log("departures.favorites", JSON.stringify(departures.favorites));
   return departures;
 }
 
@@ -78,8 +59,6 @@ async function fetchJourneyPlannerData<T>(document: string, variables: object): 
     throw new Error("Failed to fetch data");
   }
   const result = (await response.json()) as { data: T };
-  console.log("result", JSON.stringify(result));
-  console.log("document", document);
   return result.data;
 }
 
