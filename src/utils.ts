@@ -1,5 +1,11 @@
 import { Color, Icon, Image } from "@raycast/api";
-import { DestinationDisplay, DirectionType, TransportMode, VenueCategory } from "./types";
+import {
+  DestinationDisplay,
+  DirectionType,
+  QuayLineFavorites,
+  TransportMode,
+  VenueCategory,
+} from "./types";
 import { useEffect, useState } from "react";
 
 export function useDebounce<T>(value: T, delay = 500): T {
@@ -150,4 +156,12 @@ export function formatDestinationDisplay(dd?: DestinationDisplay) {
     })
     .join("");
   return `${dd.frontText ?? "Unknown"} via ${viaString}`;
+}
+
+export function isFavoriteLine(
+  favorites: QuayLineFavorites[],
+  lineId: string,
+  quayId: string
+): boolean {
+  return favorites.some((fQuay) => fQuay.quayId === quayId && fQuay.lineIds.includes(lineId));
 }
