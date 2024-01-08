@@ -1,8 +1,9 @@
 import { LocalStorage } from "@raycast/api";
-import { Feature } from "./types";
+import { Feature, QuayLineFavorites } from "./types";
 
 enum StorageKeys {
   savedFeatures = "@departures/SavedFeatures/v1",
+  savedQuayLines = "@departures/SavedQuayLines/v1",
 
   /**
    * @deprecated Use preferredFeatures instead
@@ -28,6 +29,59 @@ export async function loadFavoriteStops(): Promise<Feature[] | undefined> {
   const favorites = await LocalStorage.getItem<string>(StorageKeys.savedFeatures);
   if (!favorites) return undefined;
   return JSON.parse(favorites) as Feature[];
+}
+
+export async function addFavoriteLines(
+  lineId: string,
+  quayId: string
+): Promise<QuayLineFavorites[]> {
+  const favorites = await loadFavoriteLines();
+
+  let newFavorites: QuayLineFavorites[] = [];
+  if (!favorites) {
+    // No favorites yet
+    newFavorites = [{ quayId, lineIds: [lineId] }];
+  } else if (favorites.some((fQuay) => fQuay.quayId === quayId)) {
+    // Quay already in favorites
+    newFavorites = favorites.map((fQuay) => {
+      if (fQuay.quayId === quayId) {
+        // Ignore if line is already in favorites
+        if (fQuay.lineIds.includes(lineId)) return fQuay;
+        // Add line to favorites
+        return { ...fQuay, lineIds: [...fQuay.lineIds, lineId] };
+      }
+      return fQuay;
+    });
+  } else {
+    // Quay not in favorites
+    newFavorites = [...favorites, { quayId, lineIds: [lineId] }];
+  }
+
+  await LocalStorage.setItem(StorageKeys.savedQuayLines, JSON.stringify(newFavorites));
+  return newFavorites;
+}
+
+export async function removeFavoriteLine(
+  lineId: string,
+  quayId: string
+): Promise<QuayLineFavorites[]> {
+  const favorites = await loadFavoriteLines();
+  if (!favorites) return [];
+  const newFavorites = favorites.map((fQuay) => {
+    if (fQuay.quayId === quayId) {
+      const newLineIds = fQuay.lineIds.filter((line) => line !== lineId);
+      return { ...fQuay, lineIds: newLineIds };
+    }
+    return fQuay;
+  });
+  await LocalStorage.setItem(StorageKeys.savedQuayLines, JSON.stringify(newFavorites));
+  return newFavorites;
+}
+
+export async function loadFavoriteLines(): Promise<QuayLineFavorites[] | undefined> {
+  const favorites = await LocalStorage.getItem<string>(StorageKeys.savedQuayLines);
+  if (!favorites) return undefined;
+  return JSON.parse(favorites) as QuayLineFavorites[];
 }
 
 export async function wipeStorage() {
