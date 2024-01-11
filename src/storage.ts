@@ -33,14 +33,15 @@ export async function loadFavoriteStops(): Promise<Feature[] | undefined> {
 
 export async function addFavoriteLines(
   lineId: string,
-  quayId: string
+  quayId: string,
+  stopPlaceId: string
 ): Promise<QuayLineFavorites[]> {
   const favorites = await loadFavoriteLines();
 
   let newFavorites: QuayLineFavorites[] = [];
   if (!favorites) {
     // No favorites yet
-    newFavorites = [{ quayId, lineIds: [lineId] }];
+    newFavorites = [{ quayId, stopPlaceId, lineIds: [lineId] }];
   } else if (favorites.some((fQuay) => fQuay.quayId === quayId)) {
     // Quay already in favorites
     newFavorites = favorites.map((fQuay) => {
@@ -54,7 +55,7 @@ export async function addFavoriteLines(
     });
   } else {
     // Quay not in favorites
-    newFavorites = [...favorites, { quayId, lineIds: [lineId] }];
+    newFavorites = [...favorites, { quayId, stopPlaceId, lineIds: [lineId] }];
   }
 
   await LocalStorage.setItem(StorageKeys.savedQuayLines, JSON.stringify(newFavorites));

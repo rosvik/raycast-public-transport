@@ -2,7 +2,9 @@ import { Color, Icon, Image } from "@raycast/api";
 import {
   DestinationDisplay,
   DirectionType,
+  QuayDeparture,
   QuayLineFavorites,
+  StopPlaceQuayDeparturesQuery,
   TransportMode,
   VenueCategory,
 } from "./types";
@@ -164,4 +166,39 @@ export function isFavoriteLine(
   quayId: string
 ): boolean {
   return favorites.some((fQuay) => fQuay.quayId === quayId && fQuay.lineIds.includes(lineId));
+}
+
+export function filterFavoritesFromResponse(
+  departures: StopPlaceQuayDeparturesQuery | undefined,
+  favorites: QuayLineFavorites[]
+) {
+  if (!departures) return undefined;
+
+  const stopPlaceId = departures.stopPlace?.id;
+  if (!stopPlaceId) return departures;
+
+  // Filter out favorites that are not for this stop
+  const relevantFavorites = filterFavoritesOnStopPlace(favorites, stopPlaceId);
+  if (relevantFavorites.length === 0) return { ...departures, favorites: [] };
+
+  const isFavoriteDeparture = (departure: QuayDeparture) =>
+    relevantFavorites.some(
+      (f) =>
+        f.quayId === departure.id &&
+        f.lineIds.includes(departure.estimatedCalls[0]?.serviceJourney.line.id)
+    );
+  return {
+    ...departures,
+    favorites: departures.favorites.filter((departure) => isFavoriteDeparture(departure)),
+  };
+}
+
+/**
+ * Filter out favorites that are not for the given stop place
+ */
+export function filterFavoritesOnStopPlace(
+  favorites: QuayLineFavorites[],
+  stopPlaceId: string
+): QuayLineFavorites[] {
+  return favorites.filter((f) => f.stopPlaceId === stopPlaceId);
 }

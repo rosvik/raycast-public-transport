@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import { getDepartureQuery } from "./departureQuery";
-import { Feature, QuayDepartures, QuayLineFavorites, StopPlaceQuayDeparturesQuery } from "./types";
+import { Feature, QuayDeparture, QuayLineFavorites, StopPlaceQuayDeparturesQuery } from "./types";
 
 const CLIENT_NAME = "rosvik-raycast-departures";
 
@@ -109,9 +109,9 @@ function mapDepartureQueryKeys(
     .map((favoriteQuayId) => {
       const key = favoriteQuayId.replaceAll(":", "_");
       if (!Object.keys(data).includes(key)) return;
-      return data[key] as QuayDepartures;
+      return data[key] as QuayDeparture;
     })
-    .filter(Boolean) as QuayDepartures[];
+    .filter(Boolean) as QuayDeparture[];
   const quaysWithDepartures = quayDepartures.filter((quay) => quay.estimatedCalls.length > 0);
   return {
     stopPlace: data.stopPlace,

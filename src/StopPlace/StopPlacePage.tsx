@@ -11,6 +11,8 @@ import {
   StopPlaceQuayDeparturesQuery,
 } from "../types";
 import {
+  filterFavoritesFromResponse,
+  filterFavoritesOnStopPlace,
   formatAsClock,
   formatAsClockWithSeconds,
   formatAsTimestamp,
@@ -28,10 +30,10 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
   const departures = items?.stopPlace;
   const favoriteDepartures = items?.favorites;
 
-  const [favoriteLines, setFavoriteLines] = useState<QuayLineFavorites[]>();
+  const [storedFavoriteLines, setStoredFavoriteLines] = useState<QuayLineFavorites[]>();
   useEffect(() => {
     loadFavoriteLines().then((lines) => {
-      setFavoriteLines(lines ?? []);
+      setStoredFavoriteLines(lines ?? []);
     });
   }, []);
 
@@ -41,22 +43,34 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
   useEffect(() => {
     console.log(
       "Fetching departures",
-      favoriteLines?.flatMap((f) => [...f.lineIds])
+      storedFavoriteLines?.flatMap((f) => [...f.lineIds])
     );
     if (!venue?.properties.id) return;
-    if (favoriteLines === undefined) return;
+    if (storedFavoriteLines === undefined) return;
     const toast = showToast({
       title: "Loading departures...",
       style: Toast.Style.Animated,
     });
-    fetchDepartures(venue.properties.id, numberOfDepartures, favoriteLines).then((departures) => {
-      setItems(departures);
+
+    fetchDepartures(
+      venue.properties.id,
+      numberOfDepartures,
+      filterFavoritesOnStopPlace(storedFavoriteLines, venue.properties.id)
+    ).then((departures) => {
+      // Filter out favorite lines that are for the wrong quay, since we can't
+      // ask on quay level in the query
+      const departuresWithQuayFavorites = filterFavoritesFromResponse(
+        departures,
+        storedFavoriteLines ?? []
+      );
+
+      setItems(departuresWithQuayFavorites);
       toast.then((t) => t.hide());
     });
   }, [
     venue?.properties.id,
     numberOfDepartures,
-    favoriteLines?.flatMap((f) => [...f.lineIds]).length,
+    storedFavoriteLines?.flatMap((f) => [...f.lineIds]).length,
   ]);
 
   const departuresWithSortedQuays = departures?.quays?.sort((a, b) => {
@@ -96,11 +110,11 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                   isShowingDetails={showDetails}
                   venue={venue}
                   isFavorite={isFavoriteLine(
-                    favoriteLines ?? [],
+                    storedFavoriteLines ?? [],
                     ec.serviceJourney.line.id,
                     ec.quay.id
                   )}
-                  setFavorites={setFavoriteLines}
+                  setFavorites={setStoredFavoriteLines}
                 />
               );
             })}
@@ -130,11 +144,11 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                   isShowingDetails={showDetails}
                   venue={venue}
                   isFavorite={isFavoriteLine(
-                    favoriteLines ?? [],
+                    storedFavoriteLines ?? [],
                     ec.serviceJourney.line.id,
                     ec.quay.id
                   )}
-                  setFavorites={setFavoriteLines}
+                  setFavorites={setStoredFavoriteLines}
                 />
               ))}
             </List.Section>

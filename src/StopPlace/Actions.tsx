@@ -52,7 +52,9 @@ export function Actions({
         onAction={() =>
           isFavorite
             ? removeFavoriteLine(ec.serviceJourney.line.id, ec.quay.id).then((f) => setFavorites(f))
-            : addFavoriteLines(ec.serviceJourney.line.id, ec.quay.id).then((f) => setFavorites(f))
+            : addFavoriteLines(ec.serviceJourney.line.id, ec.quay.id, venue.properties.id).then(
+                (f) => setFavorites(f)
+              )
         }
       />
       {venue.properties.id && (
