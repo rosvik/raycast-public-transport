@@ -1,11 +1,12 @@
 export type QuayLineFavorites = {
+  stopPlaceId: string;
   quayId: string;
   lineIds: string[];
 };
 
 export type StopPlaceQuayDeparturesQuery = {
   stopPlace?: Departures;
-  favorites: QuayDepartures[];
+  favorites: QuayDeparture[];
 };
 
 export type DirectionType = "unknown" | "outbound" | "inbound" | "clockwise" | "anticlockwise";
@@ -32,10 +33,10 @@ export type Departures = {
   description?: string;
   latitude: number;
   longitude: number;
-  quays?: Array<QuayDepartures>;
+  quays?: Array<QuayDeparture>;
 };
 
-export type QuayDepartures = {
+export type QuayDeparture = {
   id: string;
   name: string;
   description?: string;
