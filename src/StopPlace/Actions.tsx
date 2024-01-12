@@ -33,30 +33,33 @@ export function Actions({
         shortcut={{ modifiers: ["cmd"], key: "+" }}
         onAction={loadMore}
       />
-      <Action
-        title={
-          isFavorite
-            ? `Remove Favorite ${
-                ec.serviceJourney.line.description ?? ec.destinationDisplay?.frontText
-              }`
-            : `Favorite ${
-                ec.serviceJourney.line.description ??
-                ec.destinationDisplay?.frontText ??
-                "This Line"
-              }`
-        }
-        icon={isFavorite ? Icon.StarDisabled : Icon.Star}
-        shortcut={
-          isFavorite ? { modifiers: ["cmd", "shift"], key: "s" } : { modifiers: ["cmd"], key: "s" }
-        }
-        onAction={() =>
-          isFavorite
-            ? removeFavoriteLine(ec.serviceJourney.line.id, ec.quay.id).then((f) => setFavorites(f))
-            : addFavoriteLines(ec.serviceJourney.line.id, ec.quay.id, venue.properties.id).then(
-                (f) => setFavorites(f)
-              )
-        }
-      />
+      {isFavorite ? (
+        <Action
+          // eslint-disable-next-line @raycast/prefer-title-case
+          title={`Remove Favorite ${
+            ec.serviceJourney.line.description ?? ec.destinationDisplay?.frontText
+          }`}
+          icon={Icon.StarDisabled}
+          shortcut={{ modifiers: ["cmd", "shift"], key: "s" }}
+          onAction={() =>
+            removeFavoriteLine(ec.serviceJourney.line.id, ec.quay.id).then((f) => setFavorites(f))
+          }
+        />
+      ) : (
+        <Action
+          // eslint-disable-next-line @raycast/prefer-title-case
+          title={`Favorite ${
+            ec.serviceJourney.line.description ?? ec.destinationDisplay?.frontText ?? "This Line"
+          }`}
+          icon={Icon.Star}
+          shortcut={{ modifiers: ["cmd"], key: "s" }}
+          onAction={() =>
+            addFavoriteLines(ec.serviceJourney.line.id, ec.quay.id, venue.properties.id).then((f) =>
+              setFavorites(f)
+            )
+          }
+        />
+      )}
       {venue.properties.id && (
         <Action.OpenInBrowser
           url={getTravelPlannerUrl(ec)}

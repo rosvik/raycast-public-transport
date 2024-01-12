@@ -41,10 +41,6 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
   setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
   useEffect(() => {
-    console.log(
-      "Fetching departures",
-      storedFavoriteLines?.flatMap((f) => [...f.lineIds])
-    );
     if (!venue?.properties.id) return;
     if (storedFavoriteLines === undefined) return;
     const toast = showToast({
@@ -58,7 +54,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
       filterFavoritesOnStopPlace(storedFavoriteLines, venue.properties.id)
     ).then((departures) => {
       // Filter out favorite lines that are for the wrong quay, since we can't
-      // ask on quay level in the query
+      // filter with quay granularity in the query
       const departuresWithQuayFavorites = filterFavoritesFromResponse(
         departures,
         storedFavoriteLines ?? []
