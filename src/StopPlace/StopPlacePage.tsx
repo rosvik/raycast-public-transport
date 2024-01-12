@@ -20,6 +20,7 @@ import {
   formatDirection,
   getTransportIcon,
   isFavoriteLine,
+  sortEstimatedCallsByTime,
 } from "../utils";
 import { loadFavoriteLines } from "../storage";
 
@@ -90,11 +91,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
         <List.Section title="Favorites">
           {favoriteDepartures
             .flatMap((favorite) => favorite.estimatedCalls)
-            .sort(
-              (a, b) =>
-                new Date(a.expectedDepartureTime ?? a.aimedDepartureTime).valueOf() -
-                new Date(b.expectedDepartureTime ?? b.aimedDepartureTime).valueOf()
-            )
+            .sort(sortEstimatedCallsByTime)
             .slice(0, numberOfDepartures)
             .map((ec) => {
               return (

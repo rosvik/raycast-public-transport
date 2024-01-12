@@ -2,6 +2,7 @@ import { Color, Icon, Image } from "@raycast/api";
 import {
   DestinationDisplay,
   DirectionType,
+  EstimatedCall,
   QuayDeparture,
   QuayLineFavorites,
   StopPlaceQuayDeparturesQuery,
@@ -202,3 +203,7 @@ export function filterFavoritesOnStopPlace(
 ): QuayLineFavorites[] {
   return favorites.filter((f) => f.stopPlaceId === stopPlaceId);
 }
+
+export const sortEstimatedCallsByTime = (a: EstimatedCall, b: EstimatedCall) =>
+  new Date(a.expectedDepartureTime ?? a.aimedDepartureTime).valueOf() -
+  new Date(b.expectedDepartureTime ?? b.aimedDepartureTime).valueOf();
