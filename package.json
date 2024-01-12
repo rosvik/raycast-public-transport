@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "raycast-departures",
   "title": "Norwegian Public Transport",
