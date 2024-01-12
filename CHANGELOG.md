@@ -1,13 +1,13 @@
 # Raycast Departures Changelog
 
-## [Added stop place search] - 2023-19-11
+## [Added stop place search] - 2023-11-19
 
 - Added a new landing page for searching for stop places
 - Added option to save stop as favorite
 - The AtB Travel Planner action now opens a specific service journey when used on the departure page
 - Removed the Entur Vehicle Map action
 
-## [Various improvements] - 2023-31-10
+## [Various improvements] - 2023-10-31
 
 - Shows "via" information in line names
 - Added filtering by authority
