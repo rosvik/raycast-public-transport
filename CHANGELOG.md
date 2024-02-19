@@ -1,5 +1,7 @@
 # Raycast Departures Changelog
 
+- ⌘O actions now point to FRAM Travel Search instead of AtB
+
 ## [Added line favorites] - 2024-01-12
 
 This update adds the option to add lines as favorites. Favorites are based on line number (also known as "public code"), and are separate for every quay / platform. Favorites will show in a section at the top of the list of departures, and are maked with a star icon. Favorites can be added with ⌘S, and removed with ⌘⇧S. This replaces the old shortcut for adding a stop as a favorite, which now only can be done on the stop place search page.
