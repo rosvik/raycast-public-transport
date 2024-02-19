@@ -27,7 +27,7 @@ export function Actions({ venue, isFavorite, onAction, onSave }: ActionsProps) {
       />
       {venue.properties.id && (
         <Action.OpenInBrowser
-          url={`https://atb-staging.planner-web.mittatb.no/departures/${venue.properties.id}`}
+          url={`https://reise.frammr.no/departures/${venue.properties.id}`}
           title="Open Stop in AtB Travel Planner"
           icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
