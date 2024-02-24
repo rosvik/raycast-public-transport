@@ -32,8 +32,7 @@
       "title": "Departures",
       "subtitle": "View Public Transport Departures",
       "description": "Find departures from any stop place",
-      "mode": "view",
-      "arguments": []
+      "mode": "view"
     }
   ],
   "dependencies": {
