@@ -20,7 +20,6 @@
   "description": "Real-time departures for Norwegian public transport. Data made available by Entur.",
   "icon": "command-icon.png",
   "author": "rosvik",
-  "owner": "variant-as",
   "categories": [
     "Web",
     "Data",
