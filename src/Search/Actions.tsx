@@ -28,8 +28,8 @@ export function Actions({ venue, isFavorite, onAction, onSave }: ActionsProps) {
       {venue.properties.id && (
         <Action.OpenInBrowser
           url={`https://reise.frammr.no/departures/${venue.properties.id}`}
-          title="Open Stop in AtB Travel Planner"
-          icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
+          title="Open Stop in FRAM Travel Search"
+          icon={getFavicon("https://reise.frammr.no", { mask: Image.Mask.RoundedRectangle })}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
         />
       )}

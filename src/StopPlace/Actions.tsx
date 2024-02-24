@@ -64,7 +64,7 @@ export function Actions({
         <Action.OpenInBrowser
           url={getTravelPlannerUrl(ec)}
           title="Open Trip in FRAM Travel Search"
-          icon={getFavicon("https://atb.no", { mask: Image.Mask.RoundedRectangle })}
+          icon={getFavicon("https://reise.frammr.no", { mask: Image.Mask.RoundedRectangle })}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
         />
       )}
