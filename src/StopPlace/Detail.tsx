@@ -26,12 +26,12 @@ export function Detail({ ec }: DetailProps) {
           <List.Item.Detail.Metadata.Label
             title="Line"
             text={`${ec.serviceJourney.line.publicCode ?? ""} ${formatDestinationDisplay(
-              ec.destinationDisplay
+              ec.destinationDisplay,
             )}`}
             icon={{
               ...getTransportIcon(
                 ec.serviceJourney.line.transportMode,
-                ec.serviceJourney.line.transportSubmode
+                ec.serviceJourney.line.transportSubmode,
               ),
               tintColor: Color.SecondaryText,
             }}
@@ -42,7 +42,7 @@ export function Detail({ ec }: DetailProps) {
               title="Transport mode"
               text={getModeText(
                 ec.serviceJourney.line.transportMode,
-                ec.serviceJourney.line.transportSubmode
+                ec.serviceJourney.line.transportSubmode,
               )}
             />
           )}

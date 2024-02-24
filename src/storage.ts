@@ -34,7 +34,7 @@ export async function loadFavoriteStops(): Promise<Feature[] | undefined> {
 export async function addFavoriteLines(
   lineId: string,
   quayId: string,
-  stopPlaceId: string
+  stopPlaceId: string,
 ): Promise<QuayLineFavorites[]> {
   const favorites = await loadFavoriteLines();
 
@@ -64,7 +64,7 @@ export async function addFavoriteLines(
 
 export async function removeFavoriteLine(
   lineId: string,
-  quayId: string
+  quayId: string,
 ): Promise<QuayLineFavorites[]> {
   const favorites = await loadFavoriteLines();
   if (!favorites) return [];

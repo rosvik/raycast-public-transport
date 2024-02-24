@@ -55,7 +55,7 @@ export function Actions({
           shortcut={{ modifiers: ["cmd"], key: "s" }}
           onAction={() =>
             addFavoriteLines(ec.serviceJourney.line.id, ec.quay.id, venue.properties.id).then((f) =>
-              setFavorites(f)
+              setFavorites(f),
             )
           }
         />

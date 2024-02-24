@@ -164,14 +164,14 @@ export function formatDestinationDisplay(dd?: DestinationDisplay) {
 export function isFavoriteLine(
   favorites: QuayLineFavorites[],
   lineId: string,
-  quayId: string
+  quayId: string,
 ): boolean {
   return favorites.some((fQuay) => fQuay.quayId === quayId && fQuay.lineIds.includes(lineId));
 }
 
 export function filterFavoritesFromResponse(
   departures: StopPlaceQuayDeparturesQuery | undefined,
-  favorites: QuayLineFavorites[]
+  favorites: QuayLineFavorites[],
 ) {
   if (!departures) return undefined;
 
@@ -186,7 +186,7 @@ export function filterFavoritesFromResponse(
     relevantFavorites.some(
       (f) =>
         f.quayId === departure.id &&
-        f.lineIds.includes(departure.estimatedCalls[0]?.serviceJourney.line.id)
+        f.lineIds.includes(departure.estimatedCalls[0]?.serviceJourney.line.id),
     );
   return {
     ...departures,
@@ -199,7 +199,7 @@ export function filterFavoritesFromResponse(
  */
 export function filterFavoritesOnStopPlace(
   favorites: QuayLineFavorites[],
-  stopPlaceId: string
+  stopPlaceId: string,
 ): QuayLineFavorites[] {
   return favorites.filter((f) => f.stopPlaceId === stopPlaceId);
 }

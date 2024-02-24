@@ -52,13 +52,13 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
     fetchDepartures(
       venue.properties.id,
       numberOfDepartures,
-      filterFavoritesOnStopPlace(storedFavoriteLines, venue.properties.id)
+      filterFavoritesOnStopPlace(storedFavoriteLines, venue.properties.id),
     ).then((departures) => {
       // Filter out favorite lines that are for the wrong quay, since we can't
       // filter with quay granularity in the query
       const departuresWithQuayFavorites = filterFavoritesFromResponse(
         departures,
-        storedFavoriteLines ?? []
+        storedFavoriteLines ?? [],
       );
 
       setItems(departuresWithQuayFavorites);
@@ -105,7 +105,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                   isFavorite={isFavoriteLine(
                     storedFavoriteLines ?? [],
                     ec.serviceJourney.line.id,
-                    ec.quay.id
+                    ec.quay.id,
                   )}
                   setFavorites={setStoredFavoriteLines}
                 />
@@ -139,7 +139,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
                   isFavorite={isFavoriteLine(
                     storedFavoriteLines ?? [],
                     ec.serviceJourney.line.id,
-                    ec.quay.id
+                    ec.quay.id,
                   )}
                   setFavorites={setStoredFavoriteLines}
                 />
@@ -169,7 +169,7 @@ function EstimatedCallItem({
   isFavorite?: boolean;
 }) {
   const lineName = `${ec.serviceJourney.line.publicCode ?? ""} ${formatDestinationDisplay(
-    ec.destinationDisplay
+    ec.destinationDisplay,
   )}`;
 
   return (
@@ -196,7 +196,7 @@ function EstimatedCallItem({
       ]}
       icon={getTransportIcon(
         ec.serviceJourney.line.transportMode,
-        ec.serviceJourney.line.transportSubmode
+        ec.serviceJourney.line.transportSubmode,
       )}
       actions={
         <Actions

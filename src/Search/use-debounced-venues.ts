@@ -8,7 +8,7 @@ import { useDebounce } from "../utils";
 export function useDebouncedVenues(
   query: string,
   toast: Promise<Toast> | undefined,
-  setToast: (toast: Promise<Toast> | undefined) => void
+  setToast: (toast: Promise<Toast> | undefined) => void,
 ) {
   const [venueResults, setVenueResults] = useState<Feature[]>([]);
 
@@ -26,7 +26,7 @@ export function useDebouncedVenues(
       showToast({
         title: "Searching...",
         style: Toast.Style.Animated,
-      })
+      }),
     );
   }, [query]);
 
@@ -56,7 +56,7 @@ export function useDebouncedVenues(
             showToast({
               title: `No results searching for "${debouncedQuery}"`,
               style: Toast.Style.Failure,
-            })
+            }),
           );
           return;
         }
@@ -68,7 +68,7 @@ export function useDebouncedVenues(
           showToast({
             title: "Something went wrong",
             style: Toast.Style.Failure,
-          })
+          }),
         );
       });
   }, [debouncedQuery]);

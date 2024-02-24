@@ -29,7 +29,7 @@ export async function fetchVenues(query: string): Promise<Feature[] | undefined>
 export async function fetchDepartures(
   stopId: string,
   numberOfDepartures: number,
-  favorites: QuayLineFavorites[]
+  favorites: QuayLineFavorites[],
 ): Promise<StopPlaceQuayDeparturesQuery | undefined> {
   const departuresQuery = await fetchJourneyPlannerData(getDepartureQuery(favorites), {
     id: stopId,
@@ -102,7 +102,7 @@ async function fetchVehiclesData<T>(document: string, variables: object): Promis
 function mapDepartureQueryKeys(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any,
-  favorites: QuayLineFavorites[]
+  favorites: QuayLineFavorites[],
 ): StopPlaceQuayDeparturesQuery {
   const favoriteQuayIds = favorites.map((fav) => fav.quayId);
   const quayDepartures = favoriteQuayIds
