@@ -1,5 +1,6 @@
 # Raycast Departures Changelog
 
+- Added an Entur credit footer to details section
 - ⌘O actions now point to FRAM Travel Search instead of AtB
 
 ## [Added line favorites] - 2024-01-12
