@@ -14,24 +14,24 @@
     "reise",
     "entur",
     "journey planner",
-    "buss",
-    "tog"
+    "real-time",
+    "sanntid"
   ],
-  "description": "Norwegian public transport departures, based on real time data from Entur",
+  "description": "Real-time departures for Norwegian public transport. Data made available by Entur.",
   "icon": "command-icon.png",
   "author": "rosvik",
   "owner": "variant-as",
   "categories": [
     "Web",
-    "Data"
+    "Data",
+    "Other"
   ],
   "license": "MIT",
   "commands": [
     {
       "name": "index",
       "title": "Departures",
-      "subtitle": "View Public Transport Departures",
-      "description": "Find departures from any stop place",
+      "description": "Search for public transport departures from any stop place in Norway",
       "mode": "view"
     }
   ],
