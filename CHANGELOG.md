@@ -1,10 +1,15 @@
 # Raycast Norwegian Public Transport Changelog
 
+## [Preparing for store release] - 2024-04-29
+
+This release has a bunch of minor changes and tweaks, mostly to make the extension ready for publishing to the Raycast Store 🚀
+
+- Changed the extension name to "Norwegian Public Transport"
 - Made it possible to navigate back to the stop place search page after opening a stop place
 - Made info on mode of transport more readable, and made it possible to filter by this field
 - Made search bar placeholders more descriptive, and replaced the clock
-- Added an Entur credit footer to details section
-- ⌘O actions now point to FRAM Travel Search instead of AtB
+- Added a footer to the details section with credits to Entur
+- ⌘O actions now point to Reis Nordland Travel Search instead of AtB
 
 ## [Added line favorites] - 2024-01-12
 
