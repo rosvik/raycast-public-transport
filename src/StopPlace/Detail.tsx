@@ -1,6 +1,6 @@
 import { Color, Icon, Image, List, environment } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { EstimatedCall, SjEstimatedCall, TransportMode } from "../types";
+import { EstimatedCall, SjEstimatedCall } from "../types";
 import { formatAsClock, formatDestinationDisplay, getTransportIcon } from "../utils";
 
 type DetailProps = {
@@ -38,15 +38,13 @@ export function Detail({ ec }: DetailProps) {
             }}
           />
 
-          {ec.serviceJourney.line.transportSubmode !== "unknown" && (
-            <List.Item.Detail.Metadata.Label
-              title="Transport mode"
-              text={getModeText(
-                ec.serviceJourney.line.transportMode,
-                ec.serviceJourney.line.transportSubmode,
-              )}
-            />
-          )}
+          {ec.serviceJourney.line.transportSubmode &&
+            ec.serviceJourney.line.transportSubmode !== "unknown" && (
+              <List.Item.Detail.Metadata.Label
+                title="Transport mode"
+                text={getSubModeText(ec.serviceJourney.line.transportSubmode)}
+              />
+            )}
           <List.Item.Detail.Metadata.Separator />
           <List.Item.Detail.Metadata.Label
             title="Scheduled departure"
@@ -115,8 +113,12 @@ function getEstimatedCallsMarkdown(
   return content + "\n\n---\n\n" + entur_footer;
 }
 
-function getModeText(transportMode?: TransportMode, transportSubmode?: string) {
-  return transportSubmode === "unknown" ? transportMode : `${transportMode} / ${transportSubmode}`;
+function getSubModeText(transportSubmode: string) {
+  // Split on capital letter
+  let subMode = transportSubmode.replace(/([A-Z])/g, " $1").trim();
+  // Capitalize first letter
+  subMode = subMode.charAt(0).toUpperCase() + subMode.slice(1);
+  return subMode;
 }
 
 function estimatedCallText(e: SjEstimatedCall) {
