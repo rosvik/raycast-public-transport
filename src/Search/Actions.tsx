@@ -27,9 +27,9 @@ export function Actions({ venue, isFavorite, onAction, onSave }: ActionsProps) {
       />
       {venue.properties.id && (
         <Action.OpenInBrowser
-          url={`https://reise.frammr.no/departures/${venue.properties.id}`}
-          title="Open Stop in FRAM Travel Search"
-          icon={getFavicon("https://reise.frammr.no", { mask: Image.Mask.RoundedRectangle })}
+          url={`https://reise.reisnordland.no/departures/${venue.properties.id}`}
+          title="Open Stop in Reis Travel Search"
+          icon={getFavicon("https://reisnordland.no", { mask: Image.Mask.RoundedRectangle })}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
         />
       )}

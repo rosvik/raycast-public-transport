@@ -63,8 +63,8 @@ export function Actions({
       {venue.properties.id && (
         <Action.OpenInBrowser
           url={getTravelPlannerUrl(ec)}
-          title="Open Trip in FRAM Travel Search"
-          icon={getFavicon("https://reise.frammr.no", { mask: Image.Mask.RoundedRectangle })}
+          title="Open Trip in Reis Travel Search"
+          icon={getFavicon("https://reisnordland.no", { mask: Image.Mask.RoundedRectangle })}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
         />
       )}
@@ -83,7 +83,7 @@ export function Actions({
 }
 
 function getTravelPlannerUrl(ec: EstimatedCall) {
-  const base = "https://reise.frammr.no/departures/details";
+  const base = "https://reise.reisnordland.no/departures/details";
   const date = new Date(ec.date);
   const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
