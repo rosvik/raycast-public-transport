@@ -17,6 +17,7 @@ import {
   formatAsTimestamp,
   formatDestinationDisplay,
   formatDirection,
+  getSubModeText,
   getTransportIcon,
   isFavoriteLine,
   sortEstimatedCallsByTime,
@@ -216,6 +217,7 @@ function EstimatedCallItem({
         ec.serviceJourney.line.description ?? "",
         ec.serviceJourney.line.publicCode ?? "",
         ec.serviceJourney.line.transportMode ?? "",
+        getSubModeText(ec.serviceJourney.line.transportSubmode) ?? "",
         ec.serviceJourney.line.authority?.name ?? "",
       ]}
     />

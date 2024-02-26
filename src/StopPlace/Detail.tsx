@@ -1,7 +1,12 @@
 import { Color, Icon, Image, List, environment } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { EstimatedCall, SjEstimatedCall } from "../types";
-import { formatAsClock, formatDestinationDisplay, getTransportIcon } from "../utils";
+import {
+  formatAsClock,
+  formatDestinationDisplay,
+  getSubModeText,
+  getTransportIcon,
+} from "../utils";
 
 type DetailProps = {
   ec: EstimatedCall;
@@ -111,14 +116,6 @@ function getEstimatedCallsMarkdown(
   const entur_footer = `Data made available by Entur\n\n![](data:image/svg+xml;base64,${theme === "light" ? ENTUR_LOGO_B64_DARK_BLUE : ENTUR_LOGO_B64_WHITE})`;
 
   return content + "\n\n---\n\n" + entur_footer;
-}
-
-function getSubModeText(transportSubmode: string) {
-  // Split on capital letter
-  let subMode = transportSubmode.replace(/([A-Z])/g, " $1").trim();
-  // Capitalize first letter
-  subMode = subMode.charAt(0).toUpperCase() + subMode.slice(1);
-  return subMode;
 }
 
 function estimatedCallText(e: SjEstimatedCall) {

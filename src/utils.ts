@@ -121,6 +121,15 @@ export function formatAsClockWithSeconds(isoString: string) {
   return `${padTime(d.getHours())}:${padTime(d.getMinutes())}:${padTime(d.getSeconds())}`;
 }
 
+export function getSubModeText(transportSubmode?: string) {
+  if (!transportSubmode) return undefined;
+  // Split on capital letter
+  let subMode = transportSubmode.replace(/([A-Z])/g, " $1").trim();
+  // Capitalize first letter
+  subMode = subMode.charAt(0).toUpperCase() + subMode.slice(1);
+  return subMode;
+}
+
 export function formatAsTimestamp(isoString: string) {
   const d = new Date(isoString);
   return `${d.toDateString()}, ${formatAsClockWithSeconds(isoString)}`;
