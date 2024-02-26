@@ -1,12 +1,14 @@
-import { List, Toast, clearSearchBar } from "@raycast/api";
+import { List, Toast, clearSearchBar, useNavigation } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { addFavoriteStop, loadFavoriteStops, removeFavoriteStop } from "../storage";
 import { Feature } from "../types";
 import { getVenueCategoryIcon } from "../utils";
 import { Actions } from "./Actions";
 import { useDebouncedVenues } from "./use-debounced-venues";
+import StopPlacePage from "../StopPlace/StopPlacePage";
 
-export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) => void }) {
+export default function SearchPage() {
+  const { push } = useNavigation();
   const [query, setQuery] = useState<string>("");
   const [toast, setToast] = useState<Promise<Toast>>();
   const { venueResults } = useDebouncedVenues(query, toast, setToast);
@@ -35,7 +37,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
                   clearSearchBar();
                   // Re-add favorite to bump it to the top of the list
                   addFavoriteStop(venue);
-                  setVenue(venue);
+                  push(<StopPlacePage venue={venue} />);
                 }}
                 venue={venue}
                 onSave={() => removeFavoriteStop(venue).then(setFavorites)}
@@ -54,7 +56,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
                 clearSearchBar();
                 // Re-add favorite to bump it to the top of the list
                 if (isSaved) addFavoriteStop(venue);
-                setVenue(venue);
+                push(<StopPlacePage venue={venue} />);
               }}
               venue={venue}
               onSave={() =>

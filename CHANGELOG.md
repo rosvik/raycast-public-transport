@@ -1,5 +1,6 @@
 # Raycast Departures Changelog
 
+- Made it possible to navigate back to the stop place search page after opening a stop place
 - Made transport mode info in details more readable, and made it possible to filter by this field
 - Made search bar placeholders more descriptive, and replaced the clock
 - Added an Entur credit footer to details section
