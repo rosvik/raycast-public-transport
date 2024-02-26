@@ -1,6 +1,6 @@
 <div align="center">
   <img width="128" src="https://github.com/rosvik/raycast-departures/blob/main/assets/command-icon.png?raw=true" />
-  <h1 align="center">Raycast Departures Extension</h1>
+  <h1 align="center">Raycast Norwegian Public Transport Extension</h1>
 </div>
 
 Get real-time public transport information from all of Norway straight in your command bar. Search for any stop place or public transport hub near you, and see upcoming departures. If you save your frequently used stops and lines as favorites for quick access, there will be no faster way to check when you need to get up and go.

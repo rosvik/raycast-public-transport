@@ -1,7 +1,7 @@
 {
   "version": "2.1.0",
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "raycast-departures",
+  "name": "raycast-norwegian-public-transport",
   "title": "Norwegian Public Transport",
   "keywords": [
     "departures",

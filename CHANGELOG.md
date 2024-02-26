@@ -1,4 +1,4 @@
-# Raycast Departures Changelog
+# Raycast Norwegian Public Transport Changelog
 
 - Made it possible to navigate back to the stop place search page after opening a stop place
 - Made info on mode of transport more readable, and made it possible to filter by this field
