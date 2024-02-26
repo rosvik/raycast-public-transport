@@ -1,5 +1,6 @@
 # Raycast Departures Changelog
 
+- Made search bar placeholders more descriptive, and replaced the clock
 - Added an Entur credit footer to details section
 - ⌘O actions now point to FRAM Travel Search instead of AtB
 

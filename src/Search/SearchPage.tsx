@@ -2,14 +2,11 @@ import { List, Toast, clearSearchBar } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { addFavoriteStop, loadFavoriteStops, removeFavoriteStop } from "../storage";
 import { Feature } from "../types";
-import { formatAsClockWithSeconds, getVenueCategoryIcon } from "../utils";
+import { getVenueCategoryIcon } from "../utils";
 import { Actions } from "./Actions";
 import { useDebouncedVenues } from "./use-debounced-venues";
 
 export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) => void }) {
-  const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
-  setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
-
   const [query, setQuery] = useState<string>("");
   const [toast, setToast] = useState<Promise<Toast>>();
   const { venueResults } = useDebouncedVenues(query, toast, setToast);
@@ -23,8 +20,7 @@ export default function SearchPage({ setVenue }: { setVenue: (venue: Feature) =>
 
   return (
     <List
-      navigationTitle={clock}
-      searchBarPlaceholder="Search for a stop"
+      searchBarPlaceholder="Search by stop name"
       searchText={query}
       onSearchTextChange={setQuery}
     >

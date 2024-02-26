@@ -14,7 +14,6 @@ import {
   filterFavoritesFromResponse,
   filterFavoritesOnStopPlace,
   formatAsClock,
-  formatAsClockWithSeconds,
   formatAsTimestamp,
   formatDestinationDisplay,
   formatDirection,
@@ -37,9 +36,6 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
       setStoredFavoriteLines(lines ?? []);
     });
   }, []);
-
-  const [clock, setClock] = useState(formatAsClockWithSeconds(new Date().toISOString()));
-  setInterval(() => setClock(formatAsClockWithSeconds(new Date().toISOString())), 1000);
 
   useEffect(() => {
     if (!venue?.properties.id) return;
@@ -78,12 +74,8 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
 
   return (
     <List
-      navigationTitle={clock}
-      searchBarPlaceholder={
-        departures
-          ? `${departures.name}${departures.description ? " " + departures.description : ""}`
-          : ""
-      }
+      searchBarPlaceholder="Filter by line, mode of transport or authority"
+      navigationTitle={departures?.name}
       filtering={{ keepSectionOrder: true }}
       isShowingDetail={showDetails}
     >
