@@ -13,8 +13,12 @@ export function useDebouncedVenues(
   const [venueResults, setVenueResults] = useState<Feature[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const resetToast = () => {
-    toast && toast.then((t) => t.hide());
+  const resetToast = async () => {
+    setIsLoading(false);
+    if (toast) {
+      const t = await toast;
+      t.hide();
+    }
     setToast(undefined);
   };
 
@@ -33,25 +37,27 @@ export function useDebouncedVenues(
   }, [query]);
 
   useEffect(() => {
-    if (debouncedQuery === undefined || debouncedQuery === "") {
-      resetToast();
-      return;
-    }
-    if (debouncedQuery === "DEBUG_WIPE_STORAGE") {
-      confirmAlert({
-        title: "Wipe Storage",
-        message: "Are you sure you want to wipe storage?",
-        primaryAction: {
-          title: "Yes",
-          style: Alert.ActionStyle.Destructive,
-          onAction: wipeStorage,
-        },
-      });
-      resetToast();
-      return;
-    }
-    fetchVenues(debouncedQuery)
-      .then((features) => {
+    const abortController = new AbortController();
+    (async () => {
+      if (debouncedQuery === undefined || debouncedQuery === "") {
+        await resetToast();
+        return;
+      }
+      if (debouncedQuery === "DEBUG_WIPE_STORAGE") {
+        confirmAlert({
+          title: "Wipe Storage",
+          message: "Are you sure you want to wipe storage?",
+          primaryAction: {
+            title: "Yes",
+            style: Alert.ActionStyle.Destructive,
+            onAction: wipeStorage,
+          },
+        });
+        await resetToast();
+        return;
+      }
+      const features = await fetchVenues(debouncedQuery, abortController.signal);
+      try {
         console.log(features?.length);
         if (!features || features.length === 0) {
           setToast(
@@ -60,20 +66,24 @@ export function useDebouncedVenues(
               style: Toast.Style.Failure,
             }),
           );
+          setIsLoading(false);
           return;
         }
         setVenueResults(features);
-        resetToast();
-      })
-      .catch(() => {
+        await resetToast();
+      } catch (error) {
+        console.error(error);
         setToast(
           showToast({
             title: "Something went wrong",
             style: Toast.Style.Failure,
           }),
         );
-      })
-      .finally(() => setIsLoading(false));
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+    return () => abortController.abort();
   }, [debouncedQuery]);
 
   return {

@@ -40,6 +40,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
   }, []);
 
   useEffect(() => {
+    const abortController = new AbortController();
     (async () => {
       if (!venue?.properties.id) return;
       if (storedFavoriteLines === undefined) return;
@@ -52,6 +53,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
         venue.properties.id,
         numberOfDepartures,
         filterFavoritesOnStopPlace(storedFavoriteLines, venue.properties.id),
+        abortController.signal,
       );
       // Filter out favorite lines that are for the wrong quay, since we can't
       // filter with quay granularity in the query
@@ -64,6 +66,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
       (await toast).hide();
       setIsLoading(false);
     })();
+    return () => abortController.abort();
   }, [
     venue?.properties.id,
     numberOfDepartures,

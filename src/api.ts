@@ -7,7 +7,10 @@ const CLIENT_NAME = "rosvik-raycast-departures";
 type FeatureResponse = {
   features: Feature[];
 };
-export async function fetchVenues(query: string): Promise<Feature[] | undefined> {
+export async function fetchVenues(
+  query: string,
+  signal?: AbortSignal,
+): Promise<Feature[] | undefined> {
   const params = new URLSearchParams({
     text: query,
     size: "7",
@@ -21,6 +24,7 @@ export async function fetchVenues(query: string): Promise<Feature[] | undefined>
     headers: {
       "ET-Client-Name": CLIENT_NAME,
     },
+    signal,
   });
   const featureResponse = (await response.json()) as FeatureResponse;
   return featureResponse.features;
@@ -30,17 +34,23 @@ export async function fetchDepartures(
   stopId: string,
   numberOfDepartures: number,
   favorites: QuayLineFavorites[],
+  signal?: AbortSignal,
 ): Promise<StopPlaceQuayDeparturesQuery | undefined> {
   const departuresQuery = await fetchJourneyPlannerData(getDepartureQuery(favorites), {
     id: stopId,
     numberOfDepartures,
+    signal,
   });
 
   const departures = mapDepartureQueryKeys(departuresQuery, favorites);
   return departures;
 }
 
-async function fetchJourneyPlannerData<T>(document: string, variables: object): Promise<T> {
+async function fetchJourneyPlannerData<T>(
+  document: string,
+  variables: object,
+  signal?: AbortSignal,
+): Promise<T> {
   const url = "https://api.entur.io/journey-planner/v3/graphql";
   console.debug(url, JSON.stringify(variables));
   const response = await fetch(url, {
@@ -53,6 +63,7 @@ async function fetchJourneyPlannerData<T>(document: string, variables: object): 
       query: document,
       variables,
     }),
+    signal,
   });
   if (response.status !== 200) {
     console.error(response);
