@@ -80,9 +80,7 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
   });
 
   if (isLoading) {
-    return (
-      <List isLoading searchBarPlaceholder="Filter by line, mode of transport or authority"></List>
-    );
+    return <List isLoading searchBarPlaceholder="Filter by line, mode of transport or authority" />;
   }
 
   return (

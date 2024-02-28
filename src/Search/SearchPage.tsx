@@ -13,12 +13,19 @@ export default function SearchPage() {
   const [toast, setToast] = useState<Promise<Toast>>();
   const { venueResults, isLoading } = useDebouncedVenues(query, toast, setToast);
 
+  const [favoritesIsLoading, setFavoritesIsLoading] = useState(true);
   const [favorites, setFavorites] = useState<Feature[]>([]);
   useEffect(() => {
     loadFavoriteStops().then((preferredVenues) => {
-      if (preferredVenues) setFavorites(preferredVenues);
+      if (preferredVenues) {
+        setFavorites(preferredVenues);
+        setFavoritesIsLoading(false);
+      }
     });
   }, []);
+  if (favoritesIsLoading) {
+    return <List isLoading searchBarPlaceholder="Search by stop name" />;
+  }
 
   return (
     <List
