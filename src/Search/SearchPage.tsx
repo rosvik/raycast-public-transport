@@ -11,7 +11,7 @@ export default function SearchPage() {
   const { push } = useNavigation();
   const [query, setQuery] = useState<string>("");
   const [toast, setToast] = useState<Promise<Toast>>();
-  const { venueResults } = useDebouncedVenues(query, toast, setToast);
+  const { venueResults, isLoading } = useDebouncedVenues(query, toast, setToast);
 
   const [favorites, setFavorites] = useState<Feature[]>([]);
   useEffect(() => {
@@ -25,6 +25,7 @@ export default function SearchPage() {
       searchBarPlaceholder="Search by stop name"
       searchText={query}
       onSearchTextChange={setQuery}
+      isLoading={isLoading}
     >
       <List.Section title="Favorites">
         {favorites

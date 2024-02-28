@@ -11,6 +11,7 @@ export function useDebouncedVenues(
   setToast: (toast: Promise<Toast> | undefined) => void,
 ) {
   const [venueResults, setVenueResults] = useState<Feature[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const resetToast = () => {
     toast && toast.then((t) => t.hide());
@@ -21,6 +22,7 @@ export function useDebouncedVenues(
 
   useEffect(() => {
     if (!query) return;
+    setIsLoading(true);
     if (toast) return;
     setToast(
       showToast({
@@ -70,10 +72,12 @@ export function useDebouncedVenues(
             style: Toast.Style.Failure,
           }),
         );
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, [debouncedQuery]);
 
   return {
     venueResults,
+    isLoading,
   };
 }
