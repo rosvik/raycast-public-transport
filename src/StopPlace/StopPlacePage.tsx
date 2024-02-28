@@ -26,6 +26,7 @@ import { loadFavoriteLines } from "../storage";
 
 export default function StopPlacePage({ venue }: { venue: Feature }) {
   const [items, setItems] = useState<StopPlaceQuayDeparturesQuery>();
+  const [isLoading, setIsLoading] = useState(true);
   const [numberOfDepartures, setNumberOfDepartures] = useState(5);
   const [showDetails, setShowDetails] = useState(false);
   const departures = items?.stopPlace;
@@ -39,18 +40,19 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
   }, []);
 
   useEffect(() => {
-    if (!venue?.properties.id) return;
-    if (storedFavoriteLines === undefined) return;
-    const toast = showToast({
-      title: "Loading departures...",
-      style: Toast.Style.Animated,
-    });
+    (async () => {
+      if (!venue?.properties.id) return;
+      if (storedFavoriteLines === undefined) return;
+      const toast = showToast({
+        title: "Loading departures...",
+        style: Toast.Style.Animated,
+      });
 
-    fetchDepartures(
-      venue.properties.id,
-      numberOfDepartures,
-      filterFavoritesOnStopPlace(storedFavoriteLines, venue.properties.id),
-    ).then((departures) => {
+      const departures = await fetchDepartures(
+        venue.properties.id,
+        numberOfDepartures,
+        filterFavoritesOnStopPlace(storedFavoriteLines, venue.properties.id),
+      );
       // Filter out favorite lines that are for the wrong quay, since we can't
       // filter with quay granularity in the query
       const departuresWithQuayFavorites = filterFavoritesFromResponse(
@@ -59,8 +61,9 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
       );
 
       setItems(departuresWithQuayFavorites);
-      toast.then((t) => t.hide());
-    });
+      (await toast).hide();
+      setIsLoading(false);
+    })();
   }, [
     venue?.properties.id,
     numberOfDepartures,
@@ -72,6 +75,12 @@ export default function StopPlacePage({ venue }: { venue: Feature }) {
     if (a.name + a.publicCode > b.name + b.publicCode) return 1;
     return 0;
   });
+
+  if (isLoading) {
+    return (
+      <List isLoading searchBarPlaceholder="Filter by line, mode of transport or authority"></List>
+    );
+  }
 
   return (
     <List
