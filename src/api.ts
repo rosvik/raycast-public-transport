@@ -73,43 +73,6 @@ async function fetchJourneyPlannerData<T>(
   return result.data;
 }
 
-const VehicleIdQueryDocument = `
-query getVehicleId($id: String!) {
-  vehicles(serviceJourneyId: $id) {
-    vehicleId
-  }
-}
-`;
-type VehicleIdQuery = {
-  vehicles: { vehicleId: string }[];
-};
-export async function fetchVehicleId(serviceJourneyId: string): Promise<string | undefined> {
-  const vehiclesIdQuery = await fetchVehiclesData<VehicleIdQuery>(VehicleIdQueryDocument, {
-    id: serviceJourneyId,
-  });
-  if (vehiclesIdQuery && vehiclesIdQuery.vehicles && vehiclesIdQuery.vehicles.length > 0) {
-    return vehiclesIdQuery.vehicles[0].vehicleId;
-  }
-}
-
-async function fetchVehiclesData<T>(document: string, variables: object): Promise<T> {
-  const url = "https://api.entur.io/realtime/v1/vehicles/graphql";
-  console.debug(url, JSON.stringify(variables));
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "ET-Client-Name": CLIENT_NAME,
-    },
-    body: JSON.stringify({
-      query: document,
-      variables,
-    }),
-  });
-  const result = (await response.json()) as { data: T };
-  return result.data;
-}
-
 function mapDepartureQueryKeys(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any,
