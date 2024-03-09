@@ -46,7 +46,7 @@ export function Detail({ ec }: DetailProps) {
           {ec.serviceJourney.line.transportSubmode &&
             ec.serviceJourney.line.transportSubmode !== "unknown" && (
               <List.Item.Detail.Metadata.Label
-                title="Transport mode"
+                title="Mode of transport"
                 text={getSubModeText(ec.serviceJourney.line.transportSubmode)}
               />
             )}
