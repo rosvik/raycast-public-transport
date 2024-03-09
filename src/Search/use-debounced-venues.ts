@@ -58,7 +58,6 @@ export function useDebouncedVenues(
       }
       const features = await fetchVenues(debouncedQuery, abortController.signal);
       try {
-        console.log(features?.length);
         if (!features || features.length === 0) {
           setToast(
             showToast({
