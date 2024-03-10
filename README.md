@@ -37,16 +37,10 @@ To see more options about a stop place or departure, you can open the actions pa
 - Stops can be opened in [skjer.men](https://skjer.men/) to see live location of vehicles. More information on it's development be found [here](https://github.com/toretefre/infoscreen).
 - For each departure, there is links to authority web pages for information like ticket purchase.
 
-## Installing
+## Feature requests and bug reports
 
-_(If you're part of the `variant-as` organization, just install the [Departures](https://www.raycast.com/variant-as/raycast-departures) extension from the organization page.)_
-
-1. Clone the repo
-2. Run `npm install`
-3. Run `npm run dev`
+If you have any suggestions for improvements or bug fixes, you can open an issue on https://github.com/rosvik/raycast-departures. PRs are also welcome: See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
 ## Data source and usage
 
 This extension uses Entur services as the data source. This is an open API, licensed under the Norwegian Licence for Open Government Data (NLOD). More information can be found [here](https://developer.entur.org/pages-intro-setup-and-access#licenses).
-
-There's no authentication needed, but the API has a [rate limit of 1000 requests per minute](https://enturas.atlassian.net/wiki/spaces/PUBLIC/pages/3736993955/Rate-limit+Policy+Journey-Planner-v3#Policy-levels) shared between all users of this extension. This should be plenty for normal use, but if you're making an unusual amount of requests, please consider changing `CLIENT_NAME` in `api.ts`, using [this format](https://developer.entur.org/pages-journeyplanner-journeyplanner#authentication).
