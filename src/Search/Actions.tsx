@@ -16,8 +16,8 @@ export function Actions({ venue, isFavorite, onAction, onSave }: ActionsProps) {
       <Action
         title={
           isFavorite
-            ? `Remove Favorite ${venue.properties.name}`
-            : `Favorite ${venue.properties.name}`
+            ? `Remove ${venue.properties.name} From Favorites`
+            : `Add ${venue.properties.name} to Favorites`
         }
         icon={isFavorite ? Icon.StarDisabled : Icon.Star}
         shortcut={

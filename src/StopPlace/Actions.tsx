@@ -36,9 +36,7 @@ export function Actions({
       {isFavorite ? (
         <Action
           // eslint-disable-next-line @raycast/prefer-title-case
-          title={`Remove Favorite ${
-            ec.serviceJourney.line.description ?? ec.destinationDisplay?.frontText
-          }`}
+          title={`Remove ${formatLineName(ec)} From Favorites`}
           icon={Icon.StarDisabled}
           shortcut={{ modifiers: ["cmd", "shift"], key: "s" }}
           onAction={() =>
@@ -48,9 +46,7 @@ export function Actions({
       ) : (
         <Action
           // eslint-disable-next-line @raycast/prefer-title-case
-          title={`Favorite ${
-            ec.serviceJourney.line.description ?? ec.destinationDisplay?.frontText ?? "This Line"
-          }`}
+          title={`Add ${formatLineName(ec)} to Favorites`}
           icon={Icon.Star}
           shortcut={{ modifiers: ["cmd"], key: "s" }}
           onAction={() =>
@@ -82,6 +78,13 @@ export function Actions({
   );
 }
 
+function formatLineName(ec: EstimatedCall) {
+  if (ec.serviceJourney.line.publicCode) {
+    return `Line ${ec.serviceJourney.line.publicCode}`;
+  } else {
+    return ec.serviceJourney.line.description ?? ec.destinationDisplay?.frontText;
+  }
+}
 function getTravelPlannerUrl(ec: EstimatedCall) {
   const base = "https://reise.reisnordland.no/departures/details";
   const date = new Date(ec.date);
