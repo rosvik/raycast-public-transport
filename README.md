@@ -3,7 +3,7 @@
   <h1 align="center">Raycast Departures Extension</h1>
 </div>
 
-Get real-time public transport information from all of Norway straight in your command bar. Search for any stop place or public transport hub near you, and see upcoming departures. If you also save your commonly used stops and lines as favorites for quick access, there will be no faster way to check when you need to get up and go.
+Get real-time public transport information from all of Norway straight in your command bar. Search for any stop place or public transport hub near you, and see upcoming departures. If you save your commonly used stops and lines as favorites for quick access, there will be no faster way to check when you need to get up and go.
 
 Data made available by Entur, using the [Journey Planner API](https://developer.entur.org/pages-journeyplanner-journeyplanner).
 
@@ -21,13 +21,13 @@ By default the next 5 departures for each platform at the stop place will be sho
 
 ![Screenshot](metadata/raycast-departures-1.png)
 
-### View details
+### View detailed departure info
 
-To see detailed information about a departure, press Enter. This will show a list of upcoming stops, as well as scheduled the scheduled arrival times. All other departure times are real-time, which is a best-guess estimate based on data like the current location of the vehicle.
+To see more information about a departure, press Enter. This will show a list of upcoming stops, as well as scheduled the scheduled arrival times. All other departure times are real-time, which is a best-guess estimate based on data like the current location of the vehicle.
 
 ![Screenshot](metadata/raycast-departures-2.png)
 
-### Quick access to more detailed information on the web
+### Quick access to more information on the web
 
 To see more options about a stop place or departure, you can open the actions panel with ⌘K.
 
