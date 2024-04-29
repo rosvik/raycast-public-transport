@@ -17,10 +17,8 @@ export default function SearchPage() {
   const [favorites, setFavorites] = useState<Feature[]>([]);
   useEffect(() => {
     loadFavoriteStops().then((preferredVenues) => {
-      if (preferredVenues) {
-        setFavorites(preferredVenues);
-        setFavoritesIsLoading(false);
-      }
+      if (preferredVenues) setFavorites(preferredVenues);
+      setFavoritesIsLoading(false);
     });
   }, []);
   if (favoritesIsLoading) {
