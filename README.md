@@ -1,13 +1,15 @@
 <div align="center">
-  <img width="128" src="https://github.com/rosvik/raycast-departures/blob/main/assets/command-icon.png?raw=true" />
-  <h1 align="center">Raycast Norwegian Public Transport Extension</h1>
+  <img width="128" src="assets/command-icon.png"/>
+  <h1>Norwegian Public Transport</h1>
+  <h3>Raycast Extension</h3>
 </div>
+<br/>
+
+![Screenshot](metadata/raycast-departures-2.png)
 
 Get real-time public transport information from all of Norway straight in your command bar. Search for any stop place or public transport hub near you, and see upcoming departures. If you save your frequently used stops and lines as favorites for quick access, there will be no faster way to check when you need to get up and go.
 
 Data made available by Entur, using the [Journey Planner API](https://developer.entur.org/pages-journeyplanner-journeyplanner).
-
-![Screenshot](metadata/raycast-departures-2.png)
 
 ## Features
 
