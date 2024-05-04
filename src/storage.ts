@@ -2,13 +2,13 @@ import { LocalStorage } from "@raycast/api";
 import { Feature, QuayLineFavorites } from "./types";
 
 enum StorageKeys {
-  savedFeatures = "@departures/SavedFeatures/v1",
-  savedQuayLines = "@departures/SavedQuayLines/v1",
+  savedFeatures = "@PublicTransport/SavedFeatures/v1",
+  savedQuayLines = "@PublicTransport/SavedQuayLines/v1",
 
   /**
    * @deprecated Use preferredFeatures instead
    */
-  preferredFeatures = "@departures/PreferredFeatures/v1",
+  preferredFeatures = "@PublicTransport/PreferredFeatures/v1",
 }
 
 export async function addFavoriteStop(venue: Feature): Promise<Feature[]> {

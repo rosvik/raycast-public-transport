@@ -1,6 +1,6 @@
 # Contributing
 
-If you're interested in contributing to this project, you're very welcome to do so! The project is hosted at https://github.com/rosvik/raycast-departures.
+If you're interested in contributing to this project, you're very welcome to do so! The project is hosted at https://github.com/rosvik/raycast-public-transport.
 
 If you want to want to add a bigger feature or do a major change to the project, please open an issue first, so we can make sure we're on the same page.
 
