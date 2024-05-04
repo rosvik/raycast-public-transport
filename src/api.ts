@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import { getDepartureQuery } from "./departureQuery";
 import { Feature, QuayDeparture, QuayLineFavorites, StopPlaceQuayDeparturesQuery } from "./types";
 
-const CLIENT_NAME = "raycast-norwegian-public-transport"
+const CLIENT_NAME = "raycast-norwegian-public-transport";
 
 type FeatureResponse = {
   features: Feature[];
