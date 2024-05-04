@@ -1,12 +1,16 @@
 # Raycast Norwegian Public Transport Changelog
 
+## [Release to Raycast Store] - 2024-05-04
+
+Made the extension publicly available on the Raycast Store 🚀
+
 ## [Update command icon] - 2024-05-04
 
 Added a bit more life to the command icon ✨
 
 ## [Preparing for store release] - 2024-04-29
 
-This release has a bunch of minor changes and tweaks, mostly to make the extension ready for publishing to the Raycast Store 🚀
+This release has a bunch of minor changes and tweaks, mostly to make the extension ready for publishing
 
 - Changed the extension name to "Norwegian Public Transport"
 - Made it possible to navigate back to the stop place search page after opening a stop place
