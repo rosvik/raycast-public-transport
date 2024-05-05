@@ -5,8 +5,6 @@
 </div>
 <br/>
 
-![Screenshot](metadata/raycast-norwegian-public-transport-1.png)
-
 Get real-time public transport information from all of Norway straight in your command bar. Search for any stop place or public transport hub near you, and see upcoming departures. If you save your frequently used stops and lines as favorites for quick access, there will be no faster way to check when you need to get up and go.
 
 Data made available by Entur, using the [Journey Planner API](https://developer.entur.org/pages-journeyplanner-journeyplanner).
@@ -17,25 +15,17 @@ Data made available by Entur, using the [Journey Planner API](https://developer.
 
 Whether it's a bus stop, train station, ferry terminal, airport, metro or hurtigrute port, you can search for it and see upcoming departures. The stops you save as favorites using ⌘S will show up at once, meaning you don't have to type a thing the next time you bring up the extension.
 
-![Screenshot](metadata/raycast-norwegian-public-transport-2.png)
-
 ### View upcoming departures
 
 By default the next 5 departures for each platform at the stop place will be shown, but you can load more using the ⌘+ keyboard shortcut. If your stop has a lot of platforms, you can filter the list by line, mode of transport or authority by typing in the search bar. You can also add your frequently used lines as favorites using ⌘S.
-
-![Screenshot](metadata/raycast-norwegian-public-transport-3.png)
 
 ### View detailed departure info
 
 To see more information about a departure, press Enter. This will show a list of upcoming stops, as well as scheduled the scheduled arrival times. All other departure times are real-time, which is a best-guess estimate based on data like the current location of the vehicle.
 
-![Screenshot](metadata/raycast-norwegian-public-transport-4.png)
-
 ### Quick access to more information on the web
 
 To see more options about a stop place or departure, you can open the actions panel with ⌘K.
-
-![Screenshot](metadata/raycast-norwegian-public-transport-5.png)
 
 - Departures and stops can be opened in your browser using [Reis Travel Search](https://reise.reisnordland.no/). More information on it's development be found [here](https://github.com/AtB-AS/planner-web).
 - Stops can be opened in [skjer.men](https://skjer.men/) to see live location of vehicles. More information on it's development be found [here](https://github.com/toretefre/infoscreen).
