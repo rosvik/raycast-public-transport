@@ -36,7 +36,7 @@ export function Actions({
       {isFavorite ? (
         <Action
           // eslint-disable-next-line @raycast/prefer-title-case
-          title={`Remove ${formatLineName(ec)} From Favorites`}
+          title={`Remove ${formatLineName(ec)} from Favorites`}
           icon={Icon.StarDisabled}
           shortcut={{ modifiers: ["cmd", "shift"], key: "s" }}
           onAction={() =>
