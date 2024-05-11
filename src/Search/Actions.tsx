@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon, Image } from "@raycast/api";
+import { Action, ActionPanel, Icon, Image, Keyboard } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { Feature } from "../types";
 
@@ -20,9 +20,7 @@ export function Actions({ venue, isFavorite, onAction, onSave }: ActionsProps) {
             : `Add ${venue.properties.name} to Favorites`
         }
         icon={isFavorite ? Icon.StarDisabled : Icon.Star}
-        shortcut={
-          isFavorite ? { modifiers: ["cmd", "shift"], key: "s" } : { modifiers: ["cmd"], key: "s" }
-        }
+        shortcut={Keyboard.Shortcut.Common.Pin}
         onAction={onSave}
       />
       {venue.properties.id && (
