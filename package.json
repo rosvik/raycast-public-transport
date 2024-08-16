@@ -34,6 +34,30 @@
       "mode": "view"
     }
   ],
+  "preferences": [
+    {
+      "type": "dropdown",
+      "name": "web-planner",
+      "title": "Travel Planner for Quick Access",
+      "description": "Choose your preferred web travel planner to use for quick access.",
+      "data": [
+        {
+          "title": "Reis Nordland",
+          "value": "reis"
+        },
+        {
+          "title": "FRAM",
+          "value": "fram"
+        },
+        {
+          "title": "AtB (Beta)",
+          "value": "atb"
+        }
+      ],
+      "default": "reis",
+      "required": false
+    }
+  ],
   "dependencies": {
     "@raycast/api": "^1.72.1",
     "@raycast/utils": "^1.15.0",
