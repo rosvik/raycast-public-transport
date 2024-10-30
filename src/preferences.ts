@@ -14,6 +14,7 @@ enum WebPlanner {
   Reis = "reis",
   Fram = "fram",
   Atb = "atb",
+  Svipper = "svipper",
 }
 export type WebPlannerConfig = {
   id: WebPlanner;
@@ -28,6 +29,12 @@ const mapToWebPlannerConfig = (id: string): WebPlannerConfig => {
         id: WebPlanner.Fram,
         name: "Fram Travel Search",
         url: "https://reise.frammr.no",
+      };
+    case "svipper":
+      return {
+        id: WebPlanner.Svipper,
+        name: "Svipper Travel Search",
+        url: "https://reise.svipper.no",
       };
     case "atb":
       return {
