@@ -35,6 +35,7 @@ export function Actions({ venue, isFavorite, onAction, onSave }: ActionsProps) {
       )}
       <Action.OpenInBrowser
         url={getSkjermenUrl(venue)}
+        // eslint-disable-next-line @raycast/prefer-title-case
         title="Open Stop in skjer.men"
         icon={getFavicon("https://skjer.men", {
           mask: Image.Mask.RoundedRectangle,

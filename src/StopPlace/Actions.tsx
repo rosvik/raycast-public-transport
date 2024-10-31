@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon, Image, Keyboard, getPreferenceValues } from "@raycast/api";
+import { Action, ActionPanel, Icon, Image, Keyboard } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
 import { EstimatedCall, Feature, QuayLineFavorites } from "../types";
 import { getDomainName } from "../utils";
