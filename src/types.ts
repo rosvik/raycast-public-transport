@@ -25,6 +25,7 @@ export enum TransportMode {
   Trolleybus = "trolleybus",
   Unknown = "unknown",
   Water = "water",
+  Foot = "foot",
 }
 
 export type Departures = {
@@ -44,6 +45,44 @@ export type QuayDeparture = {
   estimatedCalls: Array<EstimatedCall>;
 };
 
+export type Authority = {
+  id: string;
+  name: string;
+  url?: string;
+};
+
+export type Line = {
+  id: string;
+  description?: string;
+  publicCode?: string;
+  transportMode?: TransportMode;
+  transportSubmode?: string;
+  authority?: Authority;
+};
+
+export type Leg = {
+  mode: TransportMode;
+  transportSubmode: string; // TODO: make enums like we have for TransportMode?
+  distance: number;
+  expectedStartTime: string;
+  expectedEndTime: string;
+  line?: Line;
+  fromPlace: {
+    name: string;
+    quay: {
+      publicCode?: string;
+      name: string;
+    };
+  };
+  toPlace: {
+    name: string;
+    quay: {
+      publicCode?: string;
+      name: string;
+    };
+  };
+};
+
 export type EstimatedCall = {
   date: string;
   expectedDepartureTime: string | null;
@@ -56,18 +95,7 @@ export type EstimatedCall = {
   serviceJourney: {
     id: string;
     directionType: DirectionType;
-    line: {
-      id: string;
-      description?: string;
-      publicCode?: string;
-      transportMode?: TransportMode;
-      transportSubmode?: string;
-      authority?: {
-        id: string;
-        name: string;
-        url?: string;
-      };
-    };
+    line: Line;
     estimatedCalls: Array<SjEstimatedCall>;
   };
 };
@@ -131,3 +159,18 @@ export type VenueCategory =
   | "ferryStop"
   | "liftStation"
   | "vehicleRailInterchange";
+
+export type TripPattern = {
+  expectedStartTime: string; // ISO 8601
+  expectedEndTime: string; // ISO 8601
+  duration: number; // seconds
+  distance: number; // meters
+  legs: Leg[];
+};
+
+export type TripQuery = {
+  trip: {
+    nextPageCursor: string;
+    tripPatterns: TripPattern[];
+  };
+};

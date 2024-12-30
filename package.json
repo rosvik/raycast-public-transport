@@ -32,6 +32,12 @@
       "title": "Departures",
       "description": "Search for public transport departures from any stop place in Norway",
       "mode": "view"
+    },
+    {
+      "name": "search-trips",
+      "title": "Search Trips",
+      "description": "Get trip suggestions using public transportation in Norway",
+      "mode": "view"
     }
   ],
   "preferences": [

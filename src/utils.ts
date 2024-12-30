@@ -28,6 +28,7 @@ const AirIcon: Image = { source: "transport-modes/Plane.svg", tintColor: Color.O
 const WaterIcon: Image = { source: "transport-modes/Ferry.svg", tintColor: Color.Blue };
 const TramIcon: Image = { source: "transport-modes/Tram.svg", tintColor: Color.Yellow };
 const MetroIcon: Image = { source: "transport-modes/Subway.svg", tintColor: Color.Magenta };
+const FootIcon: Image = { source: "transport-modes/Foot.svg", tintColor: Color.PrimaryText };
 const UnknownIcon: Image = { source: Icon.PlusSquare, tintColor: Color.Blue };
 
 export function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): Image {
@@ -49,6 +50,8 @@ export function getTransportIcon(transportMode?: TransportMode, transportSubmode
       return TramIcon;
     case TransportMode.Metro:
       return MetroIcon;
+    case TransportMode.Foot:
+      return FootIcon;
     default:
       return UnknownIcon;
   }
@@ -113,6 +116,39 @@ export function formatAsClock(isoString: string) {
   const d = new Date(isoString);
   const padTime = (n: number) => n.toString().padStart(2, "0");
   return `${padTime(d.getHours())}:${padTime(d.getMinutes())}`;
+}
+
+export function formatMillisecondsToHuman(ms: number) {
+  const totalSeconds = Math.ceil(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60) % 60;
+  const hours = Math.floor(totalSeconds / 3600) % 24;
+  const days = Math.floor(totalSeconds / 86400);
+
+  const parts = [];
+  if (days > 0) parts.push(`${days} d`);
+  if (hours > 0) parts.push(`${hours} hrs`);
+  if (minutes > 0) parts.push(`${minutes} mins`);
+
+  return parts.join(" ");
+}
+
+export const timeDifferenceInMilliseconds = (dateString1: string, dateString2: string) => {
+  const date1 = new Date(dateString1).getTime();
+  const date2 = new Date(dateString2).getTime();
+  return Math.abs(date1 - date2);
+};
+
+export function formatTimeDifferenceAsClock(dateString1: string, dateString2: string) {
+  const difference = timeDifferenceInMilliseconds(dateString1, dateString2);
+  return formatMillisecondsToHuman(difference);
+}
+
+export function formatMetersToHuman(distance = 0) {
+  if (distance < 1000) {
+    return `${distance} meters`;
+  }
+  const kilometers = (distance / 1000).toFixed(2);
+  return `${kilometers} km`;
 }
 
 export function formatAsClockWithSeconds(isoString: string) {

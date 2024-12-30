@@ -1,6 +1,13 @@
 import fetch from "node-fetch";
 import { getDepartureQuery } from "./departureQuery";
-import { Feature, QuayDeparture, QuayLineFavorites, StopPlaceQuayDeparturesQuery } from "./types";
+import { getSearchTripsQuery } from "./searchTripsQuery";
+import {
+  Feature,
+  QuayDeparture,
+  QuayLineFavorites,
+  StopPlaceQuayDeparturesQuery,
+  TripQuery,
+} from "./types";
 
 const CLIENT_NAME = "raycast-norwegian-public-transport";
 
@@ -91,4 +98,27 @@ function mapDepartureQueryKeys(
     stopPlace: data.stopPlace,
     favorites: quaysWithDepartures,
   };
+}
+
+type FetchTripArgs = {
+  originId: string;
+  destinationId: string;
+  pageCursor: string;
+};
+
+export async function fetchTrip({
+  originId,
+  destinationId,
+  pageCursor,
+  signal,
+}: FetchTripArgs & { signal?: AbortSignal }) {
+  return await fetchJourneyPlannerData<TripQuery>(
+    getSearchTripsQuery(),
+    {
+      fromPlace: originId,
+      toPlace: destinationId,
+      pageCursor,
+    },
+    signal,
+  );
 }
