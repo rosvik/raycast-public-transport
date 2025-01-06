@@ -20,9 +20,11 @@ export function useDebounce<T>(value: T, delay = 500): T {
   return debouncedValue;
 }
 
-const TrainIcon: Image = { source: "transport-modes/Train.svg", tintColor: Color.Red };
+const RailIcon: Image = { source: "transport-modes/Train.svg", tintColor: Color.Red };
 const RegionalBusIcon: Image = { source: "transport-modes/Bus.svg", tintColor: Color.Blue };
 const LocalBusIcon: Image = { source: "transport-modes/Bus.svg", tintColor: Color.Green };
+const AirportLinkBusIcon: Image = { source: "transport-modes/Bus.svg", tintColor: Color.Orange };
+const AirportLinkRailIcon: Image = { source: "transport-modes/Train.svg", tintColor: Color.Orange };
 const CoachIcon: Image = { source: "transport-modes/Bus.svg", tintColor: Color.Purple };
 const AirIcon: Image = { source: "transport-modes/Plane.svg", tintColor: Color.Orange };
 const WaterIcon: Image = { source: "transport-modes/Ferry.svg", tintColor: Color.Blue };
@@ -34,11 +36,11 @@ const UnknownIcon: Image = { source: Icon.PlusSquare, tintColor: Color.Blue };
 export function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): Image {
   switch (transportMode) {
     case TransportMode.Rail:
-      return TrainIcon;
+      if (transportSubmode === "airportLinkRail") return AirportLinkRailIcon;
+      return RailIcon;
     case TransportMode.Bus:
-      if (transportSubmode === "localBus") {
-        return LocalBusIcon;
-      }
+      if (transportSubmode === "localBus") return LocalBusIcon;
+      if (transportSubmode === "airportLinkBus") return AirportLinkBusIcon;
       return RegionalBusIcon;
     case TransportMode.Coach:
       return CoachIcon;
@@ -69,7 +71,7 @@ export function getVenueCategoryIcon(categories: VenueCategory[]): Image {
       return AirIcon;
     }
     if (deDupedCategories.includes("railStation")) {
-      return TrainIcon;
+      return RailIcon;
     }
     if (deDupedCategories.includes("metroStation")) {
       return MetroIcon;
@@ -91,7 +93,7 @@ export function getVenueCategoryIcon(categories: VenueCategory[]): Image {
   switch (category) {
     case "railStation":
     case "vehicleRailInterchange":
-      return TrainIcon;
+      return RailIcon;
     case "busStation":
     case "onstreetBus":
     case "coachStation":
