@@ -27,7 +27,7 @@ const mapToWebPlannerConfig = (id: string): WebPlannerConfig => {
     case "fram":
       return {
         id: WebPlanner.Fram,
-        name: "Fram Travel Search",
+        name: "FRAM Travel Search",
         url: "https://reise.frammr.no",
       };
     case "svipper":
