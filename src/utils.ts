@@ -147,7 +147,7 @@ export function formatTimeDifferenceAsClock(dateString1: string, dateString2: st
 
 export function formatMetersToHuman(distance = 0) {
   if (distance < 1000) {
-    return `${distance} meters`;
+    return `${distance.toFixed(0)} meters`;
   }
   const kilometers = (distance / 1000).toFixed(2);
   return `${kilometers} km`;
