@@ -23,17 +23,21 @@ query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
         expectedEndTime
         distance
         fromPlace {
-          name
           quay {
             publicCode
             name
+            stopPlace {
+              id
+            }
           }
         }
         toPlace {
-          name
           quay {
             publicCode
             name
+            stopPlace {
+              id
+            }
           }
         }
         line {

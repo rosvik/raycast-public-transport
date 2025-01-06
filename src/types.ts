@@ -68,17 +68,21 @@ export type Leg = {
   expectedEndTime: string;
   line?: Line;
   fromPlace: {
-    name: string;
     quay: {
       publicCode?: string;
       name: string;
+      stopPlace: {
+        id: string;
+      };
     };
   };
   toPlace: {
-    name: string;
     quay: {
       publicCode?: string;
       name: string;
+      stopPlace: {
+        id: string;
+      };
     };
   };
   fromEstimatedCall?: {
