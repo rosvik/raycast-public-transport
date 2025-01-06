@@ -23,6 +23,7 @@ const buildAccessories = (trip: TripPattern, isDetailsVisible: boolean): Accesso
     // Show public code only if there's space for it (less than 4 legs when
     // details are open)
     text: !isDetailsVisible || legs.length < 4 ? leg.line?.publicCode : undefined,
+    tooltip: `${getTitleText(leg)} - ${getLabelText(leg)}`,
   }));
 
   // Truncate and show ellipsis if details are open and there's more than 5 legs
@@ -30,6 +31,7 @@ const buildAccessories = (trip: TripPattern, isDetailsVisible: boolean): Accesso
     accessories = accessories.slice(0, 4);
     accessories.push({
       icon: { source: Icon.Ellipsis, tintColor: Color.SecondaryText },
+      tooltip: `${legs.length - 4} more`,
     });
   }
 
@@ -114,25 +116,6 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
   const getDestinationTitle = (leg: Leg) =>
     `${formatAsClock(leg.expectedEndTime)} ${leg.toPlace.quay.name} ${leg.toPlace.quay.publicCode || ""}`;
 
-  const getTitleText = (leg: Leg) =>
-    `${formatAsClock(leg.expectedStartTime)} ${leg.fromPlace.quay.name} ${leg.fromPlace.quay.publicCode || ""}`;
-
-  const getLabelText = (leg: Leg) => {
-    const timeTaken = formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime);
-    if (leg.mode === "foot") {
-      return `${formatMetersToHuman(leg.distance)} (${timeTaken})`;
-    }
-    let label = "";
-    if (leg.line?.publicCode) {
-      label += `${leg.line?.publicCode} `;
-    }
-    if (leg.fromEstimatedCall?.destinationDisplay) {
-      label += `${formatDestinationDisplay(leg.fromEstimatedCall?.destinationDisplay)} `;
-    }
-    label += `(${timeTaken})`;
-    return label;
-  };
-
   return (
     <List.Item.Detail.Metadata>
       {trip.legs.map((leg) => (
@@ -152,4 +135,23 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
       />
     </List.Item.Detail.Metadata>
   );
+};
+
+const getTitleText = (leg: Leg) =>
+  `${formatAsClock(leg.expectedStartTime)} ${leg.fromPlace.quay.name} ${leg.fromPlace.quay.publicCode || ""}`;
+
+const getLabelText = (leg: Leg) => {
+  const timeTaken = formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime);
+  if (leg.mode === "foot") {
+    return `${formatMetersToHuman(leg.distance)} (${timeTaken})`;
+  }
+  let label = "";
+  if (leg.line?.publicCode) {
+    label += `${leg.line?.publicCode} `;
+  }
+  if (leg.fromEstimatedCall?.destinationDisplay) {
+    label += `${formatDestinationDisplay(leg.fromEstimatedCall?.destinationDisplay)} `;
+  }
+  label += `(${timeTaken})`;
+  return label;
 };
