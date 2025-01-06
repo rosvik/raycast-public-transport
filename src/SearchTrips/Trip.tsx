@@ -112,7 +112,10 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
   const getLabelText = (leg: Leg) => {
     const publicCode = leg.line?.publicCode || ""; // because in foot mode, publicCode is undefined
     const timeTaken = formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime);
-    return `${publicCode} ${formatMetersToHuman(leg.distance)} ${timeTaken.length ? `(${timeTaken})` : ""}`;
+    if (leg.mode === "foot") {
+      return `${formatMetersToHuman(leg.distance)} (${timeTaken})`;
+    }
+    return `${publicCode} (${timeTaken})`;
   };
 
   return (
