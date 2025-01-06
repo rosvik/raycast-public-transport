@@ -10,42 +10,6 @@ import {
   formatMetersToHuman,
   formatDestinationDisplay,
 } from "../utils";
-import Accessory = List.Item.Accessory;
-
-const buildAccessories = (trip: TripPattern, isDetailsVisible: boolean): Accessory[] => {
-  // Filter out legs with insignificant walk distances
-  const legs = trip.legs.filter(
-    (leg) => leg.fromPlace.quay.stopPlace.id !== leg.toPlace.quay.stopPlace.id,
-  );
-
-  let accessories: Accessory[] = legs.map((leg) => ({
-    icon: getTransportIcon(leg.mode, leg.transportSubmode),
-    // Show public code only if there's space for it (less than 4 legs when
-    // details are open)
-    text: !isDetailsVisible || legs.length < 4 ? leg.line?.publicCode : undefined,
-    tooltip: `${getTitleText(leg)} - ${getLabelText(leg)}`,
-  }));
-
-  // Truncate and show ellipsis if details are open and there's more than 5 legs
-  if (isDetailsVisible && legs.length > 5) {
-    accessories = accessories.slice(0, 4);
-    accessories.push({
-      icon: { source: Icon.Ellipsis, tintColor: Color.SecondaryText },
-      tooltip: `${legs.length - 4} more`,
-    });
-  }
-
-  // Only show duration tag if details are closed
-  if (!isDetailsVisible) {
-    accessories.push({
-      tag: {
-        value: formatTimeDifferenceAsClock(trip.expectedStartTime, trip.expectedEndTime),
-        color: Color.Blue,
-      },
-    });
-  }
-  return accessories;
-};
 
 type Props = {
   origin: Feature;
@@ -104,7 +68,7 @@ export default function Trip({ origin, destination }: Props) {
           }
           title={`${formatAsClock(trip.expectedStartTime)} - ${formatAsClock(trip.expectedEndTime)}`}
           // TODO: subtitle => "Little warning triangle if service disruptions are present"
-          accessories={buildAccessories(trip, isDetailVisible)}
+          accessories={getTripAccessories(trip, isDetailVisible)}
           key={idx}
         />
       ))}
@@ -135,6 +99,44 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
       />
     </List.Item.Detail.Metadata>
   );
+};
+
+const getTripAccessories = (
+  trip: TripPattern,
+  isDetailsVisible: boolean,
+): List.Item.Accessory[] => {
+  // Filter out insignificant walk distances
+  const legs = trip.legs.filter(
+    (leg) => leg.fromPlace.quay.stopPlace.id !== leg.toPlace.quay.stopPlace.id,
+  );
+
+  let accessories: List.Item.Accessory[] = legs.map((leg) => ({
+    icon: getTransportIcon(leg.mode, leg.transportSubmode),
+    // Show public code only if there's space for it (less than 4 legs when
+    // details are open)
+    text: !isDetailsVisible || legs.length < 4 ? leg.line?.publicCode : undefined,
+    tooltip: `${getTitleText(leg)} - ${getLabelText(leg)}`,
+  }));
+
+  // Truncate and show ellipsis if details are open and there's more than 5 legs
+  if (isDetailsVisible && accessories.length > 5) {
+    accessories = accessories.slice(0, 4);
+    accessories.push({
+      icon: { source: Icon.Ellipsis, tintColor: Color.SecondaryText },
+      tooltip: `${legs.length - 4} more`,
+    });
+  }
+
+  // Only show duration tag if details are closed
+  if (!isDetailsVisible) {
+    accessories.push({
+      tag: {
+        value: formatTimeDifferenceAsClock(trip.expectedStartTime, trip.expectedEndTime),
+        color: Color.Blue,
+      },
+    });
+  }
+  return accessories;
 };
 
 const getTitleText = (leg: Leg) =>
