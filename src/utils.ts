@@ -28,7 +28,7 @@ const AirIcon: Image = { source: "transport-modes/Plane.svg", tintColor: Color.O
 const WaterIcon: Image = { source: "transport-modes/Ferry.svg", tintColor: Color.Blue };
 const TramIcon: Image = { source: "transport-modes/Tram.svg", tintColor: Color.Yellow };
 const MetroIcon: Image = { source: "transport-modes/Subway.svg", tintColor: Color.Magenta };
-const FootIcon: Image = { source: "transport-modes/Foot.svg", tintColor: Color.PrimaryText };
+const FootIcon: Image = { source: "transport-modes/Foot.svg", tintColor: Color.SecondaryText };
 const UnknownIcon: Image = { source: Icon.PlusSquare, tintColor: Color.Blue };
 
 export function getTransportIcon(transportMode?: TransportMode, transportSubmode?: string): Image {
