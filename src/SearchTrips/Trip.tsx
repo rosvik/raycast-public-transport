@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Feature, Leg, TripPattern } from "../types";
-import { ActionPanel, Action, Color, List } from "@raycast/api";
+import { ActionPanel, Action, Color, List, Icon } from "@raycast/api";
 import { fetchTrip } from "../api";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -13,28 +13,35 @@ import {
 import Accessory = List.Item.Accessory;
 
 const buildAccessories = (trip: TripPattern, isDetailsVisible: boolean): Accessory[] => {
-  if (isDetailsVisible) {
-    return [
-      {
-        tag: {
-          value: formatTimeDifferenceAsClock(trip.expectedStartTime, trip.expectedEndTime),
-          color: Color.Blue,
-        },
-      },
-    ];
+  // Filter out legs with insignificant walk distances
+  const legs = trip.legs.filter(
+    (leg) => leg.fromPlace.quay.stopPlace.id !== leg.toPlace.quay.stopPlace.id,
+  );
+
+  let accessories: Accessory[] = legs.map((leg) => ({
+    icon: getTransportIcon(leg.mode, leg.transportSubmode),
+    // Show public code only if there's space for it (less than 4 legs when
+    // details are open)
+    text: !isDetailsVisible || legs.length < 4 ? leg.line?.publicCode : undefined,
+  }));
+
+  // Truncate and show ellipsis if details are open and there's more than 5 legs
+  if (isDetailsVisible && legs.length > 5) {
+    accessories = accessories.slice(0, 4);
+    accessories.push({
+      icon: { source: Icon.Ellipsis, tintColor: Color.SecondaryText },
+    });
   }
-  const accessories: Accessory[] = trip.legs
-    .filter((leg) => !(leg.mode === "foot" && leg.fromPlace.name === leg.toPlace.name))
-    .map((leg) => ({
-      icon: getTransportIcon(leg.mode, leg.transportSubmode),
-      text: leg.line?.publicCode,
-    }));
-  accessories.push({
-    tag: {
-      value: formatTimeDifferenceAsClock(trip.expectedStartTime, trip.expectedEndTime),
-      color: Color.Blue,
-    },
-  });
+
+  // Only show duration tag if details are closed
+  if (!isDetailsVisible) {
+    accessories.push({
+      tag: {
+        value: formatTimeDifferenceAsClock(trip.expectedStartTime, trip.expectedEndTime),
+        color: Color.Blue,
+      },
+    });
+  }
   return accessories;
 };
 
@@ -128,8 +135,8 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
 
   return (
     <List.Item.Detail.Metadata>
-      {trip.legs.map((leg, idx) => (
-        <Fragment key={`${leg.fromPlace.name}-${idx}`}>
+      {trip.legs.map((leg) => (
+        <Fragment key={leg.fromPlace.quay.stopPlace.id}>
           <List.Item.Detail.Metadata.Label
             title={getTitleText(leg)}
             icon={getTransportIcon(leg.mode, leg.transportSubmode)}
@@ -140,6 +147,8 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
       ))}
       <List.Item.Detail.Metadata.Label
         title={getDestinationTitle(trip.legs[trip.legs.length - 1])}
+        text={formatTimeDifferenceAsClock(trip.expectedStartTime, trip.expectedEndTime) + " total"}
+        icon={Icon.Clock}
       />
     </List.Item.Detail.Metadata>
   );
