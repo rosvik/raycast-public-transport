@@ -81,6 +81,9 @@ export type Leg = {
       name: string;
     };
   };
+  fromEstimatedCall?: {
+    destinationDisplay?: DestinationDisplay;
+  };
 };
 
 export type EstimatedCall = {

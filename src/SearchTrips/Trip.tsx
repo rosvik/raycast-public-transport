@@ -8,6 +8,7 @@ import {
   formatAsClock,
   formatTimeDifferenceAsClock,
   formatMetersToHuman,
+  formatDestinationDisplay,
 } from "../utils";
 import Accessory = List.Item.Accessory;
 
@@ -110,12 +111,19 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
     `${formatAsClock(leg.expectedStartTime)} ${leg.fromPlace.quay.name} ${leg.fromPlace.quay.publicCode || ""}`;
 
   const getLabelText = (leg: Leg) => {
-    const publicCode = leg.line?.publicCode || ""; // because in foot mode, publicCode is undefined
     const timeTaken = formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime);
     if (leg.mode === "foot") {
       return `${formatMetersToHuman(leg.distance)} (${timeTaken})`;
     }
-    return `${publicCode} (${timeTaken})`;
+    let label = "";
+    if (leg.line?.publicCode) {
+      label += `${leg.line?.publicCode} `;
+    }
+    if (leg.fromEstimatedCall?.destinationDisplay) {
+      label += `${formatDestinationDisplay(leg.fromEstimatedCall?.destinationDisplay)} `;
+    }
+    label += `(${timeTaken})`;
+    return label;
   };
 
   return (
