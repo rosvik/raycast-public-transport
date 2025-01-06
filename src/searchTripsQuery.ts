@@ -47,6 +47,12 @@ query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
             url
           }
         }
+        fromEstimatedCall {
+          destinationDisplay {
+            frontText
+            via
+          }
+        }
       }
     }
   }
