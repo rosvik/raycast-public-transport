@@ -82,8 +82,8 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
 
   return (
     <List.Item.Detail.Metadata>
-      {trip.legs.map((leg) => (
-        <Fragment key={leg.fromPlace.quay.stopPlace.id}>
+      {trip.legs.map((leg, idx) => (
+        <Fragment key={idx}>
           <List.Item.Detail.Metadata.Label
             title={getTitleText(leg)}
             icon={getTransportIcon(leg.mode, leg.transportSubmode)}
