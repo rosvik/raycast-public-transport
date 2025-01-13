@@ -1,5 +1,5 @@
-import SearchPage from "./Search/SearchPage";
+import DeparturesSearchPage from "./Departures/DeparturesSearchPage";
 
 export default function Command() {
-  return <SearchPage />;
+  return <DeparturesSearchPage />;
 }

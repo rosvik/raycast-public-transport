@@ -7,7 +7,7 @@ import { Actions } from "./Actions";
 import { useDebouncedVenues } from "./use-debounced-venues";
 import DeparturesPage from "../Departures/DeparturesPage";
 
-export default function SearchPage() {
+export default function Search() {
   const { push } = useNavigation();
   const [query, setQuery] = useState<string>("");
   const [toast, setToast] = useState<Promise<Toast>>();
