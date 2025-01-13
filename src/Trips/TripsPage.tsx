@@ -15,7 +15,7 @@ type Props = {
   origin: Feature;
   destination: Feature;
 };
-export default function Trip({ origin, destination }: Props) {
+export default function TripsPage({ origin, destination }: Props) {
   const [trips, setTrips] = useState<TripPattern[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pageCursor, setPageCursor] = useState("");

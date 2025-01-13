@@ -1,4 +1,4 @@
-import SearchStartVenue from "./SearchTrips/SearchStartVenue";
+import SearchStartVenue from "./Trips/SearchStartVenue";
 
 export default function Command() {
   return <SearchStartVenue />;

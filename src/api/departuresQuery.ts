@@ -1,4 +1,4 @@
-import { QuayLineFavorites } from "./types";
+import { QuayLineFavorites } from "../types";
 
 const stopPlacePart = `
 stopPlace(id: $id) {
@@ -18,6 +18,7 @@ stopPlace(id: $id) {
   }
 }
 `;
+
 const quayPart = (quayId: string, lineIds: string[]) => `
 ${quayId.replaceAll(":", "_")}: quay(id: "${quayId}") {
   id
@@ -33,6 +34,7 @@ ${quayId.replaceAll(":", "_")}: quay(id: "${quayId}") {
   }
 }
 `;
+
 const estimatedCallsFragmentPart = `
 fragment EC on EstimatedCall {
   date
@@ -76,7 +78,7 @@ fragment EC on EstimatedCall {
 }
 `;
 
-export function getDepartureQuery(favorites: QuayLineFavorites[]) {
+export function getDepartureQueryDocument(favorites: QuayLineFavorites[]) {
   const quayParts = favorites.map((fav) => quayPart(fav.quayId, fav.lineIds));
 
   return `

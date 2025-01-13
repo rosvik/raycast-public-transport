@@ -1,13 +1,13 @@
 import fetch from "node-fetch";
-import { getDepartureQuery } from "./departureQuery";
-import { getSearchTripsQuery } from "./searchTripsQuery";
+import { getDepartureQueryDocument } from "./departuresQuery";
+import { tripsQueryDocument } from "./tripsQuery";
 import {
   Feature,
   QuayDeparture,
   QuayLineFavorites,
   StopPlaceQuayDeparturesQuery,
   TripQuery,
-} from "./types";
+} from "../types";
 
 const CLIENT_NAME = "raycast-norwegian-public-transport";
 
@@ -43,7 +43,7 @@ export async function fetchDepartures(
   favorites: QuayLineFavorites[],
   signal?: AbortSignal,
 ): Promise<StopPlaceQuayDeparturesQuery | undefined> {
-  const departuresQuery = await fetchJourneyPlannerData(getDepartureQuery(favorites), {
+  const departuresQuery = await fetchJourneyPlannerData(getDepartureQueryDocument(favorites), {
     id: stopId,
     numberOfDepartures,
     signal,
@@ -113,7 +113,7 @@ export async function fetchTrip({
   signal,
 }: FetchTripArgs & { signal?: AbortSignal }) {
   return await fetchJourneyPlannerData<TripQuery>(
-    getSearchTripsQuery(),
+    tripsQueryDocument,
     {
       fromPlace: originId,
       toPlace: destinationId,

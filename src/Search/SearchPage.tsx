@@ -5,7 +5,7 @@ import { Feature } from "../types";
 import { getVenueCategoryIcon } from "../utils";
 import { Actions } from "./Actions";
 import { useDebouncedVenues } from "./use-debounced-venues";
-import StopPlacePage from "../StopPlace/StopPlacePage";
+import DeparturesPage from "../Departures/DeparturesPage";
 
 export default function SearchPage() {
   const { push } = useNavigation();
@@ -46,7 +46,7 @@ export default function SearchPage() {
                   clearSearchBar();
                   // Re-add favorite to bump it to the top of the list
                   addFavoriteStop(venue);
-                  push(<StopPlacePage venue={venue} />);
+                  push(<DeparturesPage venue={venue} />);
                 }}
                 venue={venue}
                 onSave={() => removeFavoriteStop(venue).then(setFavorites)}
@@ -65,7 +65,7 @@ export default function SearchPage() {
                 clearSearchBar();
                 // Re-add favorite to bump it to the top of the list
                 if (isSaved) addFavoriteStop(venue);
-                push(<StopPlacePage venue={venue} />);
+                push(<DeparturesPage venue={venue} />);
               }}
               venue={venue}
               onSave={() =>

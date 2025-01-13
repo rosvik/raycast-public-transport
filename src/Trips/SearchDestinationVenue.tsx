@@ -2,7 +2,7 @@ import { Toast, useNavigation, ActionPanel, Action, List, Icon, Keyboard } from 
 import { useEffect, useState } from "react";
 import { addFavoriteStop, loadFavoriteStops, removeFavoriteStop } from "../storage";
 import { Feature } from "../types";
-import Trip from "./Trip";
+import TripsPage from "./TripsPage";
 
 import { useDebouncedVenues } from "../Search/use-debounced-venues";
 import { getVenueCategoryIcon } from "../utils";
@@ -51,7 +51,7 @@ export default function SearchDestinationVenue({ origin }: { origin: Feature }) 
                     <Action
                       title="View Journey"
                       onAction={() => {
-                        push(<Trip origin={origin} destination={venue} />);
+                        push(<TripsPage origin={origin} destination={venue} />);
                       }}
                     />
                     <Action
@@ -83,7 +83,7 @@ export default function SearchDestinationVenue({ origin }: { origin: Feature }) 
                   <Action
                     title="View Journey"
                     onAction={() => {
-                      push(<Trip origin={origin} destination={venue} />);
+                      push(<TripsPage origin={origin} destination={venue} />);
                     }}
                   />
                   <Action

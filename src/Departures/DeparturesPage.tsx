@@ -24,7 +24,7 @@ import {
 } from "../utils";
 import { loadFavoriteLines } from "../storage";
 
-export default function StopPlacePage({ venue }: { venue: Feature }) {
+export default function DeparturesPage({ venue }: { venue: Feature }) {
   const [items, setItems] = useState<StopPlaceQuayDeparturesQuery>();
   const [isLoading, setIsLoading] = useState(true);
   const [numberOfDepartures, setNumberOfDepartures] = useState(5);

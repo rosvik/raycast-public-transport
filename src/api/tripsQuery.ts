@@ -1,5 +1,4 @@
-export const getSearchTripsQuery = () => {
-  return `
+export const tripsQueryDocument = `
 query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
   trip(
     from: {
@@ -60,5 +59,5 @@ query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
       }
     }
   }
-}`;
-};
+}
+`;
