@@ -107,7 +107,7 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
 
 type GroupedTrips = Record<string, TripPattern[]>;
 const groupTripsByDate = (trips: TripPattern[]) => {
-  let grouped: Record<string, TripPattern[]> = {};
+  const grouped: Record<string, TripPattern[]> = {};
   trips.forEach((trip) => {
     const date = formatAsDate(trip.expectedStartTime);
     grouped[date] = [...(grouped[date] || []), trip];
