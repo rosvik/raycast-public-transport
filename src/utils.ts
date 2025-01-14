@@ -120,6 +120,11 @@ export function formatAsClock(isoString: string) {
   return `${padTime(d.getHours())}:${padTime(d.getMinutes())}`;
 }
 
+export function formatAsDate(isoString: string) {
+  const d = new Date(isoString);
+  return d.toDateString();
+}
+
 export function formatMillisecondsToHuman(ms: number) {
   const totalSeconds = Math.ceil(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60) % 60;

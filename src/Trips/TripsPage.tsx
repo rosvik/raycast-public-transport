@@ -1,14 +1,14 @@
-import { Fragment } from "react";
+import { Fragment, useCallback, useEffect, useState, useRef } from "react";
 import { Feature, Leg, TripPattern } from "../types";
 import { ActionPanel, Action, Color, List, Icon } from "@raycast/api";
 import { fetchTrip } from "../api";
-import { useCallback, useEffect, useState } from "react";
 import {
   getTransportIcon,
   formatAsClock,
   formatTimeDifferenceAsClock,
   formatMetersToHuman,
   formatDestinationDisplay,
+  formatAsDate,
 } from "../utils";
 
 type Props = {
@@ -16,7 +16,8 @@ type Props = {
   destination: Feature;
 };
 export default function TripsPage({ origin, destination }: Props) {
-  const [trips, setTrips] = useState<TripPattern[]>([]);
+  const trips = useRef<TripPattern[]>([]);
+  const [groupedTrips, setGroupedTrips] = useState<GroupedTrips>({});
   const [isLoading, setIsLoading] = useState(true);
   const [pageCursor, setPageCursor] = useState("");
   const [isDetailVisible, setDetailVisible] = useState(false);
@@ -29,8 +30,8 @@ export default function TripsPage({ origin, destination }: Props) {
       pageCursor,
     })
       .then((data) => {
-        const newTrips = trips?.concat(data.trip.tripPatterns);
-        setTrips(newTrips);
+        trips.current = trips.current?.concat(data.trip.tripPatterns);
+        setGroupedTrips(groupTripsByDate(trips.current));
         setPageCursor(data.trip.nextPageCursor);
       })
       .finally(() => setIsLoading(false));
@@ -46,31 +47,34 @@ export default function TripsPage({ origin, destination }: Props) {
       isShowingDetail={isDetailVisible}
       searchBarPlaceholder={`From ${origin.properties.name} to ${destination.properties.name}...`}
     >
-      {trips?.map((trip, idx) => (
-        <List.Item
-          detail={<List.Item.Detail metadata={<TripDetails trip={trip} />}></List.Item.Detail>}
-          actions={
-            <ActionPanel>
-              <Action
-                title="Toggle Details"
-                onAction={() => {
-                  setDetailVisible(!isDetailVisible);
-                }}
-              />
-              <Action
-                title="Load More"
-                // TODO: Remove this in favor of `pagination` returned from
-                // using the built-in useFetch/usePromise:
-                // https://developers.raycast.com/utilities/react-hooks/usefetch#pagination
-                onAction={getTrips}
-              />
-            </ActionPanel>
-          }
-          title={`${formatAsClock(trip.expectedStartTime)} - ${formatAsClock(trip.expectedEndTime)}`}
-          // TODO: subtitle => "Little warning triangle if service disruptions are present"
-          accessories={getTripAccessories(trip, isDetailVisible)}
-          key={idx}
-        />
+      {Object.entries(groupedTrips).map(([date, trips]) => (
+        <List.Section title={date === new Date().toDateString() ? "Today" : date} key={date}>
+          {trips.map((trip, idx) => (
+            <List.Item
+              detail={<List.Item.Detail metadata={<TripDetails trip={trip} />}></List.Item.Detail>}
+              actions={
+                <ActionPanel>
+                  <Action
+                    title="Toggle Details"
+                    onAction={() => {
+                      setDetailVisible(!isDetailVisible);
+                    }}
+                  />
+                  <Action
+                    title="Load More"
+                    // TODO: Remove this in favor of `pagination` returned from
+                    // using the built-in useFetch/usePromise:
+                    // https://developers.raycast.com/utilities/react-hooks/usefetch#pagination
+                    onAction={getTrips}
+                  />
+                </ActionPanel>
+              }
+              title={`${formatAsClock(trip.expectedStartTime)} - ${formatAsClock(trip.expectedEndTime)}`}
+              accessories={getTripAccessories(trip, isDetailVisible)}
+              key={idx}
+            />
+          ))}
+        </List.Section>
       ))}
     </List>
   );
@@ -101,6 +105,17 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
   );
 };
 
+type GroupedTrips = Record<string, TripPattern[]>;
+const groupTripsByDate = (trips: TripPattern[]) => {
+  let grouped: Record<string, TripPattern[]> = {};
+  trips.forEach((trip) => {
+    const date = formatAsDate(trip.expectedStartTime);
+    grouped[date] = [...(grouped[date] || []), trip];
+  });
+  return grouped;
+};
+
+// TODO: Should add a warning triangle if service disruptions are present
 const getTripAccessories = (
   trip: TripPattern,
   isDetailsVisible: boolean,
