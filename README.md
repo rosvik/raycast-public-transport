@@ -5,7 +5,7 @@
 </div>
 <br/>
 
-Get real-time public transport information from all of Norway straight in your command bar. Search for any stop place or public transport hub near you, and see upcoming departures. If you save your frequently used stops and lines as favorites for quick access, there will be no faster way to check when you need to get up and go.
+Get real-time public transport information from all of Norway straight in your command bar. Search for any stop place or public transport hub near you, and see upcoming departures, or get trip suggestions to and from anywhere in Norway. If you save your frequently used stops and lines as favorites for quick access, there will be no faster way to check when you need to get up and go.
 
 Data made available by Entur, using the [Journey Planner API](https://developer.entur.org/pages-journeyplanner-journeyplanner).
 
@@ -18,6 +18,10 @@ Whether it's a bus stop, train station, ferry terminal, airport, metro or hurtig
 ### View upcoming departures
 
 By default the next 5 departures for each platform at the stop place will be shown, but you can load more using the ⌘+ keyboard shortcut. If your stop has a lot of platforms, you can filter the list by line, mode of transport or authority by typing in the search bar. You can also add your frequently used lines as favorites using ⌘⇧P.
+
+### View trip suggestions
+
+With the _Search Trips_ command, you can get trip suggestions to and from any public transport hub in Norway. Pick a start stop and a destination, and get a list of alternative ways to get to where you want to go, whether that's home from work, or to the other side of the country.
 
 ### View detailed departure info
 
