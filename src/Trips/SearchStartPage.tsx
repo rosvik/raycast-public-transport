@@ -1,15 +1,15 @@
 import { useNavigation } from "@raycast/api";
 import Search from "../Search/Search";
-import SearchDestinationVenue from "./SearchDestinationVenue";
+import SearchDestinationPage from "./SearchDestinationPage";
 
-export default function SearchStartVenue() {
+export default function SearchStartPage() {
   const { push } = useNavigation();
 
   return (
     <Search
       searchBarPlaceholder="Find trip from..."
       primaryActionTitle="Select Start Stop"
-      onSubmit={(venue) => push(<SearchDestinationVenue origin={venue} />)}
+      onSubmit={(venue) => push(<SearchDestinationPage origin={venue} />)}
     />
   );
 }

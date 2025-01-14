@@ -3,7 +3,7 @@ import Search from "../Search/Search";
 import TripsPage from "./TripsPage";
 import { Feature } from "../types";
 
-export default function SearchDestinationVenue({ origin }: { origin: Feature }) {
+export default function SearchDestinationPage({ origin }: { origin: Feature }) {
   const { push } = useNavigation();
 
   return (

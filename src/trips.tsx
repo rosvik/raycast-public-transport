@@ -1,5 +1,5 @@
-import SearchStartVenue from "./Trips/SearchStartVenue";
+import SearchStartPage from "./Trips/SearchStartPage";
 
 export default function Command() {
-  return <SearchStartVenue />;
+  return <SearchStartPage />;
 }

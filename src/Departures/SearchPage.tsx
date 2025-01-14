@@ -2,7 +2,7 @@ import { useNavigation } from "@raycast/api";
 import Search from "../Search/Search";
 import DeparturesPage from "./DeparturesPage";
 
-export default function DeparturesSearchPage() {
+export default function SearchPage() {
   const { push } = useNavigation();
 
   return (
