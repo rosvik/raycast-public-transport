@@ -1,4 +1,52 @@
 import { QuayLineFavorites } from "../types";
+import {
+  authorityFragment,
+  EstimatedCall,
+  estimatedCallFragment,
+  lineFragment,
+  ServiceJourney,
+  serviceJourneyFragment,
+} from "./fragments";
+
+export function getDepartureQueryDocument(favorites: QuayLineFavorites[]) {
+  const quayParts = favorites.map((fav) => quaysWithFavorites(fav.quayId, fav.lineIds));
+
+  return `
+    query stopPlaceQuayDepartures($id: String!, $numberOfDepartures: Int) {
+      ${stopPlacePart}
+      ${quayParts.join("\n")}
+    }
+    ${estimatedCallFragment}
+    ${serviceJourneyFragment}
+    ${lineFragment}
+    ${authorityFragment}
+  `;
+}
+export type DeparturesQuery = {
+  id: string;
+  name: string;
+  description?: string;
+  latitude: number;
+  longitude: number;
+  quays?: Array<QuayDepartures>;
+};
+export type QuayDepartures = {
+  id: string;
+  name: string;
+  description?: string;
+  publicCode?: string;
+  estimatedCalls: Array<Departure>;
+};
+
+/**
+ * Helper type for an estimated call with its service journey and all the
+ * estimated calls in the service journey.
+ */
+export type Departure = EstimatedCall & {
+  serviceJourney: ServiceJourney & {
+    estimatedCalls: EstimatedCall[];
+  };
+};
 
 const stopPlacePart = `
 stopPlace(id: $id) {
@@ -14,12 +62,18 @@ stopPlace(id: $id) {
     publicCode
     estimatedCalls(numberOfDepartures: $numberOfDepartures, timeRange: 604800) {
       ...EC
+      serviceJourney {
+        ...SJ
+        estimatedCalls {
+          ...EC
+        }
+      }
     }
   }
 }
 `;
 
-const quayPart = (quayId: string, lineIds: string[]) => `
+const quaysWithFavorites = (quayId: string, lineIds: string[]) => `
 ${quayId.replaceAll(":", "_")}: quay(id: "${quayId}") {
   id
   name
@@ -31,61 +85,12 @@ ${quayId.replaceAll(":", "_")}: quay(id: "${quayId}") {
     whiteListed: {lines: ${JSON.stringify(lineIds)}}
   ) {
     ...EC
-  }
-}
-`;
-
-const estimatedCallsFragmentPart = `
-fragment EC on EstimatedCall {
-  date
-  expectedDepartureTime
-  aimedDepartureTime
-  realtime
-  predictionInaccurate
-  cancellation
-  quay {
-    id
-  }
-  destinationDisplay {
-    frontText
-    via
-  }
-  serviceJourney {
-    id
-    directionType
-    line {
-      id
-      description
-      publicCode
-      transportMode
-      transportSubmode
-      authority {
-        id
-        name
-        url
+    serviceJourney {
+      ...SJ
+      estimatedCalls {
+        ...EC
       }
-    }
-    estimatedCalls {
-      quay {
-        id
-        name
-        publicCode
-      }
-      aimedDepartureTime
-      expectedDepartureTime
     }
   }
 }
 `;
-
-export function getDepartureQueryDocument(favorites: QuayLineFavorites[]) {
-  const quayParts = favorites.map((fav) => quayPart(fav.quayId, fav.lineIds));
-
-  return `
-    query stopPlaceQuayDepartures($id: String!, $numberOfDepartures: Int) {
-      ${stopPlacePart}
-      ${quayParts.join("\n")}
-    }
-    ${estimatedCallsFragmentPart}
-  `;
-}

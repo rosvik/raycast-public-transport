@@ -1,13 +1,7 @@
 import fetch from "node-fetch";
-import { getDepartureQueryDocument } from "./departuresQuery";
+import { getDepartureQueryDocument, QuayDepartures } from "./departuresQuery";
 import { tripsQueryDocument } from "./tripsQuery";
-import {
-  Feature,
-  QuayDeparture,
-  QuayLineFavorites,
-  StopPlaceQuayDeparturesQuery,
-  TripQuery,
-} from "../types";
+import { Feature, QuayLineFavorites, StopPlaceQuayDeparturesQuery, TripQuery } from "../types";
 
 const CLIENT_NAME = "raycast-norwegian-public-transport";
 
@@ -90,9 +84,9 @@ function mapDepartureQueryKeys(
     .map((favoriteQuayId) => {
       const key = favoriteQuayId.replaceAll(":", "_");
       if (!Object.keys(data).includes(key)) return;
-      return data[key] as QuayDeparture;
+      return data[key] as QuayDepartures;
     })
-    .filter(Boolean) as QuayDeparture[];
+    .filter(Boolean) as QuayDepartures[];
   const quaysWithDepartures = quayDepartures.filter((quay) => quay.estimatedCalls.length > 0);
   return {
     stopPlace: data.stopPlace,

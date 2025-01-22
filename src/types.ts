@@ -1,3 +1,6 @@
+import { DeparturesQuery, QuayDepartures } from "./api/departuresQuery";
+import { Line } from "./api/fragments";
+
 export type QuayLineFavorites = {
   stopPlaceId: string;
   quayId: string;
@@ -5,8 +8,8 @@ export type QuayLineFavorites = {
 };
 
 export type StopPlaceQuayDeparturesQuery = {
-  stopPlace?: Departures;
-  favorites: QuayDeparture[];
+  stopPlace?: DeparturesQuery;
+  favorites: QuayDepartures[];
 };
 
 export type DirectionType = "unknown" | "outbound" | "inbound" | "clockwise" | "anticlockwise";
@@ -27,38 +30,6 @@ export enum TransportMode {
   Water = "water",
   Foot = "foot",
 }
-
-export type Departures = {
-  id: string;
-  name: string;
-  description?: string;
-  latitude: number;
-  longitude: number;
-  quays?: Array<QuayDeparture>;
-};
-
-export type QuayDeparture = {
-  id: string;
-  name: string;
-  description?: string;
-  publicCode?: string;
-  estimatedCalls: Array<EstimatedCall>;
-};
-
-export type Authority = {
-  id: string;
-  name: string;
-  url?: string;
-};
-
-export type Line = {
-  id: string;
-  description?: string;
-  publicCode?: string;
-  transportMode?: TransportMode;
-  transportSubmode?: string;
-  authority?: Authority;
-};
 
 export type Leg = {
   mode: TransportMode;
@@ -87,23 +58,6 @@ export type Leg = {
   };
   fromEstimatedCall?: {
     destinationDisplay?: DestinationDisplay;
-  };
-};
-
-export type EstimatedCall = {
-  date: string;
-  expectedDepartureTime: string | null;
-  aimedDepartureTime: string;
-  realtime: boolean;
-  predictionInaccurate: boolean;
-  cancellation: boolean;
-  quay: { id: string };
-  destinationDisplay?: DestinationDisplay;
-  serviceJourney: {
-    id: string;
-    directionType: DirectionType;
-    line: Line;
-    estimatedCalls: Array<SjEstimatedCall>;
   };
 };
 

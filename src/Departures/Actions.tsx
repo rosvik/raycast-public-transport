@@ -1,12 +1,13 @@
 import { Action, ActionPanel, Icon, Image, Keyboard } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { EstimatedCall, Feature, QuayLineFavorites } from "../types";
+import { Feature, QuayLineFavorites } from "../types";
 import { getDomainName } from "../utils";
 import { addFavoriteLines, removeFavoriteLine } from "../storage";
 import { WebPlannerConfig, getWebPlannerConfig } from "../preferences";
+import { Departure } from "../api/departuresQuery";
 
 type ActionsProps = {
-  ec: EstimatedCall;
+  ec: Departure;
   venue: Feature;
   isFavorite: boolean;
   setShowDetails: () => void;
@@ -80,14 +81,14 @@ export function Actions({
   );
 }
 
-function formatLineName(ec: EstimatedCall) {
+function formatLineName(ec: Departure) {
   if (ec.serviceJourney.line.publicCode) {
     return `Line ${ec.serviceJourney.line.publicCode}`;
   } else {
     return ec.serviceJourney.line.description ?? ec.destinationDisplay?.frontText;
   }
 }
-function getTravelPlannerUrl(ec: EstimatedCall, webPlannerConfig: WebPlannerConfig) {
+function getTravelPlannerUrl(ec: Departure, webPlannerConfig: WebPlannerConfig) {
   const base = `${webPlannerConfig.url}/departures/details`;
   const date = new Date(ec.date);
   const dateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;

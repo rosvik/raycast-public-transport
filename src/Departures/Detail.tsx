@@ -1,15 +1,16 @@
 import { Color, Icon, Image, List, environment } from "@raycast/api";
 import { getFavicon } from "@raycast/utils";
-import { EstimatedCall, SjEstimatedCall } from "../types";
+import { SjEstimatedCall } from "../types";
 import {
   formatAsClock,
   formatDestinationDisplay,
   getSubModeText,
   getTransportIcon,
 } from "../utils";
+import { Departure } from "../api/departuresQuery";
 
 type DetailProps = {
-  ec: EstimatedCall;
+  ec: Departure;
 };
 
 export function Detail({ ec }: DetailProps) {

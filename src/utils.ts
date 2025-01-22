@@ -2,14 +2,14 @@ import { Color, Icon, Image } from "@raycast/api";
 import {
   DestinationDisplay,
   DirectionType,
-  EstimatedCall,
-  QuayDeparture,
   QuayLineFavorites,
   StopPlaceQuayDeparturesQuery,
   TransportMode,
   VenueCategory,
 } from "./types";
 import { useEffect, useState } from "react";
+import { EstimatedCall } from "./api/fragments";
+import { QuayDepartures } from "./api/departuresQuery";
 
 export function useDebounce<T>(value: T, delay = 500): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -234,7 +234,7 @@ export function filterFavoritesFromResponse(
   const relevantFavorites = filterFavoritesOnStopPlace(favorites, stopPlaceId);
   if (relevantFavorites.length === 0) return { ...departures, favorites: [] };
 
-  const isFavoriteDeparture = (departure: QuayDeparture) =>
+  const isFavoriteDeparture = (departure: QuayDepartures) =>
     relevantFavorites.some(
       (f) =>
         f.quayId === departure.id &&
