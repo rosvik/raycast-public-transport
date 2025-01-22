@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState, useRef } from "react";
-import { Feature, Leg, TripPattern } from "../types";
+import { Feature } from "../types";
 import { ActionPanel, Action, Color, List, Icon } from "@raycast/api";
 import { fetchTrip } from "../api";
 import {
@@ -10,6 +10,7 @@ import {
   formatDestinationDisplay,
   formatAsDate,
 } from "../utils";
+import { Leg, TripPattern } from "../api/tripsQuery";
 
 type Props = {
   origin: Feature;
@@ -122,7 +123,7 @@ const getTripAccessories = (
 ): List.Item.Accessory[] => {
   // Filter out insignificant walk distances
   const legs = trip.legs.filter(
-    (leg) => leg.fromPlace.quay.stopPlace.id !== leg.toPlace.quay.stopPlace.id,
+    (leg) => leg.fromPlace.quay.stopPlace?.id !== leg.toPlace.quay.stopPlace?.id,
   );
 
   let accessories: List.Item.Accessory[] = legs.map((leg) => ({

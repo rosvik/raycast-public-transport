@@ -1,5 +1,5 @@
 import { DeparturesQuery, QuayDepartures } from "./api/departuresQuery";
-import { Line } from "./api/fragments";
+import { Quay } from "./api/fragments";
 
 export type QuayLineFavorites = {
   stopPlaceId: string;
@@ -31,36 +31,6 @@ export enum TransportMode {
   Foot = "foot",
 }
 
-export type Leg = {
-  mode: TransportMode;
-  transportSubmode: string; // TODO: make enums like we have for TransportMode?
-  distance: number;
-  expectedStartTime: string;
-  expectedEndTime: string;
-  line?: Line;
-  fromPlace: {
-    quay: {
-      publicCode?: string;
-      name: string;
-      stopPlace: {
-        id: string;
-      };
-    };
-  };
-  toPlace: {
-    quay: {
-      publicCode?: string;
-      name: string;
-      stopPlace: {
-        id: string;
-      };
-    };
-  };
-  fromEstimatedCall?: {
-    destinationDisplay?: DestinationDisplay;
-  };
-};
-
 export type DestinationDisplay = {
   frontText?: string;
   via?: string[];
@@ -83,13 +53,7 @@ export type StopPlace = {
   id: string;
   latitude?: number;
   longitude?: number;
-  quays?: Array<{
-    id: string;
-    description?: string;
-    name: string;
-    publicCode?: string;
-    stopPlace?: { id: string };
-  }>;
+  quays?: Quay[];
 };
 
 export type Feature = {
@@ -120,18 +84,3 @@ export type VenueCategory =
   | "ferryStop"
   | "liftStation"
   | "vehicleRailInterchange";
-
-export type TripPattern = {
-  expectedStartTime: string; // ISO 8601
-  expectedEndTime: string; // ISO 8601
-  duration: number; // seconds
-  distance: number; // meters
-  legs: Leg[];
-};
-
-export type TripQuery = {
-  trip: {
-    nextPageCursor: string;
-    tripPatterns: TripPattern[];
-  };
-};

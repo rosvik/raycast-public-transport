@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { getDepartureQueryDocument, QuayDepartures } from "./departuresQuery";
-import { tripsQueryDocument } from "./tripsQuery";
-import { Feature, QuayLineFavorites, StopPlaceQuayDeparturesQuery, TripQuery } from "../types";
+import { TripQuery, tripsQueryDocument } from "./tripsQuery";
+import { Feature, QuayLineFavorites, StopPlaceQuayDeparturesQuery } from "../types";
 
 const CLIENT_NAME = "raycast-norwegian-public-transport";
 

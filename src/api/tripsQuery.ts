@@ -1,3 +1,36 @@
+import { DestinationDisplay, TransportMode } from "../types";
+import { authorityFragment, Line, lineFragment, Quay, quayFragment } from "./fragments";
+
+export type TripQuery = {
+  trip: {
+    nextPageCursor: string;
+    tripPatterns: TripPattern[];
+  };
+};
+export type TripPattern = {
+  expectedStartTime: string;
+  expectedEndTime: string;
+  /** Duration in seconds */
+  duration: number;
+  /** Distance in meters */
+  distance: number;
+  legs: Leg[];
+};
+export type Leg = {
+  mode: TransportMode;
+  transportSubmode: string;
+  /** Distance in meters */
+  distance: number;
+  expectedStartTime: string;
+  expectedEndTime: string;
+  line?: Line;
+  fromPlace: { quay: Quay };
+  toPlace: { quay: Quay };
+  fromEstimatedCall?: {
+    destinationDisplay?: DestinationDisplay;
+  };
+};
+
 export const tripsQueryDocument = `
 query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
   trip(
@@ -23,32 +56,16 @@ query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
         distance
         fromPlace {
           quay {
-            publicCode
-            name
-            stopPlace {
-              id
-            }
+            ...Q
           }
         }
         toPlace {
           quay {
-            publicCode
-            name
-            stopPlace {
-              id
-            }
+            ...Q
           }
         }
         line {
-          id
-          description
-          transportMode
-          publicCode
-          authority {
-            id
-            name
-            url
-          }
+          ...L
         }
         fromEstimatedCall {
           destinationDisplay {
@@ -60,4 +77,7 @@ query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
     }
   }
 }
+${quayFragment}
+${lineFragment}
+${authorityFragment}
 `;

@@ -1,5 +1,22 @@
 import { DestinationDisplay, DirectionType, TransportMode } from "../types";
 
+export type Quay = {
+  id: string;
+  name: string;
+  publicCode?: string;
+  stopPlace?: { id: string };
+};
+export const quayFragment = `
+fragment Q on Quay {
+  id
+  name
+  publicCode
+  stopPlace {
+    id
+  }
+}
+`;
+
 export type EstimatedCall = {
   date: string;
   expectedDepartureTime: string | null;
