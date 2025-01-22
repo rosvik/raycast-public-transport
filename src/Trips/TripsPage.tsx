@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useState, useRef } from "react";
 import { Feature } from "../types";
-import { ActionPanel, Action, Color, List, Icon } from "@raycast/api";
+import { ActionPanel, Action, Color, List, Icon, useNavigation } from "@raycast/api";
 import { fetchTrip } from "../api";
 import {
   getTransportIcon,
@@ -11,6 +11,7 @@ import {
   formatAsDate,
 } from "../utils";
 import { Leg, TripPattern } from "../api/tripsQuery";
+import TripDetailsPage from "./TripDetailsPage";
 
 type Props = {
   origin: Feature;
@@ -21,6 +22,7 @@ export default function TripsPage({ origin, destination }: Props) {
   const [groupedTrips, setGroupedTrips] = useState<GroupedTrips>({});
   const [isLoading, setIsLoading] = useState(true);
   const [pageCursor, setPageCursor] = useState("");
+  const { push } = useNavigation();
 
   useEffect(() => {
     loadMore("", []);
@@ -68,6 +70,10 @@ export default function TripsPage({ origin, destination }: Props) {
               detail={<List.Item.Detail metadata={<TripDetails trip={trip} />} />}
               actions={
                 <ActionPanel>
+                  <Action
+                    title="Select Trip"
+                    onAction={() => push(<TripDetailsPage trip={trip} />)}
+                  />
                   <Action
                     title="Load More"
                     onAction={() => loadMore(pageCursor, tripPatterns.current)}
@@ -147,21 +153,23 @@ const getTripAccessories = (trip: TripPattern): List.Item.Accessory[] => {
   return accessories;
 };
 
-const getTitleText = (leg: Leg) =>
+export const getTitleText = (leg: Leg) =>
   `${formatAsClock(leg.expectedStartTime)} ${leg.fromPlace.quay.name}${leg.fromPlace.quay.publicCode ? " " + leg.fromPlace.quay.publicCode : ""}`;
 
-const getLabelText = (leg: Leg) => {
-  const timeTaken = formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime);
-  if (leg.mode === "foot") {
-    return `${formatMetersToHuman(leg.distance)} (${timeTaken})`;
-  }
+export const getLabelText = (leg: Leg, withTime: boolean = true) => {
   let label = "";
+  if (leg.mode === "foot") {
+    label += `${formatMetersToHuman(leg.distance)} `;
+  }
+
   if (leg.line?.publicCode) {
     label += `${leg.line?.publicCode} `;
   }
   if (leg.fromEstimatedCall?.destinationDisplay) {
     label += `${formatDestinationDisplay(leg.fromEstimatedCall?.destinationDisplay)} `;
   }
-  label += `(${timeTaken})`;
+  if (withTime) {
+    label += `(${formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime)})`;
+  }
   return label;
 };

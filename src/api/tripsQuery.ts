@@ -1,5 +1,14 @@
-import { DestinationDisplay, TransportMode } from "../types";
-import { authorityFragment, Line, lineFragment, Quay, quayFragment } from "./fragments";
+import { TransportMode } from "../types";
+import { Departure } from "./departuresQuery";
+import {
+  authorityFragment,
+  estimatedCallFragment,
+  Line,
+  lineFragment,
+  Quay,
+  quayFragment,
+  serviceJourneyFragment,
+} from "./fragments";
 
 export type TripQuery = {
   trip: {
@@ -26,9 +35,7 @@ export type Leg = {
   line?: Line;
   fromPlace: { quay: Quay };
   toPlace: { quay: Quay };
-  fromEstimatedCall?: {
-    destinationDisplay?: DestinationDisplay;
-  };
+  fromEstimatedCall?: Departure;
 };
 
 export const tripsQueryDocument = `
@@ -68,9 +75,12 @@ query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
           ...L
         }
         fromEstimatedCall {
-          destinationDisplay {
-            frontText
-            via
+          ...EC
+          serviceJourney {
+            ...SJ
+            estimatedCalls {
+              ...EC
+            }
           }
         }
       }
@@ -80,4 +90,6 @@ query planTrip($fromPlace: String, $toPlace: String, $pageCursor: String) {
 ${quayFragment}
 ${lineFragment}
 ${authorityFragment}
+${estimatedCallFragment}
+${serviceJourneyFragment}
 `;
