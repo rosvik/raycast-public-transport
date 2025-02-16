@@ -48,6 +48,22 @@ export default function TripsPage({ origin, destination }: Props) {
       isShowingDetail={isDetailVisible}
       searchBarPlaceholder={`From ${origin.properties.name} to ${destination.properties.name}...`}
     >
+      {Object.entries(groupedTrips).length === 0 && (
+        <List.EmptyView
+          description="No trip results. You could try loading more to extend the search window."
+          actions={
+            <ActionPanel>
+              <Action
+                title="Load More"
+                // TODO: Remove this in favor of `pagination` returned from
+                // using the built-in useFetch/usePromise:
+                // https://developers.raycast.com/utilities/react-hooks/usefetch#pagination
+                onAction={getTrips}
+              />
+            </ActionPanel>
+          }
+        />
+      )}
       {Object.entries(groupedTrips).map(([date, trips]) => (
         <List.Section title={date === new Date().toDateString() ? "Today" : date} key={date}>
           {trips.map((trip, idx) => (
