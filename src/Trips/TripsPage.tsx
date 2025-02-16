@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useState, useRef } from "react";
 import { Feature } from "../types";
-import { ActionPanel, Action, Color, List, Icon } from "@raycast/api";
+import { ActionPanel, Action, Color, List, Icon, useNavigation } from "@raycast/api";
 import { fetchTrip } from "../api";
 import {
   getTransportIcon,
@@ -11,6 +11,7 @@ import {
   formatAsDate,
 } from "../utils";
 import { Leg, TripPattern } from "../api/tripsQuery";
+import TripDetailsPage from "./TripDetailsPage";
 
 type Props = {
   origin: Feature;
@@ -21,7 +22,7 @@ export default function TripsPage({ origin, destination }: Props) {
   const [groupedTrips, setGroupedTrips] = useState<GroupedTrips>({});
   const [isLoading, setIsLoading] = useState(true);
   const [pageCursor, setPageCursor] = useState("");
-  const [isDetailVisible, setDetailVisible] = useState(false);
+  const { push } = useNavigation();
 
   const getTrips = useCallback(() => {
     setIsLoading(true);
@@ -45,7 +46,7 @@ export default function TripsPage({ origin, destination }: Props) {
   return (
     <List
       isLoading={isLoading}
-      isShowingDetail={isDetailVisible}
+      isShowingDetail={true}
       searchBarPlaceholder={`From ${origin.properties.name} to ${destination.properties.name}...`}
     >
       {Object.entries(groupedTrips).length === 0 && (
@@ -72,10 +73,8 @@ export default function TripsPage({ origin, destination }: Props) {
               actions={
                 <ActionPanel>
                   <Action
-                    title="Toggle Details"
-                    onAction={() => {
-                      setDetailVisible(!isDetailVisible);
-                    }}
+                    title="Select Trip"
+                    onAction={() => push(<TripDetailsPage trip={trip} />)}
                   />
                   <Action
                     title="Load More"
@@ -87,7 +86,7 @@ export default function TripsPage({ origin, destination }: Props) {
                 </ActionPanel>
               }
               title={`${formatAsClock(trip.expectedStartTime)} - ${formatAsClock(trip.expectedEndTime)}`}
-              accessories={getTripAccessories(trip, isDetailVisible)}
+              accessories={getTripAccessories(trip)}
               key={idx}
             />
           ))}
@@ -133,10 +132,7 @@ const groupTripsByDate = (trips: TripPattern[]) => {
 };
 
 // TODO: Should add a warning triangle if service disruptions are present
-const getTripAccessories = (
-  trip: TripPattern,
-  isDetailsVisible: boolean,
-): List.Item.Accessory[] => {
+const getTripAccessories = (trip: TripPattern): List.Item.Accessory[] => {
   // Filter out insignificant walk distances
   const legs = trip.legs.filter(
     (leg) => leg.fromPlace.quay.stopPlace?.id !== leg.toPlace.quay.stopPlace?.id,
@@ -146,12 +142,12 @@ const getTripAccessories = (
     icon: getTransportIcon(leg.mode, leg.transportSubmode),
     // Show public code only if there's space for it (less than 4 legs when
     // details are open)
-    text: !isDetailsVisible || legs.length < 4 ? leg.line?.publicCode : undefined,
+    text: legs.length < 4 ? leg.line?.publicCode : undefined,
     tooltip: `${getTitleText(leg)} - ${getLabelText(leg)}`,
   }));
 
   // Truncate and show ellipsis if details are open and there's more than 5 legs
-  if (isDetailsVisible && accessories.length > 5) {
+  if (accessories.length > 5) {
     accessories = accessories.slice(0, 4);
     accessories.push({
       icon: { source: Icon.Ellipsis, tintColor: Color.SecondaryText },
@@ -159,33 +155,26 @@ const getTripAccessories = (
     });
   }
 
-  // Only show duration tag if details are closed
-  if (!isDetailsVisible) {
-    accessories.push({
-      tag: {
-        value: formatTimeDifferenceAsClock(trip.expectedStartTime, trip.expectedEndTime),
-        color: Color.Blue,
-      },
-    });
-  }
   return accessories;
 };
 
-const getTitleText = (leg: Leg) =>
+export const getTitleText = (leg: Leg) =>
   `${formatAsClock(leg.expectedStartTime)} ${leg.fromPlace.quay.name} ${leg.fromPlace.quay.publicCode || ""}`;
 
-const getLabelText = (leg: Leg) => {
-  const timeTaken = formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime);
-  if (leg.mode === "foot") {
-    return `${formatMetersToHuman(leg.distance)} (${timeTaken})`;
-  }
+export const getLabelText = (leg: Leg, withTime: boolean = true) => {
   let label = "";
+  if (leg.mode === "foot") {
+    label += `${formatMetersToHuman(leg.distance)} `;
+  }
+
   if (leg.line?.publicCode) {
     label += `${leg.line?.publicCode} `;
   }
   if (leg.fromEstimatedCall?.destinationDisplay) {
     label += `${formatDestinationDisplay(leg.fromEstimatedCall?.destinationDisplay)} `;
   }
-  label += `(${timeTaken})`;
+  if (withTime) {
+    label += `(${formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime)})`;
+  }
   return label;
 };
