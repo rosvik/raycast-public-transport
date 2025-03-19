@@ -17,30 +17,31 @@ type Props = {
   destination: Feature;
 };
 export default function TripsPage({ origin, destination }: Props) {
-  const trips = useRef<TripPattern[]>([]);
+  const tripPatterns = useRef<TripPattern[]>([]);
   const [groupedTrips, setGroupedTrips] = useState<GroupedTrips>({});
   const [isLoading, setIsLoading] = useState(true);
   const [pageCursor, setPageCursor] = useState("");
   const [isDetailVisible, setDetailVisible] = useState(false);
 
-  const getTrips = useCallback(() => {
-    setIsLoading(true);
-    fetchTrip({
-      originId: origin.properties.id,
-      destinationId: destination.properties.id,
-      pageCursor,
-    })
-      .then((data) => {
-        trips.current = trips.current?.concat(data.trip.tripPatterns);
-        setGroupedTrips(groupTripsByDate(trips.current));
-        setPageCursor(data.trip.nextPageCursor);
-      })
-      .finally(() => setIsLoading(false));
-  }, [pageCursor]);
-
   useEffect(() => {
-    getTrips();
+    loadMore("", []);
   }, []);
+
+  const loadMore = useCallback(
+    async (cursor: string, prevState: TripPattern[]) => {
+      setIsLoading(true);
+      const data = await fetchTrip({
+        originId: origin.properties.id,
+        destinationId: destination.properties.id,
+        pageCursor: cursor || "",
+      });
+      tripPatterns.current = prevState.concat(data.trip.tripPatterns);
+      setGroupedTrips(groupTripsByDate(tripPatterns.current));
+      setPageCursor(data.trip.nextPageCursor);
+      setIsLoading(false);
+    },
+    [origin, destination],
+  );
 
   return (
     <List
@@ -58,7 +59,7 @@ export default function TripsPage({ origin, destination }: Props) {
                 // TODO: Remove this in favor of `pagination` returned from
                 // using the built-in useFetch/usePromise:
                 // https://developers.raycast.com/utilities/react-hooks/usefetch#pagination
-                onAction={getTrips}
+                onAction={() => loadMore(pageCursor, tripPatterns.current)}
               />
             </ActionPanel>
           }
@@ -82,7 +83,7 @@ export default function TripsPage({ origin, destination }: Props) {
                     // TODO: Remove this in favor of `pagination` returned from
                     // using the built-in useFetch/usePromise:
                     // https://developers.raycast.com/utilities/react-hooks/usefetch#pagination
-                    onAction={getTrips}
+                    onAction={() => loadMore(pageCursor, tripPatterns.current)}
                   />
                 </ActionPanel>
               }
