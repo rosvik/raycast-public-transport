@@ -56,9 +56,6 @@ export default function TripsPage({ origin, destination }: Props) {
             <ActionPanel>
               <Action
                 title="Load More"
-                // TODO: Remove this in favor of `pagination` returned from
-                // using the built-in useFetch/usePromise:
-                // https://developers.raycast.com/utilities/react-hooks/usefetch#pagination
                 onAction={() => loadMore(pageCursor, tripPatterns.current)}
               />
             </ActionPanel>
@@ -80,9 +77,6 @@ export default function TripsPage({ origin, destination }: Props) {
                   />
                   <Action
                     title="Load More"
-                    // TODO: Remove this in favor of `pagination` returned from
-                    // using the built-in useFetch/usePromise:
-                    // https://developers.raycast.com/utilities/react-hooks/usefetch#pagination
                     onAction={() => loadMore(pageCursor, tripPatterns.current)}
                   />
                 </ActionPanel>
