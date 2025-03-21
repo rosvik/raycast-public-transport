@@ -40,7 +40,7 @@ const mapToWebPlannerConfig = (id: string): WebPlannerConfig => {
       return {
         id: WebPlanner.Atb,
         name: "AtB Travel Search",
-        url: "https://atb-staging.planner-web.mittatb.no",
+        url: "https://reise.atb.no",
       };
     case "reis":
     default:
