@@ -66,7 +66,7 @@ export default function TripsPage({ origin, destination }: Props) {
         <List.Section title={date === new Date().toDateString() ? "Today" : date} key={date}>
           {trips.map((trip, idx) => (
             <List.Item
-              detail={<List.Item.Detail metadata={<TripDetails trip={trip} />}></List.Item.Detail>}
+              detail={<List.Item.Detail metadata={<TripDetails trip={trip} />} />}
               actions={
                 <ActionPanel>
                   <Action
@@ -142,7 +142,7 @@ const getTripAccessories = (
     // Show public code only if there's space for it (less than 4 legs when
     // details are open)
     text: !isDetailsVisible || legs.length < 4 ? leg.line?.publicCode : undefined,
-    tooltip: `${getTitleText(leg)} - ${getLabelText(leg)}`,
+    tooltip: `${getTitleText(leg)} • ${getLabelText(leg)}`,
   }));
 
   // Truncate and show ellipsis if details are open and there's more than 5 legs
@@ -167,7 +167,7 @@ const getTripAccessories = (
 };
 
 const getTitleText = (leg: Leg) =>
-  `${formatAsClock(leg.expectedStartTime)} ${leg.fromPlace.quay.name} ${leg.fromPlace.quay.publicCode || ""}`;
+  `${formatAsClock(leg.expectedStartTime)} ${leg.fromPlace.quay.name}${leg.fromPlace.quay.publicCode ? " " + leg.fromPlace.quay.publicCode : ""}`;
 
 const getLabelText = (leg: Leg) => {
   const timeTaken = formatTimeDifferenceAsClock(leg.expectedEndTime, leg.expectedStartTime);
