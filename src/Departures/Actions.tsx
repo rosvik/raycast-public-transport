@@ -38,7 +38,6 @@ export function Actions({
       />
       {isFavorite ? (
         <Action
-          // eslint-disable-next-line @raycast/prefer-title-case
           title={`Remove ${formatLineName(ec)} from Favorites`}
           icon={Icon.StarDisabled}
           shortcut={Keyboard.Shortcut.Common.Pin}
@@ -48,7 +47,6 @@ export function Actions({
         />
       ) : (
         <Action
-          // eslint-disable-next-line @raycast/prefer-title-case
           title={`Add ${formatLineName(ec)} to Favorites`}
           icon={Icon.Star}
           shortcut={Keyboard.Shortcut.Common.Pin}
@@ -70,11 +68,8 @@ export function Actions({
       {url && (
         <Action.OpenInBrowser
           url={url.href}
-          // eslint-disable-next-line @raycast/prefer-title-case
           title={`Open ${getDomainName(url.href)}`}
-          icon={getFavicon(url.origin, {
-            mask: Image.Mask.RoundedRectangle,
-          })}
+          icon={getFavicon(url.origin, { mask: Image.Mask.RoundedRectangle })}
         />
       )}
     </ActionPanel>
