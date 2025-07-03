@@ -106,7 +106,7 @@ const TripDetails = ({ trip }: { trip: TripPattern }) => {
         </Fragment>
       ))}
       <List.Item.Detail.Metadata.Label
-        title={getDestinationTitle(trip.legs[trip.legs.length - 1])}
+        title={trip.legs.length > 0 ? getDestinationTitle(trip.legs[trip.legs.length - 1]) : ""}
         text={formatTimeDifferenceAsClock(trip.expectedStartTime, trip.expectedEndTime) + " total"}
         icon={Icon.Clock}
       />
